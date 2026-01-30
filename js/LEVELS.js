@@ -7,15 +7,18 @@ export const LEVELS = {
             "startPosition":{"x":5,"y":5},
             "path":[
                 {
-                    "position":{"x":20,"y":5},
+                    "x":20,
+                    "y":5,
                     "speed":0.5,
                 },
                 {
-                    "position":{"x":30,"y":15},
+                    "x":30,
+                    "y":15,
                     "speed":0.3,
                 },
                 {
-                    "position":{"x":42,"y":15},
+                    "x":42,
+                    "y":15,
                     "speed":0.5,
                 }
             ]
@@ -23,53 +26,58 @@ export const LEVELS = {
         "stuff":[
             {
                 "kind":"Permanent",
-                "position":{"x":0,"y":0},
+                "x":0,
+                "y":1,
                 "startLiving":0,
                 "stopLiving":undefined,
-                "length": 30,
-                "thickness":0.5,
-                "angle":0
+                "width": 30,
+                "height":1
             },
             {
                 "kind":"Permanent",
-                "position":{"x":20,"y":4},
+                "x":20,
+                "y":4,
                 "startLiving":0,
                 "stopLiving":undefined,
-                "length": 5,
-                "thickness":0.5,
-                "angle":0
+                "width": 5,
+                "height": 1
             },
             {
                 "kind":"Permanent",
-                "position":{"x":25,"y":8},
-                "startLiving":0,
-                "stopLiving":undefined,
-                "length": 5,
-                "thickness":0.5,
-                "angle":0
+                "x":25,
+                "y":8,
+                "startLiving": 0,
+                "stopLiving": undefined,
+                "width": 5,
+                "height": 1,
             },
             {
                 "kind":"Permanent",
-                "position":{"x":30,"y":0},
+                "x":30,
+                "y":10,
                 "startLiving":0,
                 "stopLiving":undefined,
-                "length": 10,
-                "thickness":0.5,
-                "angle":90
+                "length": 1,
+                "height":10,
             },
             {
                 "kind":"Permanent",
-                "position":{"x":30,"y":10},
+                "x":30,
+                "y":10,
                 "startLiving":0,
                 "stopLiving":undefined,
-                "length": 5,
-                "thickness":0.5,
-                "angle":0
+                "width": 5,
+                "height":1
             }
         ],
         "endings":[
             {
-                "condition":"y<0",
+                "area":{
+                    "x": 33,
+                    "y":15,
+                    "width":2,
+                    "height":5
+                },
                 "nextLevel": 1
             }
         ]
