@@ -51,6 +51,11 @@ export class Player {
     }
 
 
+    getHitbox() {
+        return { x: this.x - PLAYER_W / 2, y: this.y - PLAYER_H, w: PLAYER_W, h: PLAYER_H };
+    }
+
+
     update(dt, keys, level) {
 
         this.lastX = this.x;

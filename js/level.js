@@ -10,39 +10,36 @@ import { Player } from "./player.js";
 
 import { audio } from "./audio.js";       
 
+const CAMERA_SPEED = 0.02;
+
+const SIZE = 32;
+
 export class Level {
 
     constructor(n) {        
-        this.player = new Player(100,100);
+        this.player = new Player(LEVELS[n].player.startPosition.x, LEVELS[n].player.startPosition.y);
+        this.camera = { x: LEVELS[n].camera.startPosition.x * SIZE, y: LEVELS[n].camera.startPosition.y };
+        this.platforms = LEVELS[n].stuff.filter(s => s.kind == "Permanent").map(p => {
+            return { x: p.x * SIZE, y: p.y * SIZE, w: p.width * SIZE, h: p.height * SIZE };
+        });
+        // 
+        this.cameraPath = JSON.parse(JSON.stringify(LEVELS[n].path));
     }
 
 
     update(dt, keys) {
         this.player.update(dt, keys, this);
-    } 
+    }
 
     render(ctx) {
         // compute background position w.r.t. the player
-        let srcX = this.player.x - WIDTH / 2;
-        if (srcX < 0) { 
-            srcX = 0; 
-        }
-        else if (srcX > this.background.width - WIDTH) {
-            srcX = this.background.width - WIDTH;
-        }
-        let srcY = this.player.y - HEIGHT / 2;
-        if (srcY < 0) {
-            srcY = 0;
-        }
-        else if (srcY > this.background.height - HEIGHT) {
-            srcY = this.background.height - HEIGHT;
-        }
+        let srcX = this.camera.x - WIDTH / 2;
+        let srcY = this.camera.y - HEIGHT / 2;
         ctx.drawImage(this.background, srcX, srcY, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT);
 
         // draw platforms
         this.platforms.forEach(p => p.render(ctx, srcX, srcY));
-        this.slidingWalls.forEach(w => w.render(ctx, srcX, srcY));
-
+        
         // determine player's position in screen
         let playerX = this.player.x - srcX;
         let playerY = this.player.y - srcY;
@@ -87,6 +84,21 @@ export class Level {
 
 }
 
+
+class Platform {
+
+    constructor(x,y,w,h) {
+        this.width = w;
+        this.height = h;
+        this.x = x;
+        this.y = y;
+    }
+
+    render(ctx) {
+
+    }
+
+}
 
 
 

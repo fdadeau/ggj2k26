@@ -24,13 +24,13 @@ export class Game {
         this.nLevel = START_LEVEL;
         this.state = LOADING;
         this.msg = "Loading...";
-        this.keys = { jump: 0, left: 0, right: 0, swap: 0, action: 0 };
+        this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0 };
     }
 
     reset() {
         this.level = new Level(this.nLevel);
         this.state = IN_GAME;
-        this.keys = { jump: 0, left: 0, right: 0, swap: 0, action: 0 };
+        this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0 };
     }
 
     loading(loaded, total) {
@@ -49,12 +49,12 @@ export class Game {
             this.level.update(dt, this.keys);
             if (this.level.player.dead) {
                 this.state = GAME_OVER;
-                audio.playSound("death", "player", 0.7, false);
+                //audio.playSound("death", "player", 0.7, false);
                 return true;
             }
             if (this.level.player.complete) {
                 this.state = COMPLETED;
-                audio.playSound("victory", "player", 0.7, false);
+                //audio.playSound("victory", "player", 0.7, false);
             }
         }
         return true;
