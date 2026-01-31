@@ -24,8 +24,6 @@ const MASK = { NONE: "normal", BIRD: "bird", WRESTLER: "wrestler", NINJA: "ninja
 
 const DEFAULT_ANIM_DELAY = 200;
 const FRAME_SIZE = 30;
-const OFFSET_X = 0;
-const OFFSET_Y = 0;
 
 const STILL_R_ANIMATION = {
     length: 1,
@@ -419,15 +417,14 @@ export class Player {
     }
     
     render(ctx, x, y) {
-        // drawing of the character
         ctx.drawImage(
             data[this.getSpriteDependingOnMask()], 
-            0, 
-            this.currentAnimation.frame * FRAME_SIZE, 
-            FRAME_SIZE, 
-            FRAME_SIZE, 
-            x - PLAYER_W/2 - OFFSET_X, 
-            y - PLAYER_H - OFFSET_Y, 
+            0,
+            (this.currentAnimation.frame * FRAME_SIZE),
+            FRAME_SIZE,
+            FRAME_SIZE,
+            Math.floor(x - PLAYER_W / 2),
+            Math.floor(y - PLAYER_H + 1),
             PLAYER_W, 
             PLAYER_H
         );
