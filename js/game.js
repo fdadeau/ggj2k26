@@ -7,6 +7,7 @@ import { Level } from "./level.js";
 import { LEVELS } from "./LEVELS.js"; 
 
 import { audio } from "./audio.js";
+
 import { getGamepadFromNavigator } from "./gamepad.js";
 
 const STATES = {
@@ -88,16 +89,18 @@ export class Game {
         }
 
         // deal with prioritary keys
-        if (this.keys.pause) {
-            this.pause();
-        }
-
+        
         switch (this.state) {
             case STATES.IN_GAME:
+                if (this.keys.pause) {
+                    this.pause();
+                    return;
+                }
                 if (this.state == STATES.IN_GAME) {
                     this.level.update(dt, this.keys);
                     if (this.level.player.dead) {
                         this.state = STATES.GAME_OVER;
+                        this.msg = "GAME OVER";
                         //audio.playSound("death", "player", 0.7, false);
                         return true;
                     }
@@ -120,6 +123,13 @@ export class Game {
 				if(this.keys.continue){
 					this.unpause()
 				}
+                break;
+            
+            case STATES.GAME_OVER: 
+                if (this.keys.continue) {
+                    this.reset();
+                }
+
         }
 
         return true;
@@ -127,8 +137,9 @@ export class Game {
 
 
     render() {
+        // 
         this.ctx.clearRect(0, 0, WIDTH, HEIGHT);
-
+        // 
         if (this.state == STATES.IN_GAME) {
             this.level.render(this.ctx);
         }
@@ -148,6 +159,17 @@ export class Game {
             this.ctx.fillText("Press Escape again to exit", WIDTH/2, HEIGHT/2);
             this.ctx.fillText("Press Spacebar to resume", WIDTH/2, HEIGHT/2 + 50);
         }
+        if (this.state == STATES.GAME_OVER) {
+            this.ctx.fillStyle = "white";
+            this.ctx.fillRect(WIDTH / 2 - 160, HEIGHT / 2 - 100, 320, 200);
+            this.ctx.fillStyle = "black";
+            this.ctx.fillRect(WIDTH / 2 - 150, HEIGHT / 2 - 90, 300, 180);
+            this.ctx.fillStyle = "white";
+            this.ctx.textAlign = "center";
+            this.ctx.fillText("GAME OVER", WIDTH/2, HEIGHT/2 - 60);
+            this.ctx.fillText("Press Spacebar to restart", WIDTH/2, HEIGHT/2 + 50);
+        }
+
         if (DEBUG) {
             this.ctx.font = "12px courier";
             this.ctx.fillText(`keys = ${JSON.stringify(this.keys)}`, 10, 40);

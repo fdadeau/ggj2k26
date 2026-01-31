@@ -31,6 +31,7 @@ export class Level {
         this.size = SIZE;
         // 
         this.cameraPath = LEVELS[n].camera.path.map(({x,y,speed}) => { return {x: x*SIZE, y: (MAX-y)*SIZE, speed}; });
+        console.log(this.world);
     }
 
 
@@ -71,7 +72,6 @@ export class Level {
         return this.whichTile(x-w, y-h) || this.whichTile(x+w, y-h) || this.whichTile(x-w,y) || this.whichTile(x+w,y);
     }
     whichTile(x, y) {
-        console.log("which tile "+x+","+y);
         if (x < 0 || x >= this.world.width) {
             return 1;
         }
@@ -83,9 +83,6 @@ export class Level {
         let xInSquare = x % this.size;
         let yInSquare = y % this.size;
 
-        console.log("which tile 2");
-
-        console.log("which tile 3dddd ",this.map[l][c] );
         switch (this.map[l][c]) {
             case 4: 
                 return (this.size - xInSquare < yInSquare) ? 4 : 0;
@@ -93,7 +90,6 @@ export class Level {
                 return (xInSquare < yInSquare) ? 5 : 0;
         }
 
-        console.log("which tile 2v");
         return (this.map[l][c]);
     }
 
