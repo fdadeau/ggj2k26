@@ -8,17 +8,17 @@ export const LEVELS = {
             "path":[
                 {
                     "x":20,
-                    "y":5,
+                    "y":15,
                     "speed":0.5,
                 },
                 {
                     "x":30,
-                    "y":15,
+                    "y":5,
                     "speed":0.3,
                 },
                 {
                     "x":42,
-                    "y":15,
+                    "y":5,
                     "speed":0.5,
                 }
             ]
@@ -27,7 +27,7 @@ export const LEVELS = {
             {
                 "kind":"Permanent",
                 "x":0,
-                "y":1,
+                "y":19,
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width": 30,
@@ -36,7 +36,7 @@ export const LEVELS = {
             {
                 "kind":"Permanent",
                 "x":20,
-                "y":4,
+                "y":16,
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width": 5,
@@ -45,7 +45,7 @@ export const LEVELS = {
             {
                 "kind":"Permanent",
                 "x":25,
-                "y":8,
+                "y":12,
                 "startLiving": 0,
                 "stopLiving": undefined,
                 "width": 5,
@@ -74,7 +74,7 @@ export const LEVELS = {
             {
                 "area":{
                     "x": 33,
-                    "y":15,
+                    "y":5,
                     "width":2,
                     "height":5
                 },
