@@ -104,7 +104,6 @@ export class Player {
 
 
     update(dt, keys, level) {
-
         this.lastX = this.x;
         this.lastY = this.y;
 
@@ -124,7 +123,7 @@ export class Player {
             this.isJumping = false;
         }
 
-        if (keys.jump) {
+        if (keys.jump) { // keyboard routine
             if (this.isOnTheGround(level) || this.onPlatform || this.mask == MASK.BIRD && this.jumpCount == 1) {
                 this.speedY = -JUMP_FORCE;
                 this.onPlatform = null;
@@ -132,6 +131,23 @@ export class Player {
                 this.isJumping = true;
             }
             keys.jump = 0;
+        }
+
+        if(keys.gamepadJump) { // gamepad routine (using gamepadJump & gamepadJumpSinglePress)
+            const grounded = this.isOnTheGround(level) || this.onPlatform;
+
+            if (grounded) {
+                this.speedY = -JUMP_FORCE;
+                this.onPlatform = null;
+                this.jumpCount = 0; 
+                this.isJumping = true;
+            } else if (keys.gamepadJumpSinglePress && this.mask === MASK.BIRD && this.jumpCount === 1) {
+                this.speedY = -JUMP_FORCE;
+                this.jumpCount++;
+                this.isJumping = true;
+            }
+            
+            keys.gamepadJumpSinglePress = 0;
         }
 
 
@@ -200,8 +216,7 @@ export class Player {
             this.dead = true;
         }
 
-        if (!this.dead) this.determineAnimation(dt);
-        
+        if (!this.dead) this.determineAnimation(dt);        
     }
 
 
