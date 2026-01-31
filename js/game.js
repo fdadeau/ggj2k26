@@ -44,6 +44,7 @@ export class Game {
     reset() {
         this.level = new Level(this.nLevel);
         this.state = STATES.IN_GAME;
+        this.msg = "";
         this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, continue: 0, pause: 0 };
     }
 
@@ -68,7 +69,6 @@ export class Game {
     unpause(){
         this.keys.continue = 0;
         this.state = STATES.IN_GAME;
-        this.msg = "IN_GAME";
     }
 
     update(dt) {
@@ -123,6 +123,9 @@ export class Game {
 				if(this.keys.continue){
 					this.unpause()
 				}
+                else if (this.keys.pause) {
+                    this.reset();
+                }
                 break;
             
             case STATES.GAME_OVER: 
@@ -156,10 +159,10 @@ export class Game {
             this.ctx.fillStyle = "white";
             this.ctx.textAlign = "center";
             this.ctx.fillText("GAME PAUSED", WIDTH/2, HEIGHT/2 - 60);
-            this.ctx.fillText("Press Escape again to exit", WIDTH/2, HEIGHT/2);
+            this.ctx.fillText("Press Escape again to restart", WIDTH/2, HEIGHT/2);
             this.ctx.fillText("Press Spacebar to resume", WIDTH/2, HEIGHT/2 + 50);
         }
-        if (this.state == STATES.GAME_OVER) {
+        else if (this.state == STATES.GAME_OVER) {
             this.ctx.fillStyle = "white";
             this.ctx.fillRect(WIDTH / 2 - 160, HEIGHT / 2 - 100, 320, 200);
             this.ctx.fillStyle = "black";

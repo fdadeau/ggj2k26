@@ -10,7 +10,7 @@ import { Player } from "./player.js";
 
 import { audio } from "./audio.js";       
 
-const CAMERA_SPEED = 0.1;
+const CAMERA_SPEED = 0.2;
 
 const DEBUG = true;
 
@@ -23,15 +23,16 @@ const MAX = 32;
 export class Level {
 
     constructor(n) {        
-        this.player = new Player(LEVELS[n].player.startPosition.x * SIZE, (MAX-LEVELS[n].player.startPosition.y-1) * SIZE);
-        this.background = makeBackground(LEVELS[n]).osc;
-        this.map = makeBackground(LEVELS[n]).map;
+        const bg = makeBackground(LEVELS[n]);
+        this.background = bg.osc;
+        this.map = bg.map;
         this.world = { height: this.background.height, width: this.background.width};
         this.camera = { x: LEVELS[n].camera.startPosition.x * SIZE, y: (MAX-LEVELS[n].camera.startPosition.y) * SIZE };
         this.size = SIZE;
         // 
         this.cameraPath = LEVELS[n].camera.path.map(({x,y,speed}) => { return {x: x*SIZE, y: (MAX-y)*SIZE, speed}; });
-        console.log(this.world);
+        this.player = new Player(LEVELS[n].player.startPosition.x * SIZE, (MAX-LEVELS[n].player.startPosition.y-1) * SIZE);
+        
     }
 
 
@@ -56,11 +57,6 @@ export class Level {
         let srcY = this.camera.y - HEIGHT / 2;
         ctx.drawImage(this.background, srcX, srcY, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT);
        
-        if (DEBUG) {
-            ctx.fillText( this.player.dead + " abs : "+JSON.stringify(srcX)+" [ " + this.player.x+" ] "+JSON.stringify(srcX + WIDTH), 10, 70);
-            ctx.fillText("ord : "+JSON.stringify(srcY - HEIGHT)+" [ " + this.player.y+" ] "+JSON.stringify(srcY ), 10, 100);
-        }
-
         // determine player's position in screen
         let playerX = this.player.x - srcX;
         let playerY = this.player.y - srcY;
@@ -68,8 +64,17 @@ export class Level {
     }
 
 
+    /**
+     * Assuming the character is at (x,y) where x is the horitontal center and y is the bottom,
+     * checks if one of the corners is inside one of the tiles.
+     * @param {number} x X-coordinate 
+     * @param {number} y Y-coordinate 
+     * @param {number} w width of the player
+     * @param {number} h height of the player
+     * @returns 
+     */
     intersectsWith(x, y, w, h) {
-        return this.whichTile(x-w, y-h) || this.whichTile(x+w, y-h) || this.whichTile(x-w,y) || this.whichTile(x+w,y);
+        return this.whichTile(x-w/2, y-h) || this.whichTile(x+w/2, y-h) || this.whichTile(x-w/2,y) || this.whichTile(x+w/2,y);
     }
     whichTile(x, y) {
         if (x < 0 || x >= this.world.width) {
@@ -79,6 +84,11 @@ export class Level {
             return 1;
         }
         let l = Math.floor(y / this.size), c = Math.floor(x / this.size);
+
+        if (this.map[l][c] === undefined) {
+            console.error({l,c});
+        }
+
 
         let xInSquare = x % this.size;
         let yInSquare = y % this.size;
@@ -93,12 +103,14 @@ export class Level {
         return (this.map[l][c]);
     }
 
+    /*
     getPointAbove(x, y) {
         if (this.whichTile(x,y) == 4) {
             return Math.floor(y / this.size + 1) * this.size - (x % this.size) - 1;
         }
         return Math.floor(y / this.size) * this.size + (x % this.size) - 1;
     }
+    */
 
     isOnExit(x,y,w) {
         return x-w/2 > this.exit.c * this.size && x+w/2 < (this.exit.c+1)*this.size && y > this.exit.l * this.size && y <= this.size*(this.exit.l +1);
