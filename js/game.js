@@ -7,7 +7,7 @@ import { Level } from "./level.js";
 import { LEVELS } from "./LEVELS.js"; 
 
 import { audio } from "./audio.js";
-import { GamepadHandler, getGamepadFromNavigator } from "./gamepad.js";
+import { getGamepadFromNavigator } from "./gamepad.js";
 
 const STATES = {
     LOADING: 0, 
@@ -31,12 +31,12 @@ let fps = 0, time = 1000, lastFPS = 0;
 
 export class Game {
 
-    constructor(cvs) {
+    constructor(cvs, gamepadHandler) {
         this.ctx = cvs.getContext("2d");
         this.nLevel = START_LEVEL;
         this.state = STATES.LOADING;
         this.msg = "Loading...";
-		this.gamepadHandler = new GamepadHandler()
+        this.gamepadHandler = gamepadHandler;        
         this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, continue: 0, pause: 0 };
     }
 
@@ -53,12 +53,27 @@ export class Game {
             return;
         }
         this.msg = "Loading... (" + loaded + "/" + total + ")";
-
     }
 
-    update(dt, gamepadConnected) { 
-		if(gamepadConnected){
-			this.handleGamepadActions(getGamepadFromNavigator())
+    pause(){
+        this.state = STATES.PAUSE;
+        this.keys.pause = 0;
+    }
+
+    isPlaying(){
+        return this.state === STATES.IN_GAME
+    }
+
+    unpause(){
+        this.keys.continue = 0;
+        this.state = STATES.IN_GAME;
+        this.msg = "IN_GAME";
+    }
+
+    update(dt) {
+        const gamepad = getGamepadFromNavigator() 
+		if(gamepad){
+			this.handleGamepadActions(gamepad)
 		}
 
         // compute FPS (for debug purposes)
@@ -74,8 +89,7 @@ export class Game {
 
         // deal with prioritary keys
         if (this.keys.pause) {
-            this.state = STATES.PAUSE;
-            this.keys.pause = 0;
+            this.pause();
         }
 
         switch (this.state) {
@@ -104,9 +118,7 @@ export class Game {
 
 			case STATES.PAUSE:
 				if(this.keys.continue){
-					this.keys.continue = 0;
-					this.state = STATES.IN_GAME;
-					this.msg = "IN_GAME";
+					this.unpause()
 				}
         }
 
@@ -143,8 +155,6 @@ export class Game {
             this.ctx.textAlign = "left";
             this.ctx.fillText(lastFPS, 20, 20)
         }
-
-
     }
 
 	handleGamepadActions(gamepad){
