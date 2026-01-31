@@ -39,15 +39,10 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
     /** Events capture **/
     document.addEventListener("keydown", function(evt) {
-        if(gamepadConnected){
-            return;
-        }
         game.pressKey(evt.code);
     });
+
     document.addEventListener("keyup", function(evt) {
-        if(gamepadConnected){
-            return;
-        }
         game.releaseKey(evt.code);
     });
 

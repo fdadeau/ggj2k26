@@ -40,6 +40,7 @@ export class Game {
         this.msg = "Loading...";
         this.gamepadHandler = gamepadHandler;        
         this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, continue: 0, pause: 0 };
+        this.previousButtons = new Set();
     }
 
     reset() {
@@ -47,6 +48,7 @@ export class Game {
         this.state = STATES.IN_GAME;
         this.msg = "";
         this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, continue: 0, pause: 0 };
+        this.previousButtons = new Set();
     }
 
     loading(loaded, total) {
@@ -184,41 +186,21 @@ export class Game {
     }
 
 	handleGamepadActions(gamepad){
-		const axisMoved = this.gamepadHandler.getAxeOrientationAndIntensity(gamepad)
-		const {pressedButtons, notPressedButtons} = this.gamepadHandler.getButtonState(gamepad)
-		
-		
-		pressedButtons.forEach(action => {
-			switch(action){
-				case "JUMP":
-					this.keys.jump = 1;
-					break;
-				case "SPECIAL":
-					this.keys.action = 1
-					break;
-				case "MASK_SWITCH":
-					this.keys.swap = 1;
-					break;
-				default:
-					throw new Error(`Unknown action, got ${action}...`);
-			}
-		});
+        const axisMoved = this.gamepadHandler.getAxeOrientationAndIntensity(gamepad)
+		const {pressedButtons, notPressedButtons} = this.gamepadHandler.getButtonState(gamepad) 
+        const currentButtons = new Set(pressedButtons);
 
-		notPressedButtons.forEach(action => {
-			switch(action){
-				case "JUMP":
-					this.keys.jump = 0;
-					break;
-				case "SPECIAL":
-					this.keys.action = 0
-					break;
-				case "MASK_SWITCH":
-					this.keys.swap = 0;
-					break;
-				default:
-					throw new Error(`Unknown action, got ${action}...`);
-			}
-		});
+        const jumpPressed = currentButtons.has("JUMP") && !this.previousButtons.has("JUMP");
+        const jumpHeld = currentButtons.has("JUMP");
+        const swapPressed = currentButtons.has("MASK_SWITCH") && !this.previousButtons.has("MASK_SWITCH");
+        const specialPressed = currentButtons.has("SPECIAL") && !this.previousButtons.has("MASK_SWITCH");
+        
+        this.keys.swap = swapPressed ? 1 : 0;
+        this.keys.gamepadJump = jumpHeld ? 1 : 0;
+        this.keys.gamepadJumpSinglePress = jumpPressed ? 1 : 0;
+        this.keys.action = specialPressed ? 1 : 0;
+
+        this.previousButtons = currentButtons;
 
 		if(axisMoved){
 			if(axisMoved.direction === "LEFT"){
