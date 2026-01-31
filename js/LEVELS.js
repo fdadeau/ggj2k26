@@ -17,7 +17,7 @@ export const LEVELS = {
             {
                 "kind":"Permanent",
                 "x":0,
-                "y":1,
+                "y":0,
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width": 10,
@@ -26,7 +26,7 @@ export const LEVELS = {
             {
                 "kind":"Permanent",
                 "x":10,
-                "y":3,
+                "y":0,
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width": 5,
@@ -35,7 +35,7 @@ export const LEVELS = {
             {
                 "kind":"Permanent",
                 "x":17,
-                "y":3,
+                "y":0,
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width":6,
@@ -44,7 +44,7 @@ export const LEVELS = {
             {
                 "kind":"Permanent",
                 "x":22,
-                "y":1,
+                "y":0,
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width": 6,
@@ -53,7 +53,7 @@ export const LEVELS = {
             {
                 "kind":"Permanent",
                 "x":29,
-                "y":3,
+                "y":2,
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width": 4,
@@ -62,7 +62,7 @@ export const LEVELS = {
             {
                 "kind":"Permanent",
                 "x":36,
-                "y":1,
+                "y":2,
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width": 6,
@@ -72,13 +72,13 @@ export const LEVELS = {
                 "kind":"Mask",
                 "type":"Bird",
                 "x":41,
-                "y":2,
+                "y":1,
                 "startLiving":0
             },
             {
                 "kind":"Permanent",
                 "x":45,
-                "y":4,
+                "y":3,
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width": 2,
@@ -87,7 +87,7 @@ export const LEVELS = {
             {
                 "kind":"Permanent",
                 "x":50,
-                "y":7,
+                "y":0,
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width": 10,
@@ -96,7 +96,7 @@ export const LEVELS = {
             {
                 "kind":"Permanent",
                 "x":63,
-                "y":21,
+                "y":3,
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width": 14,
@@ -105,7 +105,7 @@ export const LEVELS = {
             {
                 "kind":"Permanent",
                 "x":64,
-                "y":1,
+                "y":0,
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width": 16,
@@ -115,13 +115,13 @@ export const LEVELS = {
                 "kind":"Mask",
                 "type":"Wrestler",
                 "x":68,
-                "y":2,
+                "y":1,
                 "startLiving":0,
             },
             {
                 "kind":"Breakable",
                 "x":70,
-                "y":3,
+                "y":1,
                 "startLiving":0,
                 "stopLiving": "punched",
                 "width": 1,
@@ -132,7 +132,7 @@ export const LEVELS = {
             {
                 "area":{
                     "x": 75,
-                    "y":3,
+                    "y":1,
                     "width":2,
                     "height":2
                 },
