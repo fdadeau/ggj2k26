@@ -15,44 +15,70 @@ const MAX_SPEED = 0.4;
 const MAX_FALL_SPEED = 0.8;
 
 /** Player dimensions */
-const PLAYER_W = 32, PLAYER_H = 32;
+const PLAYER_W = 30, PLAYER_H = 30;
 
 /** Draw hitbox */
 const DEBUG = true;
 
-const STILL_ANIM = 1, WALK_ANIM = 4, JUMP_ANIM = 3, DISAPPEAR_ANIM = 32, APPEAR_ANIM = 31;
-
 const MASK = { NONE: 0, BIRD: 1, WRESTLER: 2, NINJA: 3};
 
-const FRAME_SIZE = 32;
-const ANIM_DELAY = 140;
-const OFFSET_X = 30, OFFSET_Y = 48, PLAYER_SIZE = 32;
+const DEFAULT_ANIM_DELAY = 200;
+const FRAME_SIZE = 30;
+const OFFSET_X = 0;
+const OFFSET_Y = 0;
+
+const STILL_R_ANIMATION = {
+    length: 1,
+    ref: "normalStillR",
+    delay: DEFAULT_ANIM_DELAY
+};
+
+const STILL_L_ANIMATION = {
+    length: 1,
+    ref: "normalStillL",
+    delay: DEFAULT_ANIM_DELAY
+};
+
+const RUN_R_ANIMATION = {
+    length: 3,
+    ref: "normalRunR",
+    delay: 110
+};
+
+const RUN_L_ANIMATION = {
+    length: 3,
+    ref: "normalRunL",
+    delay: 110
+};
+
+const JUMP_R_ANIMATION = {
+    length: 5,
+    ref: "normalJumpR",
+}
+
+const JUMP_L_ANIMATION = {
+    length: 5,
+    ref: "normalJumpL",
+}
 
 export class Player {
 
     constructor(x, y) {
-        // position
         this.x = this.lastX = x;
         this.y = this.lastY = y;
-        // movement 
         this.speedX = 0;
         this.speedY = GRAVITY;
         this.onGround = 0;
         this.onPlatform = null;     
-        // active
         this.active = true;
         this.dead = false;
         this.complete = false;
-        // 
         this.lastDir = 1;
         // 
         this.mask = MASK.BIRD;
         this.jumpCount = 0;
-        // 
-        //this.animation = { type: NORMAL, remaining: 0, duration: 0 };
-        //
-        //this.currentAnim = { sprite: data["walkL"], frame: 0, which: STILL_ANIM, delay: ANIM_DELAY };
-        // 
+        this.currentAnimation = { frame: 0, currentDelay: STILL_R_ANIMATION.delay, animation: STILL_R_ANIMATION };
+        this.isJumping = false;
     }
 
 
@@ -71,14 +97,20 @@ export class Player {
             return;
         }
 
+        if(this.isJumping && (this.isOnTheGround(level) || this.onPlatform)){
+            this.isJumping = false;
+        }
+
         if (keys.jump) {
             if (this.isOnTheGround(level) || this.onPlatform || this.mask == MASK.BIRD && this.jumpCount == 1) {
                 this.speedY = -JUMP_FORCE;
                 this.onPlatform = null;
                 this.jumpCount++;
+                this.isJumping = true;
             }
             keys.jump = 0;
         }
+
 
         // key up on exit door
         if (keys.up && this.isOnTheGround(level) && level.isOnExit(this.x, this.y, PLAYER_W)) {
@@ -145,7 +177,7 @@ export class Player {
             this.dead = true;
         }
 
-        //if (!this.dead) this.determineAnimation(dt);
+        if (!this.dead) this.determineAnimation(dt);
         
     }
 
@@ -242,21 +274,94 @@ export class Player {
         return (level.whichTile(this.x-PLAYER_W/2, this.y-PLAYER_H) != 0 || level.whichTile(this.x+PLAYER_W/2,this.y-PLAYER_H) != 0)
     }
 
-    
+    determineAnimation(dt){
+        if(this.speedY !== 0){
+            const isStartingJump = this.speedY < 0.6 * -JUMP_FORCE;
+            const isMidAirJumping = this.speedY < 0.2 * -JUMP_FORCE && !isStartingJump;
+            const isMidAirLanding = this.speedY > 0 && this.speedY < 0.4 * JUMP_FORCE;
+            const isEndingLanding = this.speedY > 0 && !isMidAirLanding;
+            const isInMiddleOfJump = !isStartingJump && !isMidAirJumping && !isMidAirLanding && !isEndingLanding; 
+           
+            if(this.speedX > 0){
+                if(this.currentAnimation.animation.ref !== JUMP_R_ANIMATION.ref){
+                    this.currentAnimation.animation = JUMP_R_ANIMATION
+                }
+            }else{
+                if(this.currentAnimation.animation.ref !== JUMP_L_ANIMATION.ref){
+                    this.currentAnimation.animation = JUMP_L_ANIMATION
+                }
+            }
+            
+            if(isStartingJump && this.isJumping){
+                this.currentAnimation.frame = 0;
+            } else if(isMidAirJumping && this.isJumping){
+                this.currentAnimation.frame = 1;
+            } else if(isInMiddleOfJump && this.isJumping){
+                this.currentAnimation.frame = 2;
+            } else if(isMidAirLanding){
+                this.currentAnimation.frame = 3;
+            } else if(isEndingLanding){
+                this.currentAnimation.frame = 4;
+            }
+            return;
+        }
 
+        const nonMovementDetectiontreshold = 2;
+        if(this.lastDir === 1){
+            if(this.speedX == 0 || Math.abs(this.lastX - this.x) < nonMovementDetectiontreshold){
+                this.currentAnimation = { frame: 0, currentDelay: STILL_R_ANIMATION.delay, animation: STILL_R_ANIMATION };
+                return;
+            }
+
+            if(this.currentAnimation.animation.ref !== RUN_R_ANIMATION.ref){
+                this.currentAnimation = { frame: 0, currentDelay: RUN_R_ANIMATION.delay, animation: RUN_R_ANIMATION };
+                return;
+            };
+        } else {
+            if(this.speedX == 0 || this.lastX === this.x){
+                this.currentAnimation = { frame: 0, currentDelay: STILL_L_ANIMATION.delay, animation: STILL_L_ANIMATION };
+                return;
+            }
+            
+            if(this.currentAnimation.animation.ref !== RUN_L_ANIMATION.ref){
+                this.currentAnimation = { frame: 0, currentDelay: RUN_L_ANIMATION.delay, animation: RUN_L_ANIMATION };
+                return;
+            };
+        }
+
+        this.currentAnimation.currentDelay -= dt;
+        if(this.currentAnimation.currentDelay < 0){
+            this.currentAnimation.currentDelay = this.currentAnimation.animation.delay;
+            this.currentAnimation.frame++;
+            if(this.currentAnimation.frame >= this.currentAnimation.animation.length){
+                this.currentAnimation.frame = 0;
+            }
+        }
+    }
+    
     render(ctx, x, y) {
         // drawing of the character
-        ctx.strokeStyle = "#F00";
-        ctx.strokeRect(x - PLAYER_W/2, y-PLAYER_H, PLAYER_W, PLAYER_H);
+        ctx.drawImage(
+            data[this.currentAnimation.animation.ref], 
+            0, 
+            this.currentAnimation.frame * FRAME_SIZE, 
+            FRAME_SIZE, 
+            FRAME_SIZE, 
+            x - PLAYER_W/2 - OFFSET_X, 
+            y - PLAYER_H - OFFSET_Y, 
+            PLAYER_W, 
+            PLAYER_H
+        );
+
+
         let scale = 1;
         // debug info (pressed keys)
         if (DEBUG) {
             ctx.textAlign = "left";
             ctx.font = "12px arial";
             ctx.fillText(`x=${this.x.toFixed(2)},y=${this.y.toFixed(2)},onPlatform=${this.onPlatform != null},complete=${this.complete},dead=${this.dead},jc=${this.jumpCount}`, 10, 60);
-            
+            ctx.strokeStyle = "#F00";
+            ctx.strokeRect(x - PLAYER_W/2, y-PLAYER_H, PLAYER_W, PLAYER_H);
         }
-        
     }
-
 }

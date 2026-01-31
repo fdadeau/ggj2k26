@@ -34,6 +34,7 @@ export class Game {
 
     constructor(cvs, gamepadHandler) {
         this.ctx = cvs.getContext("2d");
+        this.ctx.imageSmoothingEnabled = false;
         this.nLevel = START_LEVEL;
         this.state = STATES.LOADING;
         this.msg = "Loading...";

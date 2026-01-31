@@ -2,7 +2,13 @@
 const data = {
     
     // spritesheets
-    "perso": "./assets/sprites/test.png"
+    "perso": "./assets/sprites/test.png",
+    "normalStillR": "./assets/sprites/limask/normal/still_r_1.png",
+    "normalStillL": "./assets/sprites/limask/normal/still_l_1.png",
+    "normalRunR": "./assets/sprites/limask/normal/run/right/spritesheet.png",
+    "normalRunL": "./assets/sprites/limask/normal/run/left/spritesheet.png",
+    "normalJumpR": "./assets/sprites/limask/normal/jump/right/spritesheet.png",
+    "normalJumpL": "./assets/sprites/limask/normal/jump/left/spritesheet.png",
     // images
     
     // musics
