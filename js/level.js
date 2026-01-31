@@ -20,7 +20,7 @@ const SIZE = 32;
 
 const EPSILON = 1;
 
-const MAX = 32;
+const MAX = 52;
 
 const MASK_SIZE = 20;
 
@@ -31,14 +31,13 @@ export class Level {
         this.background = lvl.osc;
         this.map = lvl.map;
         this.masks = lvl.masks;
-        console.log(this.masks)
+        
         this.world = { height: this.background.height, width: this.background.width};
         this.camera = { x: LEVELS[n].camera.startPosition.x * SIZE, y: (MAX-LEVELS[n].camera.startPosition.y) * SIZE };
         this.size = SIZE;
         // 
         this.cameraPath = LEVELS[n].camera.path.map(({x,y,speed}) => { return {x: x*SIZE, y: (MAX-y)*SIZE, speed}; });
         this.player = new Player(LEVELS[n].player.startPosition.x * SIZE, (MAX-LEVELS[n].player.startPosition.y-1) * SIZE);
-        
     }
 
 
@@ -71,9 +70,18 @@ export class Level {
             this.player.addMask(m.kind);
             m.active = false;
         });
-
-
+        console.log(this.player.mask);
+    if (this.player.mask == "bird") {
+        this.map.forEach((line, l) => {
+            line.forEach((tile, c) => {
+                if (tile === 2) {
+                    this.map[l][c] = 0;
+                }
+            });
+        });
     }
+
+}
 
     render(ctx) {
         // compute background position w.r.t. the player
@@ -117,22 +125,12 @@ export class Level {
             return 1;
         }
         let l = Math.floor(y / this.size), c = Math.floor(x / this.size);
+        
 
-        if (!this.map[l] || this.map[l][c] === undefined) {
-            console.error({l,c});
-        }
+        return (this.map[l] && this.map[l][c]) ? this.map[l][c] : 0;
 
-        let xInSquare = x % this.size;
-        let yInSquare = y % this.size;
 
-        switch (this.map[l][c]) {
-            case 4: 
-                return (this.size - xInSquare < yInSquare) ? 4 : 0;
-            case 5: 
-                return (xInSquare < yInSquare) ? 5 : 0;
-        }
 
-        return (this.map[l] && this.map[l][c] ? this.map[l][c] : 0);
     }
 
     /*
@@ -153,6 +151,10 @@ export class Level {
 
 function loadLevel(level) {
     const platforms = level.stuff.filter(s => s.kind == "Permanent").map(p => {
+        return { x: Number(p.x), y: (MAX-Number(p.y)-p.height), w: Number(p.width), h: Number(p.height) };
+    });
+
+    const breakforms = level.stuff.filter(s => s.kind == "Breakable").map(p => {
         return { x: Number(p.x), y: (MAX-Number(p.y)-p.height), w: Number(p.width), h: Number(p.height) };
     });
     
@@ -195,6 +197,13 @@ function loadLevel(level) {
             }
         }
     });
+    breakforms.forEach(p => {
+        for (let dl=0; dl < p.h; dl++) {
+            for (let dc=0; dc < p.w; dc++) {
+                map[p.y+dl][p.x+dc] = 2;
+            }
+        }
+    });
     for (let l=0; l < map.length; l++) {
         for (let c=0; c < map[l].length; c++) {
             switch (map[l][c]) {
@@ -205,20 +214,16 @@ function loadLevel(level) {
                     ctx.fillRect(c*SIZE + 2, l*SIZE + 2, SIZE - 4, SIZE - 4);
                     break;
                 case 2: 
-                    ctx.moveTo(c*SIZE, l*SIZE);
-                    ctx.beginPath();
-                    ctx.lineTo((c+1)*SIZE, l*SIZE);
-                    ctx.lineTo(c*SIZE, (l+1)*SIZE);
-                    ctx.lineTo(c*SIZE, (l)*SIZE);
-                    ctx.fill();
+                    ctx.fillStyle = "darkred";
+                    ctx.fillRect(c*SIZE, l*SIZE, SIZE, SIZE);
+                    ctx.fillStyle = "red";
+                    ctx.fillRect(c*SIZE + 2, l*SIZE + 2, SIZE - 4, SIZE - 4);
                     break;
                 case 3: 
-                    ctx.moveTo(c*SIZE, l*SIZE);
-                    ctx.beginPath();
-                    ctx.lineTo((c+1)*SIZE, l*SIZE);
-                    ctx.lineTo((c+1)*SIZE, (l+1)*SIZE);
-                    ctx.lineTo(c*SIZE, (l)*SIZE);
-                    ctx.fill();
+                    ctx.fillStyle = "red";
+                    ctx.fillRect(c*SIZE, l*SIZE, SIZE, SIZE);
+                    ctx.fillStyle = "pink";
+                    ctx.fillRect(c*SIZE + 2, l*SIZE + 2, SIZE - 4, SIZE - 4);
                     break;
                 case 4: 
                     ctx.moveTo((c+1)*SIZE, l*SIZE);
