@@ -120,8 +120,8 @@ export const LEVELS = {
             },
             {
                 "kind":"Breakable",
-                "x":70,
-                "y":1,
+                "x":14,
+                "y":2,
                 "startLiving":0,
                 "stopLiving": "punched",
                 "width": 1,
