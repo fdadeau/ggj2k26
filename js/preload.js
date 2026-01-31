@@ -33,7 +33,10 @@ const data = {
     "wrestler-jumpL": "./assets/sprites/limask/catch/jump/left/spritesheet.png",
     
     // images
-    
+    "mask-bird": "./assets/sprites/masks/bird.png",
+    "mask-wrestler": "./assets/sprites/masks/catch.png",
+    "mask-ninja": "./assets/sprites/masks/ninja.png",
+
     // musics
     
     // Sounds

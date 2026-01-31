@@ -66,6 +66,8 @@ export class Player {
     constructor(x, y) {
         this.x = this.lastX = x;
         this.y = this.lastY = y;
+        this.width = PLAYER_W;
+        this.height = PLAYER_H;
         this.speedX = 0;
         this.speedY = GRAVITY;
         this.onGround = 0;

@@ -8,6 +8,8 @@ import { LEVELS } from "./LEVELS.js";
 
 import { Player } from "./player.js";
 
+import { data } from "./preload.js";
+
 import { audio } from "./audio.js";       
 
 const CAMERA_SPEED = 0.2;
@@ -19,6 +21,8 @@ const SIZE = 32;
 const EPSILON = 1;
 
 const MAX = 32;
+
+const MASK_SIZE = 20;
 
 export class Level {
 
@@ -52,6 +56,7 @@ export class Level {
         }
         this.player.update(dt, keys, this);
         
+
     }
 
     render(ctx) {
@@ -62,9 +67,7 @@ export class Level {
        
         // render masks
         this.masks.forEach(m => {
-            const COLOR = { Bird: "yellow", Wrestler: "red", Ninja: "black" };
-            ctx.fillStyle = COLOR[m.type];
-            ctx.fillRect(m.x * SIZE - srcX, (MAX-m.y-1) * SIZE - srcY, 10, 10);
+            ctx.drawImage(data[`mask-${m.kind}`], m.x - srcX, m.y - srcY, MASK_SIZE, MASK_SIZE);
         });
 
         // determine player's position in screen
@@ -95,7 +98,7 @@ export class Level {
         }
         let l = Math.floor(y / this.size), c = Math.floor(x / this.size);
 
-        if (this.map[l][c] === undefined) {
+        if (!this.map[l] || this.map[l][c] === undefined) {
             console.error({l,c});
         }
 
@@ -127,23 +130,6 @@ export class Level {
     }
 
 }
-
-
-class Platform {
-
-    constructor(x,y,w,h) {
-        this.width = w;
-        this.height = h;
-        this.x = x;
-        this.y = y;
-    }
-
-    render(ctx) {
-
-    }
-
-}
-
 
 
 function loadLevel(level) {
@@ -236,7 +222,14 @@ function loadLevel(level) {
     }
     
     // masks
-    const masks = level.stuff.filter(s => s.kind == "Mask");
+    const masks = level.stuff.filter(s => s.kind == "Mask").map(m => {
+        return { 
+            x: m.x * SIZE + SIZE/2 - MASK_SIZE/2, 
+            y: (MAX - m.y) * SIZE - MASK_SIZE,  
+            kind: m.type,
+            active: true
+        }
+    });
 
     ctx.fillStyle = "#700";
     ctx.font = "16px arial";
@@ -248,3 +241,4 @@ function loadLevel(level) {
     });
     return {osc,map,masks};
 }
+

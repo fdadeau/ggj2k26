@@ -70,7 +70,7 @@ export const LEVELS = {
             },
             {
                 "kind":"Mask",
-                "type":"Bird",
+                "type":"bird",
                 "x":7,
                 "y":1,
                 "startLiving":0
@@ -113,7 +113,7 @@ export const LEVELS = {
             },
             {
                 "kind":"Mask",
-                "type":"Wrestler",
+                "type":"wrestler",
                 "x":68,
                 "y":1,
                 "startLiving":0,
