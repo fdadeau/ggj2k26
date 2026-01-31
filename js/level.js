@@ -57,7 +57,10 @@ export class Level {
             this.cameraPath.shift();
         }
 
-        if (( target.speed > 0 && this.player.x < this.camera.x -WIDTH/2- this.player.width) || ( target.speed < 0 && this.player.x > this.camera.x +WIDTH/2+this.player.width) ) {
+        if (
+            (target.speed > 0 && this.player.x < this.camera.x - WIDTH/2 - this.player.width) ||
+            (target.speed < 0 && this.player.x > this.camera.x + WIDTH/2 + this.player.width)
+        ) {
             this.player.dead = true;
         }
 
@@ -135,9 +138,7 @@ export class Level {
         if (x < 0 || x >= this.world.width) {
             return 1;
         }
-        if (y < 0 || y >= this.world.height) {
-            return 1;
-        }
+
         let l = Math.floor(y / this.size), c = Math.floor(x / this.size);
         
 
