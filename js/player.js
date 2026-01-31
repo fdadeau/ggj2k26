@@ -21,6 +21,9 @@ const PLAYER_W = 32, PLAYER_H = 32;
 const DEBUG = true;
 
 const STILL_ANIM = 1, WALK_ANIM = 4, JUMP_ANIM = 3, DISAPPEAR_ANIM = 32, APPEAR_ANIM = 31;
+
+const MASK = { NONE: 0, BIRD: 1, WRESTLER: 2, NINJA: 3};
+
 const FRAME_SIZE = 32;
 const ANIM_DELAY = 140;
 const OFFSET_X = 30, OFFSET_Y = 48, PLAYER_SIZE = 32;
@@ -43,11 +46,13 @@ export class Player {
         // 
         this.lastDir = 1;
         // 
+        this.mask = MASK.BIRD;
+        this.jumpCount = 0;
+        // 
         //this.animation = { type: NORMAL, remaining: 0, duration: 0 };
         //
         //this.currentAnim = { sprite: data["walkL"], frame: 0, which: STILL_ANIM, delay: ANIM_DELAY };
         // 
-
     }
 
 
@@ -67,9 +72,10 @@ export class Player {
         }
 
         if (keys.jump) {
-            if (this.isOnTheGround(level) || this.onPlatform) {
+            if (this.isOnTheGround(level) || this.onPlatform || this.mask == MASK.BIRD && this.jumpCount == 1) {
                 this.speedY = -JUMP_FORCE;
                 this.onPlatform = null;
+                this.jumpCount++;
             }
             keys.jump = 0;
         }
@@ -106,6 +112,7 @@ export class Player {
             if (this.dead) return;  // out of bounds --> dead
         }
         // moving on a platform
+        /*
         if (this.onPlatform != null) {
             this.y = this.onPlatform.y;
             if (this.onPlatform.dX) {
@@ -118,20 +125,23 @@ export class Player {
                 this.onPlatform = null;
             }
         }
-        this.checkAboveCollision(level);
-        if (this.dead) return;
+            */
+        //this.checkAboveCollision(level);
+        //if (this.dead) return;
 
         this.updateXPosition(dt, level);
                 
         if (!this.onPlatform && this.isOnTheGround(level) == 0) {
             this.speedY += GRAVITY * dt / (1000/60);
+            if (this.jumpCount == 0) this.jumpCount = 1;
             if (this.speedY > MAX_FALL_SPEED) { this.speedY = MAX_FALL_SPEED; }
         }
         else {
             this.speedY = 0;
+            this.jumpCount = 0;
         }
 
-        if (this.y >= level.world.height-10) {
+        if (this.y >= level.world.height+100) {
             this.dead = true;
         }
 
@@ -156,10 +166,10 @@ export class Player {
         else {
             // horizontal movement is not possible, get position next to wall depending on the direction
             if (this.speedX > 0) {
-                this.x = Math.floor(this.x / level.size + 1) * level.size - PLAYER_W - 1;
+                this.x = Math.floor(this.x / level.size + 1) * level.size - PLAYER_W/2 - 1;
             }
             else {
-                this.x = Math.floor(this.x / level.size ) * level.size + PLAYER_W;
+                this.x = Math.floor(this.x / level.size ) * level.size + PLAYER_W / 2 + 1;
             }
             this.speedX = 0;
         }
@@ -170,11 +180,9 @@ export class Player {
      * @param {Level} level Level data
      */
     updateYPosition(dt, level) {
-        console.log("update Y position", this.y, this.speedY, dt);
         // check vertical collision
         let newY = this.y + this.speedY * dt;
 
-        console.log("update Y position 2 ", newY);
         // check if out of bounds --> dead
         if (newY >= level.world.height - 10) {
             this.y = newY;
@@ -182,7 +190,6 @@ export class Player {
             return;
         }
 
-        console.log("update Y position 3 ", newY);
         // check intersection with a tile
         let intersectingTile = level.intersectsWith(this.x, newY, PLAYER_W, PLAYER_H);
         if (intersectingTile == 0) {
@@ -204,12 +211,13 @@ export class Player {
      * @returns true if it's the case.
      */
     isOnTheGround(level) {
-        if (level.whichTile(this.x - PLAYER_W, this.y + 1) != 0 || level.whichTile(this.x + PLAYER_W, this.y + 1) != 0) {
-            return Math.floor((this.y + 1) / level.size) * level.size;
+        if (level.whichTile(this.x - PLAYER_W/2, this.y + 1) != 0 || level.whichTile(this.x + PLAYER_W/2, this.y + 1) != 0) {
+            return 1; //Math.floor((this.y + 1) / level.size) * level.size;
         }
         return 0;
     }
 
+    /*
     isOnPlatform(level) {
         for (let i=0; i < level.platforms.length; i++) {
             let p = level.platforms[i];
@@ -223,6 +231,7 @@ export class Player {
         }
         return null;
     };
+    */
 
     checkAboveCollision(level) {
         if (this.collidesAbove(level)) {
@@ -230,21 +239,21 @@ export class Player {
         }
     }
     collidesAbove(level) {
-        return (level.whichTile(this.x-PLAYER_W, this.y-PLAYER_H) != 0 || level.whichTile(this.x+PLAYER_W,this.y-PLAYER_H) != 0)
+        return (level.whichTile(this.x-PLAYER_W/2, this.y-PLAYER_H) != 0 || level.whichTile(this.x+PLAYER_W/2,this.y-PLAYER_H) != 0)
     }
 
     
 
     render(ctx, x, y) {
         // drawing of the character
-        ctx.strokeStyle = "#FAA";
-        ctx.strokeRect(x - PLAYER_W/2, y - PLAYER_H, PLAYER_W, PLAYER_H);
+        ctx.strokeStyle = "#F00";
+        ctx.strokeRect(x - PLAYER_W/2, y-PLAYER_H, PLAYER_W, PLAYER_H);
         let scale = 1;
         // debug info (pressed keys)
         if (DEBUG) {
             ctx.textAlign = "left";
             ctx.font = "12px arial";
-            ctx.fillText(`x=${this.x.toFixed(2)},y=${this.y.toFixed(2)},onPlatform=${this.onPlatform != null},complete=${this.complete},dead=${this.dead}`, 10, 60);
+            ctx.fillText(`x=${this.x.toFixed(2)},y=${this.y.toFixed(2)},onPlatform=${this.onPlatform != null},complete=${this.complete},dead=${this.dead},jc=${this.jumpCount}`, 10, 60);
             
         }
         
