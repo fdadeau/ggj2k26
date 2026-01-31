@@ -12,7 +12,7 @@ import { data } from "./preload.js";
 
 import { audio } from "./audio.js";       
 
-const CAMERA_SPEED = 0;
+const CAMERA_SPEED = 0.2;
 
 const DEBUG = true;
 
