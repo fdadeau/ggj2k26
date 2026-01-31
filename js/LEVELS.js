@@ -7,19 +7,9 @@ export const LEVELS = {
             "startPosition":{"x":5,"y":5},
             "path":[
                 {
-                    "x":20,
+                    "x":80,
                     "y":5,
-                    "speed":0.5,
-                },
-                {
-                    "x":30,
-                    "y":15,
-                    "speed":0.3,
-                },
-                {
-                    "x":42,
-                    "y":15,
-                    "speed":0.5,
+                    "speed":0.5
                 }
             ]
         },
@@ -30,53 +20,121 @@ export const LEVELS = {
                 "y":1,
                 "startLiving":0,
                 "stopLiving":undefined,
-                "width": 30,
+                "width": 10,
                 "height":1
             },
             {
                 "kind":"Permanent",
-                "x":20,
-                "y":4,
+                "x":10,
+                "y":3,
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width": 5,
+                "height": 3
+            },
+            {
+                "kind":"Permanent",
+                "x":17,
+                "y":3,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width":6,
+                "height":3
+            },
+            {
+                "kind":"Permanent",
+                "x":22,
+                "y":1,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 6,
+                "height":1
+            },
+            {
+                "kind":"Permanent",
+                "x":29,
+                "y":3,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 4,
                 "height": 1
             },
             {
                 "kind":"Permanent",
-                "x":25,
-                "y":8,
-                "startLiving": 0,
-                "stopLiving": undefined,
-                "width": 5,
-                "height": 1,
-            },
-            {
-                "kind":"Permanent",
-                "x":30,
-                "y":10,
+                "x":36,
+                "y":1,
                 "startLiving":0,
                 "stopLiving":undefined,
-                "width": 1,
-                "height":10,
-            },
-            {
-                "kind":"Permanent",
-                "x":30,
-                "y":10,
-                "startLiving":0,
-                "stopLiving":undefined,
-                "width": 5,
+                "width": 6,
                 "height":1
+            },
+            {
+                "kind":"Mask",
+                "type":"Bird",
+                "x":41,
+                "y":2,
+                "startLiving":0
+            },
+            {
+                "kind":"Permanent",
+                "x":45,
+                "y":4,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 2,
+                "height":1
+            },
+            {
+                "kind":"Permanent",
+                "x":50,
+                "y":7,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 10,
+                "height":7
+            },
+            {
+                "kind":"Permanent",
+                "x":63,
+                "y":21,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 14,
+                "height":18
+            },
+            {
+                "kind":"Permanent",
+                "x":64,
+                "y":1,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 16,
+                "height": 1
+            },
+            {
+                "kind":"Mask",
+                "type":"Wrestler",
+                "x":68,
+                "y":2,
+                "startLiving":0,
+            },
+            {
+                "kind":"Breakable",
+                "x":70,
+                "y":3,
+                "startLiving":0,
+                "stopLiving": "punched",
+                "width": 1,
+                "height": 2
             }
         ],
         "endings":[
             {
                 "area":{
-                    "x": 33,
-                    "y":15,
+                    "x": 75,
+                    "y":3,
                     "width":2,
-                    "height":5
+                    "height":2
                 },
                 "nextLevel": 1
             }
