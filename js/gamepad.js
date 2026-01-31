@@ -99,20 +99,26 @@ export class GamepadHandler {
   }
 
   /**
-   * Getter for the ongoing actions
+   * Getter for the gamepad buttons states
    * @param {Gamepad} gamepad
-   * @returns {("JUMP" | "SPECIAL" | "MASK_SWITCH")[]} List of the ongoing actions
+   * @returns {{pressedButtons: ("JUMP" | "SPECIAL" | "MASK_SWITCH")[]; notPressedButton: ("JUMP" | "SPECIAL" | "MASK_SWITCH")[]}} Lists pressed and not pressed buttons
    */
-  getButtonPressed(gamepad) {
-    const buttonPressedList = [];
+  getButtonState(gamepad) {
+    const pressedButtons = [];
+    const notPressedButtons = [];
 
     for (const [action, index] of Object.entries(this.buttonIndexMapping)) {
       if (gamepad.buttons[index]?.pressed) {
-        buttonPressedList.push(action);
+        pressedButtons.push(action);
+      }else{
+        notPressedButtons.push(action)
       }
     }
 
-    return buttonPressedList;
+    return {
+      pressedButtons,
+      notPressedButtons,
+    };
   }
 
   /**
@@ -142,20 +148,12 @@ export class GamepadHandler {
 
 /**
  * Get the connected gamepad from the navitor state
- * @returns The available gamepad, throws otherwise
+ * @returns The first available gamepad, null if no gamepad is available
  */
 export const getGamepadFromNavigator = () => {
   const gamepadList = navigator
     .getGamepads()
     .filter((gamepad) => gamepad !== null);
 
-  if (gamepadList.length > 1) {
-    throw new Error("Multiple gamepad is not supported...");
-  }
-
-  if (!gamepadList[0]) {
-    throw new Error("No gamepad is available...");
-  }
-
-  return gamepadList[0];
+  return gamepadList[0] ?? null;
 };

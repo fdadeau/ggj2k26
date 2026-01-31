@@ -8,17 +8,17 @@ export const LEVELS = {
             "path":[
                 {
                     "x":20,
-                    "y":15,
+                    "y":5,
                     "speed":0.5,
                 },
                 {
                     "x":30,
-                    "y":5,
+                    "y":15,
                     "speed":0.3,
                 },
                 {
                     "x":42,
-                    "y":5,
+                    "y":15,
                     "speed":0.5,
                 }
             ]
@@ -27,25 +27,52 @@ export const LEVELS = {
             {
                 "kind":"Permanent",
                 "x":0,
-                "y":19,
+                "y":1,
                 "startLiving":0,
                 "stopLiving":undefined,
-                "width": 30,
+                "width": 10,
                 "height":1
             },
             {
                 "kind":"Permanent",
                 "x":20,
-                "y":16,
+                "y":4,
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width": 5,
+                "height": 3
+            },
+            {
+                "kind":"Permanent",
+                "x":17,
+                "y":0,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width":6,
+                "height":3
+            },
+            {
+                "kind":"Permanent",
+                "x":22,
+                "y":0,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 6,
+                "height":1
+            },
+            {
+                "kind":"Permanent",
+                "x":29,
+                "y":2,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 4,
                 "height": 1
             },
             {
                 "kind":"Permanent",
                 "x":25,
-                "y":12,
+                "y":8,
                 "startLiving": 0,
                 "stopLiving": undefined,
                 "width": 5,
@@ -53,30 +80,46 @@ export const LEVELS = {
             },
             {
                 "kind":"Permanent",
-                "x":30,
-                "y":10,
+                "x":63,
+                "y":3,
                 "startLiving":0,
                 "stopLiving":undefined,
-                "width": 1,
-                "height":10,
+                "width": 14,
+                "height":18
             },
             {
                 "kind":"Permanent",
-                "x":30,
-                "y":10,
+                "x":64,
+                "y":0,
                 "startLiving":0,
                 "stopLiving":undefined,
-                "width": 5,
-                "height":1
+                "width": 16,
+                "height": 1
+            },
+            {
+                "kind":"Mask",
+                "type":"Wrestler",
+                "x":68,
+                "y":1,
+                "startLiving":0,
+            },
+            {
+                "kind":"Breakable",
+                "x":70,
+                "y":1,
+                "startLiving":0,
+                "stopLiving": "punched",
+                "width": 1,
+                "height": 2
             }
         ],
         "endings":[
             {
                 "area":{
                     "x": 33,
-                    "y":5,
+                    "y":15,
                     "width":2,
-                    "height":5
+                    "height":2
                 },
                 "nextLevel": 1
             }

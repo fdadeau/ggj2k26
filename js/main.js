@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     cvs.height = HEIGHT;
 
     const game = new Game(cvs);
+    let gamepadConnected = false;
 
     preload(function(loaded, total) {
         game.loading(loaded, total);    
@@ -25,7 +26,7 @@ document.addEventListener("DOMContentLoaded", function(_e) {
     function loop() {
         requestAnimationFrame(loop);
         let now = Date.now();
-        game.update(now - lastU);
+        game.update(now - lastU, gamepadConnected);
         game.render();
         lastU = now;
     }
@@ -34,9 +35,15 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
     /** Events capture **/
     document.addEventListener("keydown", function(evt) {
+        if(gamepadConnected){
+            return;
+        }
         game.pressKey(evt.code);
     });
     document.addEventListener("keyup", function(evt) {
+        if(gamepadConnected){
+            return;
+        }
         game.releaseKey(evt.code);
     });
 
@@ -44,4 +51,11 @@ document.addEventListener("DOMContentLoaded", function(_e) {
         this.requestFullscreen();
     });
 
+    window.addEventListener("gamepadconnected", async () => {
+        gamepadConnected = true;
+    });
+
+    window.addEventListener("gamepaddisconnected", () => {
+        gamepadConnected = false;
+    });
 });
