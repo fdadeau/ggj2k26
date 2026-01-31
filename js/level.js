@@ -10,7 +10,7 @@ import { Player } from "./player.js";
 
 import { audio } from "./audio.js";       
 
-const CAMERA_SPEED = 0.02;
+const CAMERA_SPEED = 0.1;
 
 const DEBUG = true;
 
@@ -18,16 +18,18 @@ const SIZE = 32;
 
 const EPSILON = 1;
 
+const MAX = 32;
+
 export class Level {
 
     constructor(n) {        
-        this.player = new Player(LEVELS[n].player.startPosition.x * SIZE, LEVELS[n].player.startPosition.y * SIZE);
+        this.player = new Player(LEVELS[n].player.startPosition.x * SIZE, (MAX-LEVELS[n].player.startPosition.y-1) * SIZE);
         this.background = makeBackground(LEVELS[n]);
         this.world = { height: this.background.height, width: this.background.width};
-        this.camera = { x: LEVELS[n].camera.startPosition.x * SIZE, y: LEVELS[n].camera.startPosition.y * SIZE };
+        this.camera = { x: LEVELS[n].camera.startPosition.x * SIZE, y: (MAX-LEVELS[n].camera.startPosition.y) * SIZE };
         this.size = SIZE;
         // 
-        this.cameraPath = LEVELS[n].camera.path.map(({x,y}) => { return {x: x*SIZE, y: y*SIZE}; });
+        this.cameraPath = LEVELS[n].camera.path.map(({x,y}) => { return {x: x*SIZE, y: (MAX-y)*SIZE}; });
     }
 
 
@@ -120,7 +122,7 @@ class Platform {
 
 function makeBackground(level) {
     const platforms = level.stuff.filter(s => s.kind == "Permanent").map(p => {
-        return { x: Number(p.x), y: Number(p.y), w: Number(p.width), h: Number(p.height) };
+        return { x: Number(p.x), y: (MAX-Number(p.y)-p.height), w: Number(p.width), h: Number(p.height) };
     });
     
     let maxX = Math.max(...platforms.map(p => p.x + p.w));

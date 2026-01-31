@@ -9,7 +9,7 @@ export const LEVELS = {
                 {
                     "x":80,
                     "y":5,
-                    "speed":0.5,
+                    "speed":0.5
                 }
             ]
         },
@@ -17,7 +17,7 @@ export const LEVELS = {
             {
                 "kind":"Permanent",
                 "x":0,
-                "y":1,
+                "y":0,
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width": 10,
@@ -25,8 +25,8 @@ export const LEVELS = {
             },
             {
                 "kind":"Permanent",
-                "x":20,
-                "y":4,
+                "x":10,
+                "y":0,
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width": 5,
@@ -61,12 +61,37 @@ export const LEVELS = {
             },
             {
                 "kind":"Permanent",
-                "x":25,
-                "y":8,
-                "startLiving": 0,
-                "stopLiving": undefined,
-                "width": 5,
-                "height": 1,
+                "x":36,
+                "y":2,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 6,
+                "height":1
+            },
+            {
+                "kind":"Mask",
+                "type":"Bird",
+                "x":41,
+                "y":1,
+                "startLiving":0
+            },
+            {
+                "kind":"Permanent",
+                "x":45,
+                "y":3,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 2,
+                "height":1
+            },
+            {
+                "kind":"Permanent",
+                "x":50,
+                "y":0,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 10,
+                "height":7
             },
             {
                 "kind":"Permanent",
@@ -106,8 +131,8 @@ export const LEVELS = {
         "endings":[
             {
                 "area":{
-                    "x": 33,
-                    "y":15,
+                    "x": 75,
+                    "y":1,
                     "width":2,
                     "height":2
                 },
@@ -116,4 +141,3 @@ export const LEVELS = {
         ]
     }
 }
-
