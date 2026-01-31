@@ -282,7 +282,7 @@ export class Player {
             const isEndingLanding = this.speedY > 0 && !isMidAirLanding;
             const isInMiddleOfJump = !isStartingJump && !isMidAirJumping && !isMidAirLanding && !isEndingLanding; 
            
-            if(this.speedX > 0){
+            if(this.lastDir > 0){
                 if(this.currentAnimation.animation.ref !== JUMP_R_ANIMATION.ref){
                     this.currentAnimation.animation = JUMP_R_ANIMATION
                 }
@@ -318,7 +318,7 @@ export class Player {
                 return;
             };
         } else {
-            if(this.speedX == 0 || this.lastX === this.x){
+            if(this.speedX == 0 || Math.abs(this.lastX - this.x) < nonMovementDetectiontreshold){
                 this.currentAnimation = { frame: 0, currentDelay: STILL_L_ANIMATION.delay, animation: STILL_L_ANIMATION };
                 return;
             }
