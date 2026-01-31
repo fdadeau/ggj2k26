@@ -29,36 +29,36 @@ const OFFSET_Y = 0;
 
 const STILL_R_ANIMATION = {
     length: 1,
-    ref: "normalStillR",
+    ref: "stillR",
     delay: DEFAULT_ANIM_DELAY
 };
 
 const STILL_L_ANIMATION = {
     length: 1,
-    ref: "normalStillL",
+    ref: "stillL",
     delay: DEFAULT_ANIM_DELAY
 };
 
 const RUN_R_ANIMATION = {
     length: 3,
-    ref: "normalRunR",
+    ref: "runR",
     delay: 110
 };
 
 const RUN_L_ANIMATION = {
     length: 3,
-    ref: "normalRunL",
+    ref: "runL",
     delay: 110
 };
 
 const JUMP_R_ANIMATION = {
     length: 5,
-    ref: "normalJumpR",
+    ref: "jumpR",
 }
 
 const JUMP_L_ANIMATION = {
     length: 5,
-    ref: "normalJumpL",
+    ref: "jumpL",
 }
 
 export class Player {
@@ -74,8 +74,7 @@ export class Player {
         this.dead = false;
         this.complete = false;
         this.lastDir = 1;
-        // 
-        this.mask = MASK.BIRD;
+        this.mask = MASK.WRESTLER;
         this.jumpCount = 0;
         this.currentAnimation = { frame: 0, currentDelay: STILL_R_ANIMATION.delay, animation: STILL_R_ANIMATION };
         this.isJumping = false;
@@ -338,11 +337,25 @@ export class Player {
             }
         }
     }
+
+    getSpriteDependingOnMask(){
+        switch(this.mask){
+            case MASK.BIRD:
+                return `bird-${this.currentAnimation.animation.ref}`
+            case MASK.NINJA:
+                return `ninja-${this.currentAnimation.animation.ref}`
+            case MASK.WRESTLER:
+                return `wrestler-${this.currentAnimation.animation.ref}`
+            case MASK.NONE:
+            default:
+                return `normal-${this.currentAnimation.animation.ref}`
+        }
+    }
     
     render(ctx, x, y) {
         // drawing of the character
         ctx.drawImage(
-            data[this.currentAnimation.animation.ref], 
+            data[this.getSpriteDependingOnMask()], 
             0, 
             this.currentAnimation.frame * FRAME_SIZE, 
             FRAME_SIZE, 
