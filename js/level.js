@@ -12,7 +12,7 @@ import { data } from "./preload.js";
 
 import { audio } from "./audio.js";       
 
-const CAMERA_SPEED = 0.2;
+const CAMERA_SPEED = 0//0.2;
 
 const DEBUG = true;
 
@@ -70,18 +70,16 @@ export class Level {
             this.player.addMask(m.kind);
             m.active = false;
         });
-        console.log(this.player.mask);
-    if (this.player.mask == "bird") {
-        this.map.forEach((line, l) => {
-            line.forEach((tile, c) => {
-                if (tile === 2) {
-                    this.map[l][c] = 0;
-                }
-            });
-        });
     }
-
-}
+    
+    hit(x,y) {
+        console.log(x,y);
+        let l = Math.floor(y / this.size), c = Math.floor(x / this.size);
+        
+        if (this.map[l][c] == 2) {
+            this.map[l][c] = 0;
+        }
+    }
 
     render(ctx) {
         // compute background position w.r.t. the player

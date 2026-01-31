@@ -77,7 +77,7 @@ export class Player {
         this.complete = false;
         this.lastDir = 1;
         this.dash = null;
-        this.mask = MASK.NINJA;
+        this.mask = MASK.WRESTLER;
         this.mask2 = MASK.NONE;
         this.jumpCount = 0;
         this.currentAnimation = { frame: 0, currentDelay: STILL_R_ANIMATION.delay, animation: STILL_R_ANIMATION };
@@ -118,6 +118,10 @@ export class Player {
             this.mask = this.mask2;
             this.mask2 = tmp;
             keys.swap = 0;
+        }
+        if (keys.action && this.mask == MASK.WRESTLER) {
+            level.hit(this.x + this.lastDir*this.width, this.y);
+            keys.action = 0;
         }
         if (keys.action && this.mask == MASK.NINJA && !this.dash) {
             keys.action = 0;
