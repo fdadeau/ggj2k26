@@ -7,6 +7,7 @@ import { Level } from "./level.js";
 import { LEVELS } from "./LEVELS.js"; 
 
 import { audio } from "./audio.js";
+import { GamepadHandler, getGamepadFromNavigator } from "./gamepad.js";
 
 const STATES = {
     LOADING: 0, 
@@ -35,6 +36,7 @@ export class Game {
         this.nLevel = START_LEVEL;
         this.state = STATES.LOADING;
         this.msg = "Loading...";
+		this.gamepadHandler = new GamepadHandler()
         this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, continue: 0, pause: 0 };
     }
 
@@ -54,7 +56,11 @@ export class Game {
 
     }
 
-    update(dt) { 
+    update(dt, gamepadConnected) { 
+		if(gamepadConnected){
+			this.handleGamepadActions(getGamepadFromNavigator())
+		}
+
         // compute FPS (for debug purposes)
         time -= dt;
         if (time < 0) {
@@ -133,6 +139,59 @@ export class Game {
 
 
     }
+
+	handleGamepadActions(gamepad){
+		const axisMoved = this.gamepadHandler.getAxeOrientationAndIntensity(gamepad)
+		const {pressedButtons, notPressedButtons} = this.gamepadHandler.getButtonState(gamepad)
+		
+		
+		pressedButtons.forEach(action => {
+			switch(action){
+				case "JUMP":
+					this.keys.jump = 1;
+					break;
+				case "SPECIAL":
+					this.keys.action = 1
+					break;
+				case "MASK_SWITCH":
+					this.keys.swap = 1;
+					break;
+				default:
+					throw new Error(`Unknown action, got ${action}...`);
+			}
+		});
+
+		notPressedButtons.forEach(action => {
+			switch(action){
+				case "JUMP":
+					this.keys.jump = 0;
+					break;
+				case "SPECIAL":
+					this.keys.action = 0
+					break;
+				case "MASK_SWITCH":
+					this.keys.swap = 0;
+					break;
+				default:
+					throw new Error(`Unknown action, got ${action}...`);
+			}
+		});
+
+		if(axisMoved){
+			if(axisMoved.direction === "LEFT"){
+				this.keys.right = 0;
+				this.keys.left = 1;
+			}else if (axisMoved.direction === "RIGHT"){
+				this.keys.right = 1;
+				this.keys.left = 0;
+			}else{
+				throw new Error(`Unknown axis direction, got ${axisMoved.direction}...`);
+			}
+		}else{
+			this.keys.right = 0;
+			this.keys.left = 0;
+		}
+	}
 
     pressKey(code) {
         switch (code) {
