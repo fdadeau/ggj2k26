@@ -29,19 +29,19 @@ export class Level {
         this.camera = { x: LEVELS[n].camera.startPosition.x * SIZE, y: (MAX-LEVELS[n].camera.startPosition.y) * SIZE };
         this.size = SIZE;
         // 
-        this.cameraPath = LEVELS[n].camera.path.map(({x,y}) => { return {x: x*SIZE, y: (MAX-y)*SIZE}; });
+        this.cameraPath = LEVELS[n].camera.path.map(({x,y,speed}) => { return {x: x*SIZE, y: (MAX-y)*SIZE, speed}; });
     }
 
 
     update(dt, keys) {
         if (this.cameraPath.length == 0) return;
-        const target = { x: this.cameraPath[0].x * SIZE, y: this.cameraPath[0].y };
+        const target = { x: this.cameraPath[0].x * SIZE, y: this.cameraPath[0].y, speed: this.cameraPath[0].speed };
         const vec = { 
             x: (target.x - this.camera.x) > 0 ? 1 : (target.x == this.camera.x ? 0 : -1), 
             y :(target.y - this.camera.y) > 0 ? 1 : (target.y == this.camera.y ? 0 : -1)
         } 
-        this.camera.x += vec.x * CAMERA_SPEED * dt;
-        this.camera.y += vec.y * CAMERA_SPEED * dt;
+        this.camera.x += vec.x * CAMERA_SPEED * target.speed * dt;
+        this.camera.y += vec.y * CAMERA_SPEED * target.speed * dt;
         if (Math.abs(this.camera.x - target.x) < EPSILON && Math.abs(this.camera.y - target.y) < EPSILON) {
             this.cameraPath.shift();
         }
