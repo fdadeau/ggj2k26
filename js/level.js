@@ -21,22 +21,22 @@ const EPSILON = 1;
 export class Level {
 
     constructor(n) {        
-        this.player = new Player(LEVELS[n].player.startPosition.x, LEVELS[n].player.startPosition.y);
+        this.player = new Player(LEVELS[n].player.startPosition.x * SIZE, LEVELS[n].player.startPosition.y * SIZE);
         this.background = makeBackground(LEVELS[n]);
         this.world = { height: this.background.height, width: this.background.width};
         this.camera = { x: LEVELS[n].camera.startPosition.x * SIZE, y: LEVELS[n].camera.startPosition.y * SIZE };
         this.size = SIZE;
         // 
-        this.cameraPath = JSON.parse(JSON.stringify(LEVELS[n].camera.path));
+        this.cameraPath = LEVELS[n].camera.path.map(({x,y}) => { return {x: x*SIZE, y: y*SIZE}; });
     }
 
 
     update(dt, keys) {
         if (this.cameraPath.length == 0) return;
-        const target = this.cameraPath[0];
+        const target = { x: this.cameraPath[0].x * SIZE, y: this.cameraPath[0].y };
         const vec = { 
-            x: (target.x - this.camera.x) > 0 ? 1 : target.x == this.camera.x ? 0 : -1, 
-            y :(target.y - this.camera.y) > 0 ? 1 : target.y == this.camera.y ? 0 : -1
+            x: (target.x - this.camera.x) > 0 ? 1 : (target.x == this.camera.x ? 0 : -1), 
+            y :(target.y - this.camera.y) > 0 ? 1 : (target.y == this.camera.y ? 0 : -1)
         } 
         this.camera.x += vec.x * CAMERA_SPEED * dt;
         this.camera.y += vec.y * CAMERA_SPEED * dt;
@@ -126,8 +126,11 @@ function makeBackground(level) {
     let maxX = Math.max(...platforms.map(p => p.x + p.w));
     let maxY = Math.max(...platforms.map(p => p.y + p.h));
 
-    const W = SIZE * maxX;
-    const H = SIZE * maxY;
+    const CAP_X = WIDTH / 32;
+    const CAP_Y = HEIGHT / 32;
+
+    const W = SIZE * maxX + CAP_X;
+    const H = SIZE * maxY + CAP_Y;
 
     const osc = new OffscreenCanvas(W, H);
     const ctx = osc.getContext("2d");
