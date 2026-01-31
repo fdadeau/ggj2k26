@@ -107,7 +107,7 @@ export class Game {
                         //audio.playSound("death", "player", 0.7, false);
                         return true;
                     }
-                    if (this.level.player.complete) {
+                    else if (this.level.player.complete) {
                         this.state = STATES.COMPLETED;
                         //audio.playSound("victory", "player", 0.7, false);
                     }

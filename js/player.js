@@ -18,7 +18,7 @@ const MAX_FALL_SPEED = 0.8;
 const PLAYER_W = 40, PLAYER_H = 40;
 
 /** Draw hitbox */
-const DEBUG = true;
+const DEBUG = false;
 
 const MASK = { NONE: "normal", BIRD: "bird", WRESTLER: "wrestler", NINJA: "ninja"};
 
@@ -76,7 +76,8 @@ export class Player {
         this.dead = false;
         this.complete = false;
         this.lastDir = 1;
-        this.mask = MASK.NONE;
+        this.dash = null;
+        this.mask = MASK.NINJA;
         this.mask2 = MASK.NONE;
         this.jumpCount = 0;
         this.currentAnimation = { frame: 0, currentDelay: STILL_R_ANIMATION.delay, animation: STILL_R_ANIMATION };
@@ -118,6 +119,18 @@ export class Player {
             this.mask2 = tmp;
             keys.swap = 0;
         }
+        if (keys.action && this.mask == MASK.NINJA && !this.dash) {
+            keys.action = 0;
+            this.dash = { delay: 80, save: 0*this.speedX };
+            this.speedX = this.lastDir * MAX_SPEED * 3;
+        }
+        if (this.dash) {
+            this.dash.delay -= dt;
+            if (this.dash.delay <= 0) {
+                this.speedX = this.dash.save;
+                this.dash = null;
+            }
+        }
 
         if(this.isJumping && (this.isOnTheGround(level) || this.onPlatform)){
             this.isJumping = false;
@@ -158,22 +171,25 @@ export class Player {
             return;
         }
 
-        // horizontal movement
-        if (keys.right) {
-            this.lastDir = 1;
-            this.speedX = this.speedX >= MAX_SPEED ? MAX_SPEED : this.speedX + ACCELERATION * dt / (1000/60);
-        }
-        if (keys.left) {
-            this.lastDir = -1;
-            this.speedX = this.speedX <= -MAX_SPEED ? -MAX_SPEED : this.speedX - ACCELERATION * dt / (1000/60);
-        }
-        // if no key is pressed, increase or decrease to reach 0 
-        if (!keys.left && !keys.right) {
-            if (this.speedX > 0) {
-                this.speedX = this.speedX - ACCELERATION * dt / (1000/60) <= 0 ? 0 : this.speedX - ACCELERATION * dt / (1000/60);
+        if (!this.dash) {
+
+            // horizontal movement
+            if (keys.right) {
+                this.lastDir = 1;
+                this.speedX = this.speedX >= MAX_SPEED ? MAX_SPEED : this.speedX + ACCELERATION * dt / (1000/60);
             }
-            else if (this.speedX < 0) {
-                this.speedX = this.speedX + ACCELERATION * dt / (1000/60) >= 0 ? 0 : this.speedX + ACCELERATION * dt / (1000/60);
+            if (keys.left) {
+                this.lastDir = -1;
+                this.speedX = this.speedX <= -MAX_SPEED ? -MAX_SPEED : this.speedX - ACCELERATION * dt / (1000/60);
+            }
+            // if no key is pressed, increase or decrease to reach 0 
+            if (!keys.left && !keys.right) {
+                if (this.speedX > 0) {
+                    this.speedX = this.speedX - ACCELERATION * dt / (1000/60) <= 0 ? 0 : this.speedX - ACCELERATION * dt / (1000/60);
+                }
+                else if (this.speedX < 0) {
+                    this.speedX = this.speedX + ACCELERATION * dt / (1000/60) >= 0 ? 0 : this.speedX + ACCELERATION * dt / (1000/60);
+                }
             }
         }
 
@@ -212,7 +228,7 @@ export class Player {
             this.jumpCount = 0;
         }
 
-        if (this.y >= level.world.height+100) {
+        if (this.y >= level.world.height + 100) {
             this.dead = true;
         }
 
@@ -383,6 +399,7 @@ export class Player {
 
     getSpriteDependingOnMask(){
         return `${this.mask}-${this.currentAnimation.animation.ref}`;
+        /*
         switch(this.mask){
             case MASK.BIRD:
                 return `bird-${this.currentAnimation.animation.ref}`
@@ -394,6 +411,7 @@ export class Player {
             default:
                 return `normal-${this.currentAnimation.animation.ref}`
         }
+        */
     }
     
     render(ctx, x, y) {
@@ -412,6 +430,8 @@ export class Player {
 
         ctx.drawImage(data[`frame-${this.mask}`], 10, 10, 30, 30);
         ctx.drawImage(data[`frame-${this.mask2}`], 50, 20, 20, 20);
+
+        ctx.fillText(JSON.stringify(this.dash), 10, 50)
 
         let scale = 1;
         // debug info (pressed keys)

@@ -38,7 +38,6 @@ export class Level {
         // 
         this.cameraPath = LEVELS[n].camera.path.map(({x,y,speed}) => { return {x: x*SIZE, y: (MAX-y)*SIZE, speed}; });
         this.player = new Player(LEVELS[n].player.startPosition.x * SIZE, (MAX-LEVELS[n].player.startPosition.y-1) * SIZE);
-        
     }
 
 
@@ -118,9 +117,7 @@ export class Level {
         }
         let l = Math.floor(y / this.size), c = Math.floor(x / this.size);
 
-        if (!this.map[l] || this.map[l][c] === undefined) {
-            console.error({l,c});
-        }
+        return (this.map[l] && this.map[l][c]) ? this.map[l][c] : 0;
 
         let xInSquare = x % this.size;
         let yInSquare = y % this.size;
@@ -132,7 +129,6 @@ export class Level {
                 return (xInSquare < yInSquare) ? 5 : 0;
         }
 
-        return (this.map[l] && this.map[l][c] ? this.map[l][c] : 0);
     }
 
     /*
