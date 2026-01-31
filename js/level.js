@@ -44,12 +44,11 @@ export class Level {
     update(dt, keys) {
         if (this.cameraPath.length == 0) return;
         const target = { x: this.cameraPath[0].x * SIZE, y: this.cameraPath[0].y, speed: this.cameraPath[0].speed };
-        const vec = { 
-            x: (target.x - this.camera.x) > 0 ? 1 : (target.x == this.camera.x ? 0 : -1), 
-            y :(target.y - this.camera.y) > 0 ? 1 : (target.y == this.camera.y ? 0 : -1)
-        } 
-        this.camera.x += vec.x * CAMERA_SPEED * target.speed * dt;
-        this.camera.y += vec.y * CAMERA_SPEED * target.speed * dt;
+        const cameraDirection = { x: target.x-this.camera.x, y: target.y-this.camera.y };
+        const normalCameraDirection = {x:cameraDirection.x/Math.sqrt(cameraDirection.x*cameraDirection.x + cameraDirection.y*cameraDirection.y)};
+
+        this.camera.x += normalCameraDirection.x * CAMERA_SPEED * target.speed * dt;
+        this.camera.y += normalCameraDirection.y * CAMERA_SPEED * target.speed * dt;
         if (Math.abs(this.camera.x - target.x) < EPSILON && Math.abs(this.camera.y - target.y) < EPSILON) {
             this.cameraPath.shift();
         }
