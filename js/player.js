@@ -123,9 +123,6 @@ export class Player {
 
         this.updateXPosition(dt, level);
                 
-
-//        this.onPlatform = this.isOnPlatform(level);
-
         if (!this.onPlatform && this.isOnTheGround(level) == 0) {
             this.speedY += GRAVITY * dt / (1000/60);
             if (this.speedY > MAX_FALL_SPEED) { this.speedY = MAX_FALL_SPEED; }
@@ -173,9 +170,11 @@ export class Player {
      * @param {Level} level Level data
      */
     updateYPosition(dt, level) {
+        console.log("update Y position", this.y, this.speedY, dt);
         // check vertical collision
         let newY = this.y + this.speedY * dt;
 
+        console.log("update Y position 2 ", newY);
         // check if out of bounds --> dead
         if (newY >= level.world.height - 10) {
             this.y = newY;
@@ -183,6 +182,7 @@ export class Player {
             return;
         }
 
+        console.log("update Y position 3 ", newY);
         // check intersection with a tile
         let intersectingTile = level.intersectsWith(this.x, newY, PLAYER_W, PLAYER_H);
         if (intersectingTile == 0) {
@@ -238,13 +238,13 @@ export class Player {
     render(ctx, x, y) {
         // drawing of the character
         ctx.strokeStyle = "#FAA";
-        ctx.strokeRect(this.x - this.PLAYER_W/2, this.y - PLAYER_H, PLAYER_W, PLAYER_H);
+        ctx.strokeRect(x - PLAYER_W/2, y - PLAYER_H, PLAYER_W, PLAYER_H);
         let scale = 1;
         // debug info (pressed keys)
         if (DEBUG) {
             ctx.textAlign = "left";
             ctx.font = "12px arial";
-            ctx.fillText(`x=${this.x.toFixed(2)},y=${this.y.toFixed(2)},onPlatform=${this.onPlatform != null},complete=${this.complete}`, 10, 60);
+            ctx.fillText(`x=${this.x.toFixed(2)},y=${this.y.toFixed(2)},onPlatform=${this.onPlatform != null},complete=${this.complete},dead=${this.dead}`, 10, 60);
             
         }
         
