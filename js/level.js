@@ -10,7 +10,7 @@ import { Player } from "./player.js";
 
 import { audio } from "./audio.js";       
 
-const CAMERA_SPEED = 0;
+const CAMERA_SPEED = 0.1;
 
 const DEBUG = true;
 
@@ -57,8 +57,8 @@ export class Level {
         ctx.drawImage(this.background, srcX, srcY, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT);
        
         if (DEBUG) {
-            ctx.fillText("abs"+JSON.stringify(srcX)+" [ " + this.player.x+" ] "+JSON.stringify(WIDTH), 10, 70);
-            ctx.fillText("yukito"+JSON.stringify(HEIGHT)+" [ " + this.player.y+" ] "+JSON.stringify(srcY), 10, 100);
+            ctx.fillText( this.player.dead + " abs : "+JSON.stringify(srcX)+" [ " + this.player.x+" ] "+JSON.stringify(srcX + WIDTH), 10, 70);
+            ctx.fillText("ord : "+JSON.stringify(srcY - HEIGHT)+" [ " + this.player.y+" ] "+JSON.stringify(srcY ), 10, 100);
         }
 
         // determine player's position in screen

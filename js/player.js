@@ -170,9 +170,11 @@ export class Player {
      * @param {Level} level Level data
      */
     updateYPosition(dt, level) {
+        console.log("update Y position", this.y, this.speedY, dt);
         // check vertical collision
         let newY = this.y + this.speedY * dt;
 
+        console.log("update Y position 2 ", newY);
         // check if out of bounds --> dead
         if (newY >= level.world.height - 10) {
             this.y = newY;
@@ -180,6 +182,7 @@ export class Player {
             return;
         }
 
+        console.log("update Y position 3 ", newY);
         // check intersection with a tile
         let intersectingTile = level.intersectsWith(this.x, newY, PLAYER_W, PLAYER_H);
         if (intersectingTile == 0) {
