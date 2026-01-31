@@ -150,7 +150,7 @@ export const LEVELS = {
                 {
                     "x":15,
                     "y":6,
-                    "speed":0.001
+                    "speed":0.02
                 }
             ]
         },
@@ -166,7 +166,7 @@ export const LEVELS = {
             },
             {
                 "kind":"Mask",
-                "type":"Ninja",
+                "type":"ninja",
                 "x":4,
                 "y":3,
                 "startLiving":0,
@@ -187,7 +187,7 @@ export const LEVELS = {
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width": 10,
-                "height": 8 
+                "height": 7 
             },
             {
                 "kind":"Permanent", // first platform
@@ -201,16 +201,16 @@ export const LEVELS = {
             {
                 "kind":"Permanent", // Second platform
                 "x":7,
-                "y":5,
+                "y":4,
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width": 8,
                 "height": 1
             },
             {
-                "kind":"Permanent", // Third platform
+                "kind":"Permanent", // Third platform / 2nd Big block on the top
                 "x":6,
-                "y":8,
+                "y":6,
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width": 8,

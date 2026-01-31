@@ -23,7 +23,7 @@ const STATES = {
 
 const DEBUG = 1;
 
-const START_LEVEL = 2;
+const START_LEVEL = 1;
 
 const DELAY = 60;
 let frame = -10, df = 1, delay = DELAY, max = 50;
