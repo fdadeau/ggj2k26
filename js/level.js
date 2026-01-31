@@ -12,11 +12,11 @@ import { data } from "./preload.js";
 
 import { audio } from "./audio.js";       
 
-const CAMERA_SPEED = 0//0.2;
+const CAMERA_SPEED = 0.2;
 
 const DEBUG = true;
 
-const SIZE = 32;
+const SIZE = 42;
 
 const EPSILON = 1;
 
@@ -75,7 +75,7 @@ export class Level {
     hit(x,y) {
         console.log(x,y);
         let l = Math.floor(y / this.size), c = Math.floor(x / this.size);
-        
+
         if (this.map[l][c] == 2) {
             this.map[l][c] = 0;
         }
