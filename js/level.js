@@ -55,13 +55,23 @@ export class Level {
             this.cameraPath.shift();
         }
 
-        if (( target.speed > 0 && this.player.x < this.camera.x -WIDTH/2- this.player.width) || ( target.speed < 0 && this.player.x > this.camera.x +WIDTH/2+50) ) {
+        if (( target.speed > 0 && this.player.x < this.camera.x -WIDTH/2- this.player.width) || ( target.speed < 0 && this.player.x > this.camera.x +WIDTH/2+this.player.width) ) {
             this.player.dead = true;
         }
 
-
         this.player.update(dt, keys, this);
         
+        const taken = this.masks.filter(m => 
+            m.active && 
+            m.x + m.size /2 >= this.player.x - this.player.width / 2 &&
+            m.x + m.size /2 <= this.player.x + this.player.width / 2 && 
+            m.y + m.size /2 <= this.player.y && 
+            m.y + m.size /2 >= this.player.y - this.player.height
+        ).forEach(m => {
+            this.player.addMask(m.kind);
+            m.active = false;
+        });
+
 
     }
 
@@ -73,13 +83,17 @@ export class Level {
        
         // render masks
         this.masks.forEach(m => {
-            ctx.drawImage(data[`mask-${m.kind}`], m.x - srcX, m.y - srcY, MASK_SIZE, MASK_SIZE);
+            if (m.active) {
+                ctx.drawImage(data[`mask-${m.kind}`], m.x - srcX, m.y - srcY, MASK_SIZE, MASK_SIZE);
+            }
         });
 
         // determine player's position in screen
         let playerX = this.player.x - srcX;
         let playerY = this.player.y - srcY;
         this.player.render(ctx, playerX, playerY);
+        
+
     }
 
 
@@ -108,7 +122,6 @@ export class Level {
             console.error({l,c});
         }
 
-
         let xInSquare = x % this.size;
         let yInSquare = y % this.size;
 
@@ -119,7 +132,7 @@ export class Level {
                 return (xInSquare < yInSquare) ? 5 : 0;
         }
 
-        return (this.map[l][c]);
+        return (this.map[l] && this.map[l][c] ? this.map[l][c] : 0);
     }
 
     /*
@@ -232,6 +245,7 @@ function loadLevel(level) {
         return { 
             x: m.x * SIZE + SIZE/2 - MASK_SIZE/2, 
             y: (MAX - m.y) * SIZE - MASK_SIZE,  
+            size: MASK_SIZE,
             kind: m.type,
             active: true
         }

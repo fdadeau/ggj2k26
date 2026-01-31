@@ -15,12 +15,12 @@ const MAX_SPEED = 0.4;
 const MAX_FALL_SPEED = 0.8;
 
 /** Player dimensions */
-const PLAYER_W = 30, PLAYER_H = 30;
+const PLAYER_W = 40, PLAYER_H = 40;
 
 /** Draw hitbox */
 const DEBUG = true;
 
-const MASK = { NONE: 0, BIRD: 1, WRESTLER: 2, NINJA: 3};
+const MASK = { NONE: 0, BIRD: "bird", WRESTLER: "wrestler", NINJA: "ninja"};
 
 const DEFAULT_ANIM_DELAY = 200;
 const FRAME_SIZE = 30;
@@ -76,12 +76,27 @@ export class Player {
         this.dead = false;
         this.complete = false;
         this.lastDir = 1;
-        this.mask = MASK.WRESTLER;
+        this.mask = MASK.NONE;
+        this.mask2 = MASK.NONE;
         this.jumpCount = 0;
         this.currentAnimation = { frame: 0, currentDelay: STILL_R_ANIMATION.delay, animation: STILL_R_ANIMATION };
         this.isJumping = false;
     }
 
+
+    addMask(kind) {
+        switch (kind) {
+            case "bird":
+                this.mask2 = MASK.BIRD;
+                break;
+            case "ninja":
+                this.mask2 = MASK.NINJA;
+                break;
+            case "wrestler":
+                this.mask2 = MASK.WRESTLER;
+                break;        
+        }
+    }
 
     getHitbox() {
         return { x: this.x - PLAYER_W / 2, y: this.y - PLAYER_H, w: PLAYER_W, h: PLAYER_H };
@@ -96,6 +111,13 @@ export class Player {
         // if player is dead --> no more moves are possible.
         if (this.dead) {
             return;
+        }
+
+        if (keys.swap) {
+            const tmp = this.mask;
+            this.mask = this.mask2;
+            this.mask2 = tmp;
+            keys.swap = 0;
         }
 
         if(this.isJumping && (this.isOnTheGround(level) || this.onPlatform)){
@@ -368,6 +390,8 @@ export class Player {
             PLAYER_H
         );
 
+        this.mask != MASK.NONE && ctx.drawImage(data[`mask-${this.mask}`], 10, 10, 30, 30);
+        this.mask2 != MASK.NONE && ctx.drawImage(data[`mask-${this.mask2}`], 50, 20, 20, 20);
 
         let scale = 1;
         // debug info (pressed keys)
