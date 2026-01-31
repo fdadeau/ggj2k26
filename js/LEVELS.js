@@ -148,10 +148,20 @@ export const LEVELS = {
             "startPosition":{"x":5,"y":5},
             "path":[
                 {
-                    "x":15,
-                    "y":6,
-                    "speed":0.02
-                }
+                    "x": 10,
+                    "y": 5,
+                    "speed": 0.5
+                },
+                {
+                    "x": 10,
+                    "y": 10,
+                    "speed": 0.7
+                },
+                {
+                    "x": 20,
+                    "y": 10,
+                    "speed": 0.3
+                },
             ]
         },
         "stuff":[
