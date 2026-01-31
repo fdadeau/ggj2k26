@@ -12,7 +12,11 @@ import { audio } from "./audio.js";
 
 const CAMERA_SPEED = 0.02;
 
+const DEBUG = true;
+
 const SIZE = 32;
+
+const EPSILON = 1;
 
 export class Level {
 
@@ -20,7 +24,7 @@ export class Level {
         this.player = new Player(LEVELS[n].player.startPosition.x, LEVELS[n].player.startPosition.y);
         this.background = makeBackground(LEVELS[n]);
         this.world = { height: this.background.height, width: this.background.width};
-        this.camera = { x: LEVELS[n].camera.startPosition.x * SIZE, y: LEVELS[n].camera.startPosition.y };
+        this.camera = { x: LEVELS[n].camera.startPosition.x * SIZE, y: LEVELS[n].camera.startPosition.y * SIZE };
         this.size = SIZE;
         // 
         this.cameraPath = JSON.parse(JSON.stringify(LEVELS[n].camera.path));
@@ -28,6 +32,17 @@ export class Level {
 
 
     update(dt, keys) {
+        if (this.cameraPath.length == 0) return;
+        const target = this.cameraPath[0];
+        const vec = { 
+            x: (target.x - this.camera.x) > 0 ? 1 : target.x == this.camera.x ? 0 : -1, 
+            y :(target.y - this.camera.y) > 0 ? 1 : target.y == this.camera.y ? 0 : -1
+        } 
+        this.camera.x += vec.x * CAMERA_SPEED * dt;
+        this.camera.y += vec.y * CAMERA_SPEED * dt;
+        if (Math.abs(this.camera.x - target.x) < EPSILON && Math.abs(this.camera.y - target.y) < EPSILON) {
+            this.cameraPath.shift();
+        }
        // this.player.update(dt, keys, this);
     }
 
@@ -37,6 +52,10 @@ export class Level {
         let srcY = this.camera.y - HEIGHT / 2;
         ctx.drawImage(this.background, srcX, srcY, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT);
        
+        if (DEBUG) {
+            ctx.fillText(JSON.stringify(this.camera), 10, 70);
+        }
+
         // determine player's position in screen
         let playerX = this.player.x - srcX;
         let playerY = this.player.y - srcY;
