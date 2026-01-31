@@ -12,7 +12,7 @@ import { data } from "./preload.js";
 
 import { audio } from "./audio.js";       
 
-const CAMERA_SPEED = 0.2;
+const CAMERA_SPEED = 0;
 
 const DEBUG = true;
 
@@ -24,6 +24,8 @@ const MAX = 52;
 
 const MASK_SIZE = 20;
 
+const BREAKABLE_HITS = 2;
+
 export class Level {
 
     constructor(n) {        
@@ -31,6 +33,7 @@ export class Level {
         this.background = lvl.osc;
         this.map = lvl.map;
         this.masks = lvl.masks;
+        this.breakables = lvl.breakables;
         
         this.world = { height: this.background.height, width: this.background.width};
         this.camera = { x: LEVELS[n].camera.startPosition.x * SIZE, y: (MAX-LEVELS[n].camera.startPosition.y) * SIZE };
@@ -73,12 +76,16 @@ export class Level {
     }
     
     hit(x,y) {
-        console.log(x,y);
+        // console.log(x,y);
         let l = Math.floor(y / this.size), c = Math.floor(x / this.size);
-
-        if (this.map[l][c] == 2) {
-            this.map[l][c] = 0;
-        }
+        this.breakables.forEach(b => {
+            if (b.broken && x >= b.x * SIZE && x <= b.x * SIZE + SIZE && y >= b.y * SIZE && y <= b.y * SIZE + b.h * SIZE) {
+                b.broken--;
+                if (b.broken == 0) {
+                    b.blocks.forEach(coords => this.map[coords[0]][coords[1]] = 0);
+                } 
+            }
+        })
     }
 
     render(ctx) {
@@ -93,13 +100,22 @@ export class Level {
                 ctx.drawImage(data[`mask-${m.kind}`], m.x - srcX, m.y - srcY, MASK_SIZE, MASK_SIZE);
             }
         });
+        // render breakables 
+        this.breakables.forEach(b => {
+            if (b.broken > 0) {
+                b.blocks.forEach(bl => {
+                    ctx.fillStyle = b.broken == 2 ? "darkred" : "red";
+                    ctx.fillRect(bl[1]*SIZE - srcX, bl[0]*SIZE - srcY, SIZE, SIZE);
+                    ctx.fillStyle = b.broken == 2 ? "red" : "orange";
+                    ctx.fillRect(bl[1]*SIZE + 2 - srcX, bl[0]*SIZE + 2 - srcY, SIZE - 4, SIZE - 4);
+                });
+            }    
+        });
 
         // determine player's position in screen
         let playerX = this.player.x - srcX;
         let playerY = this.player.y - srcY;
         this.player.render(ctx, playerX, playerY);
-        
-
     }
 
 
@@ -152,8 +168,8 @@ function loadLevel(level) {
         return { x: Number(p.x), y: (MAX-Number(p.y)-p.height), w: Number(p.width), h: Number(p.height) };
     });
 
-    const breakforms = level.stuff.filter(s => s.kind == "Breakable").map(p => {
-        return { x: Number(p.x), y: (MAX-Number(p.y)-p.height), w: Number(p.width), h: Number(p.height) };
+    const breakables = level.stuff.filter(s => s.kind == "Breakable").map(p => {
+        return { x: Number(p.x), y: (MAX-Number(p.y)-p.height), w: Number(p.width), h: Number(p.height), broken: BREAKABLE_HITS };
     });
     
     let maxX = Math.max(...platforms.map(p => p.x + p.w));
@@ -168,8 +184,12 @@ function loadLevel(level) {
     const osc = new OffscreenCanvas(W, H);
     const ctx = osc.getContext("2d");
     // sky
-    ctx.fillStyle = "#9999EE";
-    ctx.fillRect(0, 0, W, H);
+    /*
+    for (let i=0; i < H; i++) {
+        ctx.fillStyle = `hsl(240, 80%, ${Math.floor(50+i/70)}%)`;
+        ctx.fillRect(0, i, W, 1);
+    }
+        */
     // elements in the map
     ctx.fillStyle = "lightgrey";
 
@@ -195,10 +215,12 @@ function loadLevel(level) {
             }
         }
     });
-    breakforms.forEach(p => {
+    breakables.forEach(p => {
+        p.blocks = [];
         for (let dl=0; dl < p.h; dl++) {
             for (let dc=0; dc < p.w; dc++) {
                 map[p.y+dl][p.x+dc] = 2;
+                p.blocks.push([p.y+dl,p.x+dc]);
             }
         }
     });
@@ -211,6 +233,7 @@ function loadLevel(level) {
                     ctx.fillStyle = "lightgrey";
                     ctx.fillRect(c*SIZE + 2, l*SIZE + 2, SIZE - 4, SIZE - 4);
                     break;
+                /*
                 case 2: 
                     ctx.fillStyle = "darkred";
                     ctx.fillRect(c*SIZE, l*SIZE, SIZE, SIZE);
@@ -239,6 +262,7 @@ function loadLevel(level) {
                     ctx.lineTo((c+1)*SIZE, (l+1)*SIZE);
                     ctx.fill();
                     break;
+                */
             }
         }
     }
@@ -262,6 +286,6 @@ function loadLevel(level) {
         ctx.fillRect(e.x * SIZE, e.y * SIZE, e.w * SIZE, e.h * SIZE);
         ctx.fillText("EXIT", e.x * SIZE + SIZE/2, e.y * SIZE - SIZE / 2);
     });
-    return {osc,map,masks};
+    return {osc,map,masks,breakables};
 }
 
