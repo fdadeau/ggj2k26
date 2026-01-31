@@ -18,17 +18,17 @@ export class Level {
 
     constructor(n) {        
         this.player = new Player(LEVELS[n].player.startPosition.x, LEVELS[n].player.startPosition.y);
+        this.background = makeBackground(LEVELS[n]);
+        this.world = { height: this.background.height, width: this.background.width};
         this.camera = { x: LEVELS[n].camera.startPosition.x * SIZE, y: LEVELS[n].camera.startPosition.y };
-        this.platforms = LEVELS[n].stuff.filter(s => s.kind == "Permanent").map(p => {
-            return { x: p.x * SIZE, y: p.y * SIZE, w: p.width * SIZE, h: p.height * SIZE };
-        });
+        this.size = SIZE;
         // 
-        this.cameraPath = JSON.parse(JSON.stringify(LEVELS[n].path));
+        this.cameraPath = JSON.parse(JSON.stringify(LEVELS[n].camera.path));
     }
 
 
     update(dt, keys) {
-        this.player.update(dt, keys, this);
+       // this.player.update(dt, keys, this);
     }
 
     render(ctx) {
@@ -36,10 +36,7 @@ export class Level {
         let srcX = this.camera.x - WIDTH / 2;
         let srcY = this.camera.y - HEIGHT / 2;
         ctx.drawImage(this.background, srcX, srcY, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT);
-
-        // draw platforms
-        this.platforms.forEach(p => p.render(ctx, srcX, srcY));
-        
+       
         // determine player's position in screen
         let playerX = this.player.x - srcX;
         let playerY = this.player.y - srcY;
@@ -48,7 +45,7 @@ export class Level {
 
 
     intersectsWith(x, y, w, h) {
-        return false;
+        return this.whichTile(x-w, y-h) || this.whichTile(x+w, y-h) || this.whichTile(x-w,y) || this.whichTile(x+w,y);
     }
     whichTile(x, y) {
         if (x < 0 || x >= this.world.width) {
@@ -103,13 +100,21 @@ class Platform {
 
 
 function makeBackground(level) {
-    const W = level.size * level.map[0].length;
-    const H = level.size * level.map.length;
+    const platforms = level.stuff.filter(s => s.kind == "Permanent").map(p => {
+        return { x: Number(p.x), y: Number(p.y), w: Number(p.width), h: Number(p.height) };
+    });
+    
+    let maxX = Math.max(...platforms.map(p => p.x + p.w));
+    let maxY = Math.max(...platforms.map(p => p.y + p.h));
+
+    const W = SIZE * maxX;
+    const H = SIZE * maxY;
+
     const osc = new OffscreenCanvas(W, H);
     const ctx = osc.getContext("2d");
     // sky
-    ctx.fillStyle = "#000011";
-    ///ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = "#9999EE";
+    ctx.fillRect(0, 0, W, H);
     // elements in the map
     ctx.fillStyle = "lightgrey";
 
@@ -122,5 +127,72 @@ function makeBackground(level) {
         });
     }
 
+    const map = [];
+    while (map.length < maxY) {
+        const line = [];
+        while (line.length < maxX) line.push(0);
+        map.push(line);
+    }
+    platforms.forEach(p => {
+        for (let dl=0; dl < p.h; dl++) {
+            for (let dc=0; dc < p.w; dc++) {
+                map[p.y+dl][p.x+dc] = 1;
+            }
+        }
+    });
+
+    for (let l=0; l < map.length; l++) {
+        for (let c=0; c < map[l].length; c++) {
+            switch (map[l][c]) {
+                case 1: 
+                    ctx.fillStyle = "grey";
+                    ctx.fillRect(c*SIZE, l*SIZE, SIZE, SIZE);
+                    ctx.fillStyle = "lightgrey";
+                    ctx.fillRect(c*SIZE + 2, l*SIZE + 2, SIZE - 4, SIZE - 4);
+                    break;
+                case 2: 
+                    ctx.moveTo(c*SIZE, l*SIZE);
+                    ctx.beginPath();
+                    ctx.lineTo((c+1)*SIZE, l*SIZE);
+                    ctx.lineTo(c*SIZE, (l+1)*SIZE);
+                    ctx.lineTo(c*SIZE, (l)*SIZE);
+                    ctx.fill();
+                    break;
+                case 3: 
+                    ctx.moveTo(c*SIZE, l*SIZE);
+                    ctx.beginPath();
+                    ctx.lineTo((c+1)*SIZE, l*SIZE);
+                    ctx.lineTo((c+1)*SIZE, (l+1)*SIZE);
+                    ctx.lineTo(c*SIZE, (l)*SIZE);
+                    ctx.fill();
+                    break;
+                case 4: 
+                    ctx.moveTo((c+1)*SIZE, l*SIZE);
+                    ctx.beginPath();
+                    ctx.lineTo((c+1)*SIZE, (l+1)*SIZE);
+                    ctx.lineTo((c)*SIZE, (l+1)*SIZE);
+                    ctx.lineTo((c+1)*SIZE, (l)*SIZE);
+                    ctx.fill();
+                    break;
+                case 5: 
+                    ctx.moveTo((c+1)*SIZE, (l+1)*SIZE);
+                    ctx.beginPath();
+                    ctx.lineTo((c)*SIZE, (l)*SIZE);
+                    ctx.lineTo((c)*SIZE, (l+1)*SIZE);
+                    ctx.lineTo((c+1)*SIZE, (l+1)*SIZE);
+                    ctx.fill();
+                    break;
+            }
+        }
+    }
+    
+    ctx.fillStyle = "#700";
+    ctx.font = "16px arial";
+    ctx.textAlign = "center";
+    ctx.fillStyle = "white";
+    level.endings.forEach(e => {
+        ctx.fillRect(e.x * SIZE, e.y * SIZE, e.w * SIZE, e.h * SIZE);
+        ctx.fillText("EXIT", e.x * SIZE + SIZE/2, e.y * SIZE - SIZE / 2);
+    });
     return osc;
 }

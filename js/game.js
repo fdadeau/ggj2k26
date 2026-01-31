@@ -8,9 +8,20 @@ import { LEVELS } from "./LEVELS.js";
 
 import { audio } from "./audio.js";
 
-const LOADING = 0, MENU = 5, LEVEL_SELECTION = 8, IN_GAME = 10, PAUSE = 15, GAME_OVER = 20, COMPLETED = 30, TIME_OUT = 40; 
+const STATES = {
+    LOADING: 0, 
+    MENU: 5, 
+    LEVEL_SELECTION: 8, 
+    IN_GAME: 10, 
+    PAUSE: 15, 
+    GAME_OVER: 20, 
+    COMPLETED: 30, 
+    TIME_OUT: 40
+}; 
 
-const START_LEVEL = 6;
+const DEBUG = 1;
+
+const START_LEVEL = 1;
 
 const DELAY = 60;
 let frame = -10, df = 1, delay = DELAY, max = 50;
@@ -22,20 +33,20 @@ export class Game {
     constructor(cvs) {
         this.ctx = cvs.getContext("2d");
         this.nLevel = START_LEVEL;
-        this.state = LOADING;
+        this.state = STATES.LOADING;
         this.msg = "Loading...";
-        this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0 };
+        this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, continue: 0, pause: 0 };
     }
 
     reset() {
         this.level = new Level(this.nLevel);
-        this.state = IN_GAME;
-        this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0 };
+        this.state = STATES.IN_GAME;
+        this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, continue: 0, pause: 0 };
     }
 
     loading(loaded, total) {
         if (loaded >= total) {
-            this.state = MENU;
+            this.state = STATES.MENU;
             this.msg = "Press spacebar to start";
             return;
         }
@@ -43,29 +54,65 @@ export class Game {
 
     }
 
-    update(dt) {
-        fps++
-        if (this.state == IN_GAME) {
-            this.level.update(dt, this.keys);
-            if (this.level.player.dead) {
-                this.state = GAME_OVER;
-                //audio.playSound("death", "player", 0.7, false);
-                return true;
-            }
-            if (this.level.player.complete) {
-                this.state = COMPLETED;
-                //audio.playSound("victory", "player", 0.7, false);
-            }
+    update(dt) { 
+        // compute FPS (for debug purposes)
+        time -= dt;
+        if (time < 0) {
+            lastFPS = fps;
+            fps = 0;
+            time = 1000;
         }
+        else {
+            fps++
+        }
+
+        // deal with prioritary keys
+        if (this.keys.pause) {
+            this.state = STATES.PAUSE;
+            this.keys.pause = 0;
+        }
+
+        switch (this.state) {
+            case STATES.IN_GAME:
+                if (this.state == STATES.IN_GAME) {
+                    this.level.update(dt, this.keys);
+                    if (this.level.player.dead) {
+                        this.state = STATES.GAME_OVER;
+                        //audio.playSound("death", "player", 0.7, false);
+                        return true;
+                    }
+                    if (this.level.player.complete) {
+                        this.state = STATES.COMPLETED;
+                        //audio.playSound("victory", "player", 0.7, false);
+                    }
+                }   
+                break;
+            case STATES.MENU: 
+                if (this.keys.continue) {
+                    this.keys.continue = 0;
+                    this.reset();
+                    this.state = STATES.IN_GAME;
+                    this.msg = "IN_GAME";
+                }                
+                break;
+        }
+
         return true;
     }
 
+
     render() {
         this.ctx.clearRect(0, 0, WIDTH, HEIGHT);
-//        this.level.render(this.ctx);
+
+        if (this.state == STATES.IN_GAME) {
+            this.level.render(this.ctx);
+        }
         this.ctx.textAlign = "left";
-        this.ctx.fillText(`keys = ${JSON.stringify(this.keys)}`, 10, 40);
-        if (this.state == PAUSE) {
+        if (this.msg) {
+            this.ctx.fillText(this.msg, WIDTH / 2, HEIGHT / 2);
+        }
+
+        if (this.state == STATES.PAUSE) {
             this.ctx.fillStyle = "white";
             this.ctx.fillRect(WIDTH / 2 - 160, HEIGHT / 2 - 100, 320, 200);
             this.ctx.fillStyle = "black";
@@ -76,17 +123,19 @@ export class Game {
             this.ctx.fillText("Press Escape again to exit", WIDTH/2, HEIGHT/2);
             this.ctx.fillText("Press Spacebar to resume", WIDTH/2, HEIGHT/2 + 50);
         }
-        this.ctx.fillStyle = "white";
-        this.ctx.textAlign = "right";
-        this.ctx.font = "16px courier";
-        this.ctx.fillText(lastFPS, 20, 20)
+        if (DEBUG) {
+            this.ctx.font = "12px courier";
+            this.ctx.fillText(`keys = ${JSON.stringify(this.keys)}`, 10, 40);
+            this.ctx.fillStyle = "white";
+            this.ctx.textAlign = "left";
+            this.ctx.fillText(lastFPS, 20, 20)
+        }
+
+
     }
 
     pressKey(code) {
         switch (code) {
-            case "Space":
-                this.keys.jump = 1;
-                break;
             case "ArrowLeft":
                 this.keys.left = 1;
                 break;
@@ -102,14 +151,18 @@ export class Game {
             case "KeyS":
                 this.keys.swap = 1;
                 break;
+            case "Space":
+                this.keys.continue = 1;
+                break;
+            case "Escape": 
+                this.keys.pause = 1;
+                break;
+
          }
     }
     
     releaseKey(code) {
         switch (code) {
-            case "Space":
-                this.keys.jump = 0;
-                break;
             case "ArrowLeft":
                 this.keys.left = 0;
                 break;
@@ -125,15 +178,11 @@ export class Game {
             case "KeyD": 
                 this.keys.jump = 0;
                 break;
+            case "Space":
+                this.keys.continue = 0;
+                break;
             case "Escape": 
-                switch (this.state) {
-                    case PAUSE: 
-                        this.state = IN_GAME;
-                        break;
-                    case IN_GAME:
-                        this.state = PAUSE;
-                        break;
-                }
+                this.keys.pause = 0;
                 break;
         }
         return;

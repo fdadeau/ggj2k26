@@ -57,7 +57,7 @@ export const LEVELS = {
                 "y":10,
                 "startLiving":0,
                 "stopLiving":undefined,
-                "length": 1,
+                "width": 1,
                 "height":10,
             },
             {

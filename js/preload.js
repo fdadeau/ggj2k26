@@ -2,7 +2,7 @@
 const data = {
     
     // spritesheets
-    
+    "perso": "./assets/sprites/test.png"
     // images
     
     // musics

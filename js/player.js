@@ -18,7 +18,7 @@ const MAX_FALL_SPEED = 0.8;
 const PLAYER_W = 32, PLAYER_H = 32;
 
 /** Draw hitbox */
-const DEBUG= true;
+const DEBUG = true;
 
 const STILL_ANIM = 1, WALK_ANIM = 4, JUMP_ANIM = 3, DISAPPEAR_ANIM = 32, APPEAR_ANIM = 31;
 const FRAME_SIZE = 32;
@@ -43,7 +43,7 @@ export class Player {
         // 
         this.lastDir = 1;
         // 
-        this.animation = { type: NORMAL, remaining: 0, duration: 0 };
+        //this.animation = { type: NORMAL, remaining: 0, duration: 0 };
         //
         //this.currentAnim = { sprite: data["walkL"], frame: 0, which: STILL_ANIM, delay: ANIM_DELAY };
         // 
@@ -79,18 +79,6 @@ export class Player {
             this.complete = true;
             keys.up = 0;
             return;
-        }
-
-        // time adjustment (between 0 and max MAX_TIME_WRAP)
-        if (keys.adjust != 0) {
-            this.timeWarp += keys.adjust * DELTA_T;
-            if (this.timeWarp < 0) {
-                this.timeWarp = 0;
-            }
-            else if (this.timeWarp > MAX_TIME_WRAP) {
-                this.timeWarp = MAX_TIME_WRAP;
-            }
-            keys.adjust = 0;
         }
 
         // horizontal movement
@@ -277,16 +265,15 @@ export class Player {
 
 
     render(ctx, x, y) {
-        ctx.fillStyle = "#FAA";
-
         // drawing of the character
         ctx.strokeStyle = "#FAA";
+        ctx.strokeRect(this.x - this.PLAYER_W/2, this.y - PLAYER_H, PLAYER_W, PLAYER_H);
         let scale = 1;
         // debug info (pressed keys)
         if (DEBUG) {
             ctx.textAlign = "left";
             ctx.font = "12px arial";
-            ctx.fillText(`x=${this.x.toFixed(2)},y=${this.y.toFixed(2)},onPlatform=${this.onPlatform != null},complete=${this.complete}`, 10, 20);
+            ctx.fillText(`x=${this.x.toFixed(2)},y=${this.y.toFixed(2)},onPlatform=${this.onPlatform != null},complete=${this.complete}`, 10, 60);
             
         }
         
