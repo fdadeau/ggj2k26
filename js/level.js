@@ -54,6 +54,12 @@ export class Level {
         if (Math.abs(this.camera.x - target.x) < EPSILON && Math.abs(this.camera.y - target.y) < EPSILON) {
             this.cameraPath.shift();
         }
+
+        if (( target.speed > 0 && this.player.x < this.camera.x -WIDTH/2- this.player.width) || ( target.speed < 0 && this.player.x > this.camera.x +WIDTH/2+50) ) {
+            this.player.dead = true;
+        }
+
+
         this.player.update(dt, keys, this);
         
 
