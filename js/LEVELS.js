@@ -136,8 +136,97 @@ export const LEVELS = {
                     "width":2,
                     "height":2
                 },
+                "nextLevel": 2
+            }
+        ]
+    },
+    2:{
+        "player":{
+            "startPosition":{"x":6,"y":1},
+        },
+        "camera":{
+            "startPosition":{"x":5,"y":5},
+            "path":[
+                {
+                    "x":15,
+                    "y":6,
+                    "speed":0.001
+                }
+            ]
+        },
+        "stuff":[
+            {
+                "kind":"Permanent", //starting ground
+                "x":0,
+                "y":0,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 15,
+                "height":1
+            },
+            {
+                "kind":"Mask",
+                "type":"Ninja",
+                "x":4,
+                "y":3,
+                "startLiving":0,
+            },
+            {
+                "kind":"Permanent", // first wall
+                "x":5,
+                "y":2,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 1,
+                "height": 16
+            },
+            {
+                "kind":"Permanent", // Second wall / Big block
+                "x":15,
+                "y":0,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 10,
+                "height": 8 
+            },
+            {
+                "kind":"Permanent", // first platform
+                "x":4,
+                "y":2,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 10,
+                "height": 1
+            },
+            {
+                "kind":"Permanent", // Second platform
+                "x":7,
+                "y":5,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 8,
+                "height": 1
+            },
+            {
+                "kind":"Permanent", // Third platform
+                "x":6,
+                "y":8,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 8,
+                "height": 20
+            }
+        ],
+        "endings":[
+            {
+                "area":{
+                    "x": 23,
+                    "y":9,
+                    "width":2,
+                    "height":2
+                },
                 "nextLevel": 1
             }
         ]
-    }
+    },
 }
