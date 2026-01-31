@@ -125,19 +125,10 @@ export class Level {
             return 1;
         }
         let l = Math.floor(y / this.size), c = Math.floor(x / this.size);
-
         
 
         return (this.map[l] && this.map[l][c]) ? this.map[l][c] : 0;
 
-        let xInSquare = x % this.size;
-        let yInSquare = y % this.size;
-
-        switch (this.map[l][c]) {
-            case 2: 
-                this.map[l][c] = 0;
-                return  0;
-        }
 
 
     }
