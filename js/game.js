@@ -101,6 +101,13 @@ export class Game {
                     this.msg = "IN_GAME";
                 }                
                 break;
+
+			case STATES.PAUSE:
+				if(this.keys.continue){
+					this.keys.continue = 0;
+					this.state = STATES.IN_GAME;
+					this.msg = "IN_GAME";
+				}
         }
 
         return true;
