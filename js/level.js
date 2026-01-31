@@ -10,7 +10,7 @@ import { Player } from "./player.js";
 
 import { audio } from "./audio.js";       
 
-const CAMERA_SPEED = 0.1;
+const CAMERA_SPEED = 0;
 
 const DEBUG = true;
 
@@ -24,7 +24,8 @@ export class Level {
 
     constructor(n) {        
         this.player = new Player(LEVELS[n].player.startPosition.x * SIZE, (MAX-LEVELS[n].player.startPosition.y-1) * SIZE);
-        this.background = makeBackground(LEVELS[n]);
+        this.background = makeBackground(LEVELS[n]).osc;
+        this.map = makeBackground(LEVELS[n]).map;
         this.world = { height: this.background.height, width: this.background.width};
         this.camera = { x: LEVELS[n].camera.startPosition.x * SIZE, y: (MAX-LEVELS[n].camera.startPosition.y) * SIZE };
         this.size = SIZE;
@@ -45,7 +46,7 @@ export class Level {
         if (Math.abs(this.camera.x - target.x) < EPSILON && Math.abs(this.camera.y - target.y) < EPSILON) {
             this.cameraPath.shift();
         }
-       // this.player.update(dt, keys, this);
+        this.player.update(dt, keys, this);
     }
 
     render(ctx) {
@@ -55,7 +56,8 @@ export class Level {
         ctx.drawImage(this.background, srcX, srcY, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT);
        
         if (DEBUG) {
-            ctx.fillText(JSON.stringify(this.camera), 10, 70);
+            ctx.fillText("abs"+JSON.stringify(srcX)+" [ " + this.player.x+" ] "+JSON.stringify(WIDTH), 10, 70);
+            ctx.fillText("yukito"+JSON.stringify(HEIGHT)+" [ " + this.player.y+" ] "+JSON.stringify(srcY), 10, 100);
         }
 
         // determine player's position in screen
@@ -69,6 +71,7 @@ export class Level {
         return this.whichTile(x-w, y-h) || this.whichTile(x+w, y-h) || this.whichTile(x-w,y) || this.whichTile(x+w,y);
     }
     whichTile(x, y) {
+        console.log("which tile "+x+","+y);
         if (x < 0 || x >= this.world.width) {
             return 1;
         }
@@ -80,12 +83,17 @@ export class Level {
         let xInSquare = x % this.size;
         let yInSquare = y % this.size;
 
+        console.log("which tile 2");
+
+        console.log("which tile 3dddd ",this.map[l][c] );
         switch (this.map[l][c]) {
             case 4: 
                 return (this.size - xInSquare < yInSquare) ? 4 : 0;
             case 5: 
                 return (xInSquare < yInSquare) ? 5 : 0;
         }
+
+        console.log("which tile 2v");
         return (this.map[l][c]);
     }
 
@@ -218,5 +226,5 @@ function makeBackground(level) {
         ctx.fillRect(e.x * SIZE, e.y * SIZE, e.w * SIZE, e.h * SIZE);
         ctx.fillText("EXIT", e.x * SIZE + SIZE/2, e.y * SIZE - SIZE / 2);
     });
-    return osc;
+    return {osc,map};
 }
