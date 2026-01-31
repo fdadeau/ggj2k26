@@ -61,7 +61,7 @@ export class Level {
 
         this.player.update(dt, keys, this);
         
-        const taken = this.masks.filter(m => 
+        this.masks.filter(m => 
             m.active && 
             m.x + m.size /2 >= this.player.x - this.player.width / 2 &&
             m.x + m.size /2 <= this.player.x + this.player.width / 2 && 

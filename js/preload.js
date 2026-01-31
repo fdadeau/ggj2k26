@@ -37,6 +37,11 @@ const data = {
     "mask-wrestler": "./assets/sprites/masks/catch.png",
     "mask-ninja": "./assets/sprites/masks/ninja.png",
 
+    "frame-bird": "./assets/sprites/frames/bird_frame.png",
+    "frame-wrestler": "./assets/sprites/frames/catch_frame.png",
+    "frame-ninja": "./assets/sprites/frames/ninja_frame.png",
+    "frame-normal": "./assets/sprites/frames/empty_frame.png",
+
     // musics
     
     // Sounds

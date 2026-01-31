@@ -20,7 +20,7 @@ const PLAYER_W = 40, PLAYER_H = 40;
 /** Draw hitbox */
 const DEBUG = true;
 
-const MASK = { NONE: 0, BIRD: "bird", WRESTLER: "wrestler", NINJA: "ninja"};
+const MASK = { NONE: "normal", BIRD: "bird", WRESTLER: "wrestler", NINJA: "ninja"};
 
 const DEFAULT_ANIM_DELAY = 200;
 const FRAME_SIZE = 30;
@@ -254,11 +254,13 @@ export class Player {
         let newY = this.y + this.speedY * dt;
 
         // check if out of bounds --> dead
+        /*
         if (newY >= level.world.height - 10) {
             this.y = newY;
             this.dead = true;
             return;
         }
+            */
 
         // check intersection with a tile
         let intersectingTile = level.intersectsWith(this.x, newY, PLAYER_W, PLAYER_H);
@@ -303,6 +305,7 @@ export class Player {
     };
     */
 
+    /*
     checkAboveCollision(level) {
         if (this.collidesAbove(level)) {
             this.dead = true;
@@ -311,6 +314,7 @@ export class Player {
     collidesAbove(level) {
         return (level.whichTile(this.x-PLAYER_W/2, this.y-PLAYER_H) != 0 || level.whichTile(this.x+PLAYER_W/2,this.y-PLAYER_H) != 0)
     }
+        */
 
     determineAnimation(dt){
         if(this.speedY !== 0){
@@ -378,6 +382,7 @@ export class Player {
     }
 
     getSpriteDependingOnMask(){
+        return `${this.mask}-${this.currentAnimation.animation.ref}`;
         switch(this.mask){
             case MASK.BIRD:
                 return `bird-${this.currentAnimation.animation.ref}`
@@ -405,8 +410,8 @@ export class Player {
             PLAYER_H
         );
 
-        this.mask != MASK.NONE && ctx.drawImage(data[`mask-${this.mask}`], 10, 10, 30, 30);
-        this.mask2 != MASK.NONE && ctx.drawImage(data[`mask-${this.mask2}`], 50, 20, 20, 20);
+        ctx.drawImage(data[`frame-${this.mask}`], 10, 10, 30, 30);
+        ctx.drawImage(data[`frame-${this.mask2}`], 50, 20, 20, 20);
 
         let scale = 1;
         // debug info (pressed keys)
