@@ -221,9 +221,15 @@ export class Game {
     pressKey(code) {
         switch (code) {
             case "ArrowLeft":
+                if(this.level.player.lastDir === 1 && this.level.player.isJumping){
+                    return;
+                }
                 this.keys.left = 1;
                 break;
             case "ArrowRight":
+                if(this.level.player.lastDir === 0 && this.level.player.isJumping){
+                    return;
+                }
                 this.keys.right = 1;
                 break;
             case "KeyA":
