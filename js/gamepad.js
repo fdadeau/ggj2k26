@@ -4,7 +4,11 @@ const AXE_TRESHOLD = 0.5;
  * Utilitary class that manage gamepad controls and setup
  */
 export class GamepadHandler {
-  constructor() {
+  /**
+   * Creates an instance of GamepadHandler
+   * @param {HTMLCanvasElement} cvs
+   */
+  constructor(cvs) {
     /** @property {{JUMP: number; SPECIAL: number; MASK_SWITCH: number;}} buttonIndexMapping Record linking action to corresponding button index */
     this.buttonIndexMapping = {
       JUMP: 1, // Default values for the gamepad we have
@@ -12,13 +16,24 @@ export class GamepadHandler {
       MASK_SWITCH: 3,
     };
 
+    /** @property {{JUMP: string; SPECIAL: string; MASK_SWITCH: string;}} buttonIndexMapping Record linking action to corresponding label text*/
+    this.actionLabels = {
+      JUMP: "jump",
+      SPECIAL: "use a mask capacity",
+      MASK_SWITCH: "swap masks",
+    }
+
     /** @property {number} selectedAxeIndex Selected controler's directional axe index */
     this.selectedAxeIndex = 0; // Default values for the gamepad we have
 
-    /** @property {HTMLHTMLElement | null} calibrationInstructionContainer Container of the manual keybinding instruction shown to the user */
-    this.calibrationInstructionContainer = document.getElementById(
-      "calibrationInstruction",
-    );
+    /** @property {HTMLCanvasElement} cvs */
+    this.cvs = cvs;
+
+    /** @property {CanvasRenderingContext2D} ctx */
+    this.ctx = cvs.getContext("2d");
+
+    /** @property {boolean} isCalibrating Indicate if the manual calibration is in progress or not */
+    this.isCalibrating = false;
   }
 
   /**
@@ -80,22 +95,37 @@ export class GamepadHandler {
       });
     };
 
+    this.isCalibrating = true;
+
     for (const action of actions) {
-      this.calibrationInstructionContainer.innerHTML = `Press the button for: ${action}`;
+      this.ctx.clearRect(0, 0, this.cvs.width, this.cvs.height);
+      this.renderStep(`Press the button to: ${this.actionLabels[action]}`);
 
       const pressedButtonIndex = await waitForButtonPress();
       this.buttonIndexMapping[action] = pressedButtonIndex;
 
-      this.calibrationInstructionContainer.innerHTML = `Release button...`;
+      this.renderStep(`Release button...`);
       await waitForButtonRelease(pressedButtonIndex);
     }
 
-    this.calibrationInstructionContainer.innerHTML = `Move the axe you want to use to move your character...`;
+    this.renderStep(`Move the joystick you want to use...`);
     const axesRestState = gamepad.axes.map((axe) => axe);
     const axeMovedIndex = await waitForAxeMovement(axesRestState);
     this.selectedAxeIndex = axeMovedIndex;
 
-    this.calibrationInstructionContainer.innerHTML = ``;
+    this.isCalibrating = false;
+  }
+
+  renderStep(action){
+    this.ctx.fillStyle = "white";
+    this.ctx.fillRect(this.cvs.width / 2 - 160, this.cvs.height / 2 - 100, 320, 200);
+    this.ctx.fillStyle = "black";
+    this.ctx.fillRect(this.cvs.width / 2 - 150, this.cvs.height / 2 - 90, 300, 180);
+    this.ctx.fillStyle = "white";
+    this.ctx.textAlign = "center";
+    this.ctx.fillText("Gamepad detected", this.cvs.width/2, this.cvs.height/2 - 60);
+    this.ctx.fillText("Let's configure your gamepad!", this.cvs.width/2, this.cvs.height/2);
+    this.ctx.fillText(action, this.cvs.width/2, this.cvs.height/2 + 50);
   }
 
   /**
@@ -150,7 +180,7 @@ export class GamepadHandler {
  * Get the connected gamepad from the navitor state
  * @returns The first available gamepad, null if no gamepad is available
  */
-export const getGamepadFromNavigator = () => {
+export function getGamepadFromNavigator() {
   const gamepadList = navigator
     .getGamepads()
     .filter((gamepad) => gamepad !== null);
