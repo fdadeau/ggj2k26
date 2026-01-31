@@ -20,7 +20,7 @@ const SIZE = 32;
 
 const EPSILON = 1;
 
-const MAX = 32;
+const MAX = 52;
 
 const MASK_SIZE = 20;
 
@@ -31,7 +31,7 @@ export class Level {
         this.background = lvl.osc;
         this.map = lvl.map;
         this.masks = lvl.masks;
-        console.log(this.masks)
+        
         this.world = { height: this.background.height, width: this.background.width};
         this.camera = { x: LEVELS[n].camera.startPosition.x * SIZE, y: (MAX-LEVELS[n].camera.startPosition.y) * SIZE };
         this.size = SIZE;
