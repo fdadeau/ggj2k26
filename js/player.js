@@ -123,10 +123,8 @@ export class Player {
 
         this.updateXPosition(dt, level);
                 
-        this.checkWallCollisions(level);
-        if (this.dead) return;
 
-        this.onPlatform = this.isOnPlatform(level);
+//        this.onPlatform = this.isOnPlatform(level);
 
         if (!this.onPlatform && this.isOnTheGround(level) == 0) {
             this.speedY += GRAVITY * dt / (1000/60);
@@ -140,7 +138,7 @@ export class Player {
             this.dead = true;
         }
 
-        if (!this.dead) this.determineAnimation(dt);
+        //if (!this.dead) this.determineAnimation(dt);
         
     }
 
@@ -235,34 +233,7 @@ export class Player {
         return (level.whichTile(this.x-PLAYER_W, this.y-PLAYER_H) != 0 || level.whichTile(this.x+PLAYER_W,this.y-PLAYER_H) != 0)
     }
 
-    collidesWalls(level, dir) {
-        for (let i=0; i < level.slidingWalls.length; i++) {
-            let w = level.slidingWalls[i];
-            if (this.x + dir * PLAYER_W >= w.x && this.x + dir * PLAYER_W <= w.x + w.width && this.y >= w.y && this.y <= w.y + w.height) {
-                return w;
-            }
-        }
-        return false;
-    }
-
-    checkWallCollisions(level) {
-        let wL = this.collidesWalls(level,-1);
-        let wR = this.collidesWalls(level,1); 
-        let tileOnLeft = level.whichTile(this.x - PLAYER_W, this.y) || level.whichTile(this.x - PLAYER_W, this.y-PLAYER_H) != 0;
-        let tileOnRight = level.whichTile(this.x + PLAYER_W, this.y) || level.whichTile(this.x + PLAYER_W, this.y-PLAYER_H);
-        if (wL && wR || wL && tileOnRight || wR && tileOnLeft) {
-            this.dead = true;
-        }
-        else if (wL) {
-            this.x = wL.x + wL.width + PLAYER_W;
-            this.speedX = 0;
-        }
-        else if (wR) {
-            this.x = wR.x - PLAYER_W;
-            this.speedX = 0;
-        }
-    }
-
+    
 
     render(ctx, x, y) {
         // drawing of the character

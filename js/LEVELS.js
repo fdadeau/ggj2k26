@@ -1,7 +1,7 @@
 export const LEVELS = {
     1: {
         "player":{
-            "startPosition":{"x":2,"y":2},
+            "startPosition":{"x":6,"y":1},
         },
         "camera":{
             "startPosition":{"x":5,"y":5},
