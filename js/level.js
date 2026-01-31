@@ -23,9 +23,11 @@ const MAX = 32;
 export class Level {
 
     constructor(n) {        
-        const bg = makeBackground(LEVELS[n]);
-        this.background = bg.osc;
-        this.map = bg.map;
+        const lvl = loadLevel(LEVELS[n]);
+        this.background = lvl.osc;
+        this.map = lvl.map;
+        this.masks = lvl.masks;
+        console.log(this.masks)
         this.world = { height: this.background.height, width: this.background.width};
         this.camera = { x: LEVELS[n].camera.startPosition.x * SIZE, y: (MAX-LEVELS[n].camera.startPosition.y) * SIZE };
         this.size = SIZE;
@@ -49,6 +51,7 @@ export class Level {
             this.cameraPath.shift();
         }
         this.player.update(dt, keys, this);
+        
     }
 
     render(ctx) {
@@ -57,6 +60,13 @@ export class Level {
         let srcY = this.camera.y - HEIGHT / 2;
         ctx.drawImage(this.background, srcX, srcY, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT);
        
+        // render masks
+        this.masks.forEach(m => {
+            const COLOR = { Bird: "yellow", Wrestler: "red", Ninja: "black" };
+            ctx.fillStyle = COLOR[m.type];
+            ctx.fillRect(m.x * SIZE - srcX, (MAX-m.y-1) * SIZE - srcY, 10, 10);
+        });
+
         // determine player's position in screen
         let playerX = this.player.x - srcX;
         let playerY = this.player.y - srcY;
@@ -136,7 +146,7 @@ class Platform {
 
 
 
-function makeBackground(level) {
+function loadLevel(level) {
     const platforms = level.stuff.filter(s => s.kind == "Permanent").map(p => {
         return { x: Number(p.x), y: (MAX-Number(p.y)-p.height), w: Number(p.width), h: Number(p.height) };
     });
@@ -180,7 +190,6 @@ function makeBackground(level) {
             }
         }
     });
-
     for (let l=0; l < map.length; l++) {
         for (let c=0; c < map[l].length; c++) {
             switch (map[l][c]) {
@@ -226,6 +235,9 @@ function makeBackground(level) {
         }
     }
     
+    // masks
+    const masks = level.stuff.filter(s => s.kind == "Mask");
+
     ctx.fillStyle = "#700";
     ctx.font = "16px arial";
     ctx.textAlign = "center";
@@ -234,5 +246,5 @@ function makeBackground(level) {
         ctx.fillRect(e.x * SIZE, e.y * SIZE, e.w * SIZE, e.h * SIZE);
         ctx.fillText("EXIT", e.x * SIZE + SIZE/2, e.y * SIZE - SIZE / 2);
     });
-    return {osc,map};
+    return {osc,map,masks};
 }

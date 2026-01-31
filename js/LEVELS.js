@@ -71,7 +71,7 @@ export const LEVELS = {
             {
                 "kind":"Mask",
                 "type":"Bird",
-                "x":41,
+                "x":7,
                 "y":1,
                 "startLiving":0
             },
