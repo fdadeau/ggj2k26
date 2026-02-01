@@ -227,13 +227,35 @@ export class Game {
                 this.level.render(this.ctx)
                 break;
             case STATES.MENU:
-                this.ctx.drawImage(data["menu-background"], 0, 0, 32 * 3, 32 * 2, WIDTH / 2 - 160, HEIGHT / 2 - 100, 320, 200);
+                this.ctx.drawImage(
+                    data["menu-background"],
+                    0, 0, 32 * 3, 32 * 2,
+                    WIDTH / 2 - 160, HEIGHT / 2 - 100,
+                    320, 200
+                );
+                // Titre
                 this.ctx.font = '400 48px pixel-sans';
                 this.ctx.textAlign = "center";
-                this.ctx.fillText("LIMASK", WIDTH / 2, HEIGHT / 2 - 10);
+                this.ctx.fillText("LIMASK", WIDTH / 2, HEIGHT / 2 - 30);
+
                 this.ctx.font = '16px pixel-sans';
                 this.ctx.textAlign = "center";
-                this.ctx.fillText("Press SPACE to start", WIDTH / 2, HEIGHT / 2 + 50);
+                this.ctx.fillText("Press SPACE to start", WIDTH / 2, HEIGHT / 2 );
+
+    
+                this.ctx.font = '14px pixel-sans';
+                this.ctx.textAlign = "left";
+
+                const controlsX = WIDTH / 2 - 40;
+                let controlsY = HEIGHT / 2 + 20;
+                console.log("Drawing controls...", this.keys);
+                this.ctx.fillText("Move : ← → ", controlsX, controlsY);
+                controlsY += 18;
+                this.ctx.fillText("Jump : ESP", controlsX, controlsY);
+                controlsY += 18;
+                this.ctx.fillText("Pause : ESC", controlsX, controlsY);
+                controlsY += 18;
+                this.ctx.fillText("action : a", controlsX, controlsY);
                 break;
             case STATES.LEVEL_SELECTION:
                 throw new Error("Not Implemented yet");
