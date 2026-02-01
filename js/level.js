@@ -55,7 +55,7 @@ export class Level {
     update(dt, keys) {
         if (this.cameraPath.length == 0) {
             this.player.update(dt, keys, this);
-            return;
+            return this.isOnExit(this.player.x, this.player.y, this.player.width / 2, this.player.height / 2)?.nextLevel;
         }
 
         const exit = this.isOnExit(this.player.x, this.player.y, this.player.width / 2, this.player.height / 2);
@@ -126,6 +126,14 @@ export class Level {
         // compute background position w.r.t. the player
         let srcX = this.camera.x - WIDTH / 2;
         let srcY = this.camera.y - HEIGHT / 2;
+
+        // background with scrolling
+        const X1 = Math.floor(srcX / 20) % WIDTH, Y1 = HEIGHT/8;
+        const X2 = Math.floor(srcX / 5) % WIDTH;
+        ctx.drawImage(data["background"], 0, 0, WIDTH, HEIGHT, -X1, Y1, WIDTH, HEIGHT);
+        ctx.drawImage(data["background"], 0, 0, WIDTH, HEIGHT, -X1+WIDTH, Y1, WIDTH, HEIGHT);
+        ctx.drawImage(data["trees"], X2, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT);
+
         ctx.drawImage(this.background, srcX, srcY, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT);
        
         // render masks
@@ -250,6 +258,7 @@ function loadLevel(level) {
 
     const osc = new OffscreenCanvas(W, H);
     const ctx = osc.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
     // sky
     /*
     for (let i=0; i < H; i++) {

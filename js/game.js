@@ -207,10 +207,10 @@ export class Game {
                 this.ctx.drawImage(data["menu-background"], 0, 0, 32 * 3, 32 * 2, WIDTH / 2 - 160, HEIGHT / 2 - 100, 320, 200);
                 this.ctx.font = '400 48px pixel-sans';
                 this.ctx.textAlign = "center";
-                this.ctx.fillText("INSERT NAME", WIDTH / 2, HEIGHT / 2 - 30);
+                this.ctx.fillText("LIMASK", WIDTH / 2, HEIGHT / 2 - 10);
                 this.ctx.font = '16px pixel-sans';
                 this.ctx.textAlign = "center";
-                this.ctx.fillText("Press SPACE to start", WIDTH / 2, HEIGHT / 2 + 30);
+                this.ctx.fillText("Press SPACE to start", WIDTH / 2, HEIGHT / 2 + 50);
                 break;
             case STATES.LEVEL_SELECTION:
                 throw new Error("Not Implemented yet");
