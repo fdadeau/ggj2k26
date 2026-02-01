@@ -116,7 +116,7 @@ export class Game {
                     if (this.level.player.dead) {
                         this.state = STATES.GAME_OVER;
                         this.msg = "GAME OVER";
-                        audio.playSound("death", "player", 0.7, false);
+                        audio.playSound("death", "player", 0.4, false);
                         return true;
                     }
                     else if (this.level.player.complete) {
@@ -147,13 +147,13 @@ export class Game {
 					this.unpause()
 				}
                 else if (this.keys.pause) {
-                    this.reset(this.level.player.mask, this.level.player.mask2);
+                    this.reset();
                 }
                 break;
             
             case STATES.GAME_OVER: 
                 if (this.keys.continue) {
-                    this.reset(this.level.player.mask, this.level.player.mask2);
+                    this.reset();
                 }
 
         }
@@ -170,8 +170,8 @@ export class Game {
             this.level.render(this.ctx);
         }
         this.ctx.textAlign = "left";
-        if (this.msg) {
-            this.ctx.fillText(this.msg, WIDTH / 2, HEIGHT / 2);
+        if (this.msg && DEBUG) {
+        //    this.ctx.fillText(this.msg, WIDTH / 2, HEIGHT / 2);
         }
 
         if (this.state == STATES.PAUSE) {
