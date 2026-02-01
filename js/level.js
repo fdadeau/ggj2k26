@@ -258,6 +258,7 @@ function loadLevel(level) {
 
     const osc = new OffscreenCanvas(W, H);
     const ctx = osc.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
     // sky
     /*
     for (let i=0; i < H; i++) {
