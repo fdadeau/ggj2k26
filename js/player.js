@@ -117,7 +117,7 @@ export class Player {
             keys.swap = 0;
         }
         // knock (wrestler)
-        if (keys.action && this.mask == MASK.WRESTLER && !this.knock) {
+        if (keys.action && this.mask == MASK.WRESTLER && this.isOnTheGround(level) && !this.knock) {
             level.hit(this.x + this.lastDir*this.width, this.y);
             this.knock = { delay: 200 };
             keys.action = 0;
