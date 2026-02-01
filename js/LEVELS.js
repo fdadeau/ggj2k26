@@ -1,11 +1,11 @@
 export const LEVELS = {
     1: {
         "player":{
-            // "startPosition":{"x":121,"y":3},
+            // "startPosition":{"x":112,"y":3},
             "startPosition":{"x":8,"y":3},
         },
         "camera":{
-            // "startPosition":{"x":121 ,"y":5},
+            // "startPosition":{"x":112 ,"y":5},
             "startPosition":{"x":8 ,"y":5},
             "path":[
                 {
@@ -356,7 +356,7 @@ export const LEVELS = {
             },
             {
                 "kind":"Permanent",
-                "x":116,
+                "x":117,
                 "y":1,
                 "startLiving":0,
                 "stopLiving": undefined,
@@ -365,11 +365,11 @@ export const LEVELS = {
             },
             {
                 "kind":"Permanent",
-                "x":121,
+                "x":123,
                 "y":1,
                 "startLiving":0,
                 "stopLiving": undefined,
-                "width":5,
+                "width":3,
                 "height":1
             },
             {

@@ -136,7 +136,7 @@ export class Player {
         if (keys.action && this.mask == MASK.NINJA && !this.dash) {
             keys.action = 0;
             audio.playSound("fx-ninja", "player", 1);
-            this.dash = { delay: 100, save: 0*this.speedX };
+            this.dash = { delay: 150, save: 0*this.speedX };
             this.speedX = this.lastDir * MAX_SPEED * 3;
         }
         if (this.dash) {
