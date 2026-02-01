@@ -30,7 +30,7 @@ export class Level {
         this.camera = { x: LEVELS[n].camera.startPosition.x * SIZE, y: (MAX-LEVELS[n].camera.startPosition.y) * SIZE };
         this.size = SIZE;
         this.cameraPath = LEVELS[n].camera.path.map(({x,y,speed}) => { return {x: x*SIZE, y: (MAX-y)*SIZE, speed}; });
-        this.smoke = smokeFill2([],SMOKE_NB_PARTICLES,this.camera,{x:0,y:0});
+        this.smoke = [];
     }
 
 
@@ -113,7 +113,7 @@ function loadLevel(level) {
 
 const SMOKE_SCREEN_PROPORTION = 0.15;
 
-const NB_UPDATED_PARTICLES_PER_SECONDS = 0.005;
+const NB_UPDATED_PARTICLES_PER_SECONDS = 0.05;
 
 const SMOKE_NB_PARTICLES = 500;
 
@@ -122,22 +122,39 @@ function betterRandomForSmoke(){
     const rd = Math.random();
     return Math.exp(-lambda*rd)-Math.exp(-lambda)/lambda;
 }
+function vecSum(v, w){
+    return {x:v.x+w.x, y:v.y+w.y};
+}
 
+function scalarMult(vec,scalar){
+    return {x:vec.x*scalar, y:vec.y*scalar};
+}
 
-function smokeFill2(smoke, nbParticles, camera, cameraNormalDirection) {
-
-    const srcX = camera.x - WIDTH / 2;
-    const srcY = camera.y - HEIGHT / 2 + HEIGHT / 3;
-    var xCoef = cameraNormalDirection.x;
+function smokeFill2(smoke, nbParticles, cameraPosition, cameraNormalDirection) {
+    const COEFF = 1000; // sorry for the magic constant
 
     while(smoke.length < nbParticles){
+        const oppositePointFromCamDir = {
+            x: cameraPosition.x-cameraNormalDirection.x*WIDTH/2-PARTICLE_SIZE/2,
+            y: cameraPosition.y-cameraNormalDirection.y*HEIGHT/2-PARTICLE_SIZE/2
+        };
+        const antiCameraNormalDirection = scalarMult(cameraNormalDirection,-1);
+        const leftSpread = {
+            x:-antiCameraNormalDirection.y,
+            y:antiCameraNormalDirection.x
+        };
+        const rightSpread = {
+            x:antiCameraNormalDirection.y,
+            y:-antiCameraNormalDirection.x
+        };
+        const startingPointOfParticle = Math.random() < 0.5 ? 
+        vecSum(oppositePointFromCamDir,scalarMult(leftSpread,Math.random()*COEFF)):
+        vecSum(oppositePointFromCamDir,scalarMult(rightSpread,Math.random()*COEFF));
 
         smoke.push(
             new Particle(
-                //srcX + Math.random()*WIDTH*SMOKE_SCREEN_PROPORTION-PARTICLE_SIZE,
-                //srcY + Math.random()*(HEIGHT + 100),
-                srcX + xCoef*betterRandomForSmoke()*(WIDTH+PARTICLE_SIZE)*SMOKE_SCREEN_PROPORTION+PARTICLE_SIZE/2,
-                srcY + Math.random()*(HEIGHT+PARTICLE_SIZE)-PARTICLE_SIZE,
+                startingPointOfParticle.x,
+                startingPointOfParticle.y,
                 Math.floor(Math.random()*SMOKE_SPRITE_NB_FRAMES)
             )
         );
