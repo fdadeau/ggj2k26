@@ -45,7 +45,9 @@ const data = {
     // musics
     
     // Sounds
-    
+    "fx-bird": "./assets/sounds/fx-bird.mp3",
+    "fx-ninja": "./assets/sounds/fx-ninja.mp3",
+    "fx-wrestler": "./assets/sounds/fx-wrestler.mp3",
 }
 
 /***

@@ -123,6 +123,7 @@ export class Player {
         }
         if (keys.action && this.mask == MASK.NINJA && !this.dash) {
             keys.action = 0;
+            audio.playSound("fx-ninja", 1, 1);
             this.dash = { delay: 80, save: 0*this.speedX };
             this.speedX = this.lastDir * MAX_SPEED * 3;
         }
@@ -144,6 +145,9 @@ export class Player {
                 this.onPlatform = null;
                 this.jumpCount++;
                 this.isJumping = true;
+                if (this.jumpCount == 2) {
+                    audio.playSound("fx-bird", 1, 1);
+                }
             }
             keys.jump = 0;
         }

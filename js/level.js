@@ -26,6 +26,7 @@ const MASK_SIZE = 20;
 
 const BREAKABLE_HITS = 2;
 
+
 export class Level {
 
     constructor(n) {        
@@ -34,6 +35,7 @@ export class Level {
         this.map = lvl.map;
         this.masks = lvl.masks;
         this.breakables = lvl.breakables;
+        this.exit = lvl.exits;
         
         this.world = { height: this.background.height, width: this.background.width};
         this.camera = { x: LEVELS[n].camera.startPosition.x * SIZE, y: (MAX-LEVELS[n].camera.startPosition.y) * SIZE };
@@ -91,6 +93,7 @@ export class Level {
         this.breakables.forEach(b => {
             if (b.broken && x >= b.x * SIZE && x <= b.x * SIZE + SIZE && y >= b.y * SIZE && y <= b.y * SIZE + b.h * SIZE) {
                 b.broken--;
+                audio.playSound("fx-wrestler", 1, 1);
                 if (b.broken == 0) {
                     b.blocks.forEach(coords => this.map[coords[0]][coords[1]] = 0);
                 } 
@@ -154,15 +157,6 @@ export class Level {
 
 
     }
-
-    /*
-    getPointAbove(x, y) {
-        if (this.whichTile(x,y) == 4) {
-            return Math.floor(y / this.size + 1) * this.size - (x % this.size) - 1;
-        }
-        return Math.floor(y / this.size) * this.size + (x % this.size) - 1;
-    }
-    */
 
     isOnExit(x,y,w) {
         return x-w/2 > this.exit.c * this.size && x+w/2 < (this.exit.c+1)*this.size && y > this.exit.l * this.size && y <= this.size*(this.exit.l +1);

@@ -1,10 +1,7 @@
-import { data } from "./preload.js";
 
 import { WIDTH, HEIGHT } from "./main.js";
 
 import { Level } from "./level.js";
-
-import { LEVELS } from "./LEVELS.js"; 
 
 import { audio } from "./audio.js";
 
@@ -23,7 +20,7 @@ const STATES = {
 
 const DEBUG = 1;
 
-const START_LEVEL = 2;
+const START_LEVEL = 1;
 
 const DELAY = 60;
 let frame = -10, df = 1, delay = DELAY, max = 50;
@@ -277,7 +274,7 @@ export class Game {
         }
         return;
     }
-    
+        
 }
 
 function mkButton(ctx, txt, txt2, x, y, selected) {
