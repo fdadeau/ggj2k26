@@ -49,7 +49,7 @@ export class Level {
     update(dt, keys) {
         if (this.cameraPath.length == 0) {
             this.player.update(dt, keys, this);
-            return;
+            return this.isOnExit(this.player.x, this.player.y, this.player.width / 2, this.player.height / 2)?.nextLevel;
         }
 
         const exit = this.isOnExit(this.player.x, this.player.y, this.player.width / 2, this.player.height / 2);
@@ -252,6 +252,7 @@ function loadLevel(level) {
 
     const osc = new OffscreenCanvas(W, H);
     const ctx = osc.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
     // sky
     /*
     for (let i=0; i < H; i++) {
@@ -397,16 +398,25 @@ const NB_UPDATED_PARTICLES_PER_SECONDS = 0.005;
 
 const SMOKE_NB_PARTICLES = 500;
 
+function betterRandomForSmoke(){
+    const lambda = 5;
+    const rd = Math.random();
+    return Math.exp(-lambda*rd)-Math.exp(-lambda)/lambda;
+}
+
 function smokeFill(smoke, nbParticles, camera) {
 
     const srcX = camera.x - WIDTH / 2;
     const srcY = camera.y - HEIGHT / 2 + HEIGHT / 3;
 
     while(smoke.length < nbParticles){
+        
         smoke.push(
             new Particle(
-                srcX + Math.random()*WIDTH*SMOKE_SCREEN_PROPORTION-PARTICLE_SIZE,
-                srcY + Math.random()*(HEIGHT + 100),
+                //srcX + Math.random()*WIDTH*SMOKE_SCREEN_PROPORTION-PARTICLE_SIZE,
+                //srcY + Math.random()*(HEIGHT + 100),
+                srcX + betterRandomForSmoke()*(WIDTH+PARTICLE_SIZE)*SMOKE_SCREEN_PROPORTION+PARTICLE_SIZE/2,
+                srcY + Math.random()*(HEIGHT+PARTICLE_SIZE)-PARTICLE_SIZE,
                 Math.floor(Math.random()*SMOKE_SPRITE_NB_FRAMES)
             )
         );
