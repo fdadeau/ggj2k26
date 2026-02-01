@@ -28,6 +28,8 @@ let frame = -10, df = 1, delay = DELAY, max = 50;
 
 let fps = 0, time = 1000, lastFPS = 0;
 
+const perso = { delay: 3000, max: 3000, dir: "L", frame: "normal", frames: ["normal", "ninja", "wrestler", "bird"] }
+
 export class Game {
 
     constructor(cvs, gamepadHandler) {
@@ -165,17 +167,31 @@ export class Game {
                 throw new Error(`Unhandled game state, got ${this.state}`);
         }
 
+        perso.delay -= dt;
+        if (perso.delay < 0) {
+            if (Math.random() > 0.5) {
+                perso.frame = perso.frame != perso.frames[0] ? perso.frames[0] : perso.frames[Math.floor(1+Math.random()*3)];
+            }
+            else {
+                perso.dir = perso.dir == "L" ? "R" : "L";
+            }
+            perso.delay = perso.max;
+            
+        }
+
         return true;
     }
-
 
     render() {
         this.ctx.clearRect(0, 0, WIDTH, HEIGHT);
         this.ctx.fillStyle = "white";
 
+    
+
         if (this.state !== STATES.LOADING) {
             this.ctx.drawImage(data["background"], 0, 0, WIDTH, HEIGHT);
             this.ctx.drawImage(data["trees"], -WIDTH/4, 0, WIDTH*2, HEIGHT);
+            this.ctx.drawImage(data[`${perso.frame}-still${perso.dir}`], 200, 40, 60, 60)
         }
 
         switch(this.state){
