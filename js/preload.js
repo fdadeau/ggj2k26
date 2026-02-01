@@ -46,7 +46,7 @@ const data = {
     "menu-button": "./assets/sprites/menus/menu_button.png",
 
     // musics
-    "music1": "./assets/sounds/musiqueFond1.mp3",
+    // "music1": "./assets/sounds/musiqueFond1.mp3",
 
     // Sounds
     "fx-bird": "./assets/sounds/fx-bird.mp3",
