@@ -122,11 +122,11 @@ export class Level {
         let srcY = this.camera.y - HEIGHT / 2;
 
         // background with scrolling
-        const X1 = Math.floor(srcX / 20) % WIDTH, Y1 = HEIGHT/8;
+        const X1 = Math.floor(srcX / 10) % WIDTH, Y1 = HEIGHT/10;
         const X2 = Math.floor(srcX / 5) % WIDTH;
         ctx.drawImage(data["background"], 0, 0, WIDTH, HEIGHT, -X1, Y1, WIDTH, HEIGHT);
         ctx.drawImage(data["background"], 0, 0, WIDTH, HEIGHT, -X1+WIDTH, Y1, WIDTH, HEIGHT);
-        ctx.drawImage(data["trees"], X2, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT);
+        ctx.drawImage(data["trees"], 0, 0, WIDTH*2, HEIGHT, -X2, 0, WIDTH*2, HEIGHT);
 
         ctx.drawImage(this.background, srcX, srcY, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT);
        
@@ -169,6 +169,10 @@ export class Level {
         let playerY = this.player.y - srcY;
         this.player.render(ctx, playerX, playerY);
 
+        let X3 = (srcX * 1.4) % (2*WIDTH);
+        ctx.drawImage(data["grass"], 0, 0, WIDTH*2, HEIGHT, -X3, 0, WIDTH*2, HEIGHT);
+        ctx.drawImage(data["grass"], 0, 0, WIDTH*2, HEIGHT, -X3+WIDTH*2, 0, WIDTH*2, HEIGHT);
+        
 
         // smoke on the border of the screen
         this.smoke.forEach(particle => {
@@ -226,6 +230,7 @@ export class Level {
 
 
 function loadLevel(level) {
+
     const platforms = level.stuff.filter(s => s.kind == "Permanent").map(p => {
         return { x: Number(p.x), y: (MAX-Number(p.y)-p.height), w: Number(p.width), h: Number(p.height) };
     });

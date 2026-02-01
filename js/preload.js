@@ -80,6 +80,7 @@ const data = {
     // backgrounds
     "background": "./assets/sprites/background/mountains.png",
     "trees": "./assets/sprites/background/trees.png",
+    "grass": "./assets/sprites/background/grass.png",
     
 }
 
