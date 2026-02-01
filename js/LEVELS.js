@@ -240,3 +240,20 @@ export const LEVELS = {
         ]
     },
 }
+
+export const MAP_TEXTURES = {
+    BlockTopBottomLeft:1,
+    BlockTop:2,
+    BlockTopBottomRight:3,
+    BlockTopLeft:4,
+    BlockTopRight:5,
+    BlockBottomLeftCorner:6,
+    BlockMiddle:7,
+    BlockBottomRight:8,
+    BlockLeft:9,
+    BlockRight:10,
+    BlockTopLeftRight:11,
+    BlockLeftRight:12,
+    BlockBottomLeftRight:13,
+    BlockAlone:14,
+}

@@ -4,7 +4,7 @@
 
 import { WIDTH, HEIGHT } from "./main.js";
 
-import { LEVELS } from "./LEVELS.js"; 
+import { LEVELS, MAP_TEXTURES } from "./LEVELS.js"; 
 
 import { Player } from "./player.js";
 
@@ -170,6 +170,55 @@ export class Level {
 
 }
 
+function applyTextures(map, basePlatformIdentifier){
+    var tsindex = Math.max(...map.flat(Infinity));
+    var texturedMap = map.slice();
+    for(let x=0; x < texturedMap.length; x++){
+        for(let y=0; y < texturedMap[x].length; y++){
+            regularScreenCoordX = x;
+            regularScreenCoordY = texturedMap[x].length-1-y;
+            if(basePlatformIdentifier==texturedMap[regularScreenCoordX][regularScreenCoordY]){
+                if(     (regularScreenCoordY > 0) && (regularScreenCoordX > 0) && (regularScreenCoordX < texturedMap.length-2) 
+                    &&  (texturedMap[regularScreenCoordX][regularScreenCoordY+1])==0
+                    &&  (texturedMap[regularScreenCoordX][regularScreenCoordY+1])==0
+                    &&  (texturedMap[regularScreenCoordX][regularScreenCoordY+1])==0
+                ){
+                    texturedMap[regularScreenCoordX][regularScreenCoordY+1] = MAP_TEXTURES.BlockTop;
+                } else if(){
+
+                }else if(){
+
+                }else if(){
+
+                }else if(){
+
+                }else if(){
+
+                }else if(){
+
+                }else if(){
+
+                }else if(){
+
+                }else if(){
+
+                }else if(){
+
+                }else if(){
+
+                }else if(){
+
+                }else {
+
+                }
+                //  else {
+                //     console.assert(false,"Error, unhandled case of texture to aply at map["+regularScreenCoordX+"]["+regularScreenCoordY+"]");
+                // }
+            }
+        }
+    }
+    return {map:texturedMap,textureStartIndex:tsindex);
+}
 
 function loadLevel(level) {
     const platforms = level.stuff.filter(s => s.kind == "Permanent").map(p => {
