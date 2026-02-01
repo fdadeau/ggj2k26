@@ -116,7 +116,13 @@ export class Level {
         // render masks
         this.masks.forEach(m => {
             if (m.active) {
+                ctx.save();
+                ctx.globalCompositeOperation = "lighter";
+                ctx.shadowColor = m.blur ?? "rgba(255, 255, 255, 0.9)";
+                ctx.shadowBlur = 20;
+                ctx.globalAlpha = 1;
                 ctx.drawImage(data[`mask-${m.kind}`], m.x - srcX, m.y - srcY, MASK_SIZE, MASK_SIZE);
+                ctx.restore();
             }
         });
 
@@ -293,6 +299,7 @@ function loadLevel(level) {
             y: (MAX - m.y) * SIZE - MASK_SIZE,  
             size: MASK_SIZE,
             kind: m.type,
+            blur: m.blur,
             active: true
         }
     });
