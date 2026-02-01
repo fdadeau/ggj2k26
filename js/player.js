@@ -73,6 +73,7 @@ export class Player {
         this.dead = false;
         this.lastDir = 1;
         this.dash = null;
+        this.knock = null;
         this.mask = MASK.WRESTLER;
         this.mask2 = MASK.NONE;
         this.jumpCount = 0;
@@ -115,10 +116,19 @@ export class Player {
             this.mask2 = tmp;
             keys.swap = 0;
         }
-        if (keys.action && this.mask == MASK.WRESTLER) {
+        // knock (wrestler)
+        if (keys.action && this.mask == MASK.WRESTLER && !this.knock) {
             level.hit(this.x + this.lastDir*this.width, this.y);
+            this.knock = { delay: 200 };
             keys.action = 0;
         }
+        if (this.knock) {
+            this.knock.delay -= dt;
+            if (this.knock.delay <= 0) {
+                this.knock = null;    
+            }
+        }
+        // dash (ninja)
         if (keys.action && this.mask == MASK.NINJA && !this.dash) {
             keys.action = 0;
             audio.playSound("fx-ninja", "player", 1);
@@ -344,6 +354,9 @@ export class Player {
     }
 
     getSpriteDependingOnMask(){
+        if (this.knock) {
+            return this.lastDir > 0 ? "wrestler-runR" : "wrestler-runL";
+        }
         return `${this.mask}-${this.currentAnimation.animation.ref}`;
         /*
         switch(this.mask){

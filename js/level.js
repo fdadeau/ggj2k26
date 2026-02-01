@@ -96,7 +96,6 @@ export class Level {
     }
     
     hit(x,y) {
-        let l = Math.floor(y / this.size), c = Math.floor(x / this.size);
         this.breakables.forEach(b => {
             if (b.broken && x >= b.x * SIZE && x <= b.x * SIZE + SIZE && y >= b.y * SIZE && y <= b.y * SIZE + b.h * SIZE) {
                 b.broken--;
