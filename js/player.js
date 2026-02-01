@@ -123,7 +123,7 @@ export class Player {
         }
         if (keys.action && this.mask == MASK.NINJA && !this.dash) {
             keys.action = 0;
-            audio.playSound("fx-ninja", 1, 1);
+            audio.playSound("fx-ninja", "player", 1);
             this.dash = { delay: 100, save: 0*this.speedX };
             this.speedX = this.lastDir * MAX_SPEED * 3;
         }
@@ -146,7 +146,7 @@ export class Player {
                 this.jumpCount++;
                 this.isJumping = true;
                 if (this.jumpCount == 2) {
-                    audio.playSound("fx-bird", 1, 1);
+                    audio.playSound("fx-bird", "player", 1);
                 }
             }
             keys.jump = 0;
@@ -204,23 +204,6 @@ export class Player {
             this.updateYPosition(dt, level);
             if (this.dead) return;  // out of bounds --> dead
         }
-        // moving on a platform
-        /*
-        if (this.onPlatform != null) {
-            this.y = this.onPlatform.y;
-            if (this.onPlatform.dX) {
-                this.x += this.onPlatform.x - this.onPlatform.lastX;
-            }
-            // check if platform has reached the ground. if so, set Y coordinate to ground level.
-            let t = this.isOnTheGround(level); 
-            if (t > 0) {
-                this.y = t - 1;
-                this.onPlatform = null;
-            }
-        }
-            */
-        //this.checkAboveCollision(level);
-        //if (this.dead) return;
 
         this.updateXPosition(dt, level);
                 
@@ -275,15 +258,6 @@ export class Player {
         // check vertical collision
         let newY = this.y + this.speedY * dt;
 
-        // check if out of bounds --> dead
-        /*
-        if (newY >= level.world.height - 10) {
-            this.y = newY;
-            this.dead = true;
-            return;
-        }
-            */
-
         // check intersection with a tile
         let intersectingTile = level.intersectsWith(this.x, newY, PLAYER_W, PLAYER_H);
         if (intersectingTile == 0) {
@@ -311,33 +285,7 @@ export class Player {
         return 0;
     }
 
-    /*
-    isOnPlatform(level) {
-        for (let i=0; i < level.platforms.length; i++) {
-            let p = level.platforms[i];
-            if (this.speedY >= 0 && p.intersects(this.x, this.y+1, this.lastX, this.lastY, PLAYER_W) && !this.collidesAbove(level)) {
-                return p;
-            }
-        }
-        if (this.isOnTheGround(level)) {
-            this.onGround = true;
-
-        }
-        return null;
-    };
-    */
-
-    /*
-    checkAboveCollision(level) {
-        if (this.collidesAbove(level)) {
-            this.dead = true;
-        }
-    }
-    collidesAbove(level) {
-        return (level.whichTile(this.x-PLAYER_W/2, this.y-PLAYER_H) != 0 || level.whichTile(this.x+PLAYER_W/2,this.y-PLAYER_H) != 0)
-    }
-        */
-
+ 
     determineAnimation(dt){
         if(this.speedY !== 0){
             const isStartingJump = this.speedY < 0.6 * -JUMP_FORCE;
@@ -436,7 +384,7 @@ export class Player {
         ctx.drawImage(data[`frame-${this.mask}`], 10, 10, 30, 30);
         ctx.drawImage(data[`frame-${this.mask2}`], 50, 20, 20, 20);
 
-        ctx.fillText(JSON.stringify(this.dash), 10, 50)
+        //ctx.fillText(JSON.stringify(this.dash), 10, 50)
 
         let scale = 1;
         // debug info (pressed keys)

@@ -48,6 +48,8 @@ const data = {
     "fx-bird": "./assets/sounds/fx-bird.mp3",
     "fx-ninja": "./assets/sounds/fx-ninja.mp3",
     "fx-wrestler": "./assets/sounds/fx-wrestler.mp3",
+    "death": "./assets/sounds/wilhelm.mp3",
+    "victory": "./assets/sounds/victory.mp3",
 
     //briques
     "bloc1": "./assets/sprites/blocks/dirt/1.png", 

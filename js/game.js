@@ -18,7 +18,7 @@ const STATES = {
     TIME_OUT: 40
 }; 
 
-const DEBUG = 1;
+const DEBUG = 0;
 
 const START_LEVEL = 1;
 
@@ -101,12 +101,12 @@ export class Game {
                     if (this.level.player.dead) {
                         this.state = STATES.GAME_OVER;
                         this.msg = "GAME OVER";
-                        //audio.playSound("death", "player", 0.7, false);
+                        audio.playSound("death", "player", 0.4, false);
                         return true;
                     }
                     else if (this.level.player.complete) {
                         this.state = STATES.COMPLETED;
-                        //audio.playSound("victory", "player", 0.7, false);
+                        audio.playSound("victory", "player", 0.7, false);
                     }
                 }   
                 break;
@@ -147,8 +147,8 @@ export class Game {
             this.level.render(this.ctx);
         }
         this.ctx.textAlign = "left";
-        if (this.msg) {
-            this.ctx.fillText(this.msg, WIDTH / 2, HEIGHT / 2);
+        if (this.msg && DEBUG) {
+        //    this.ctx.fillText(this.msg, WIDTH / 2, HEIGHT / 2);
         }
 
         if (this.state == STATES.PAUSE) {
@@ -274,7 +274,7 @@ export class Game {
         }
         return;
     }
-        
+
 }
 
 function mkButton(ctx, txt, txt2, x, y, selected) {

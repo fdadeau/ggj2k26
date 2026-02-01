@@ -14,7 +14,7 @@ import { audio } from "./audio.js";
 
 const CAMERA_SPEED = 0.2;
 
-const DEBUG = true;
+const DEBUG = false;
 
 const SIZE = 42;
 
@@ -93,7 +93,7 @@ export class Level {
         this.breakables.forEach(b => {
             if (b.broken && x >= b.x * SIZE && x <= b.x * SIZE + SIZE && y >= b.y * SIZE && y <= b.y * SIZE + b.h * SIZE) {
                 b.broken--;
-                audio.playSound("fx-wrestler", 1, 1);
+                audio.playSound("fx-wrestler", "player", 1);
                 if (b.broken == 0) {
                     b.blocks.forEach(coords => this.map[coords[0]][coords[1]] = 0);
                 } 
@@ -335,7 +335,7 @@ function determineBlock(map, l, c) {
         return data["bloc13"];
     }
     if (rienEnDessous(map, l, c) && rienAGauche(map, l, c) && rienADroite(map, l, c) && rienAuDessus(map, l, c)) {
-        return data["bloc12"];
+        return data["bloc14"];
     }
     return data["bloc7"];
 } 
