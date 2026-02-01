@@ -10,7 +10,9 @@ import { Player } from "./player.js";
 
 import { data } from "./preload.js";
 
-import { audio } from "./audio.js";       
+import { audio } from "./audio.js";
+
+import {Particle, SMOKE_SPRITE_NB_FRAMES, PARTICLE_SIZE} from "./smoke.js";
 
 const CAMERA_SPEED = 0.2;
 
@@ -26,6 +28,11 @@ const MASK_SIZE = 20;
 
 const BREAKABLE_HITS = 2;
 
+const SMOKE_SCREEN_PROPORTION = 0.02;
+
+const NB_UPDATED_PARTICLES_PER_SECONDS = 10;
+
+const SMOKE_NB_PARTICLES = 500 ;
 
 export class Level {
 
@@ -41,6 +48,7 @@ export class Level {
         this.size = SIZE;
         this.cameraPath = LEVELS[n].camera.path.map(({x,y,speed}) => { return {x: x*SIZE, y: (MAX-y)*SIZE, speed}; });
         this.player = new Player(LEVELS[n].player.startPosition.x * SIZE, (MAX-LEVELS[n].player.startPosition.y-1) * SIZE);
+        this.smoke = smokeFill([],SMOKE_NB_PARTICLES);
     }
 
 
@@ -93,6 +101,13 @@ export class Level {
             this.player.addMask(m.kind);
             m.active = false;
         });
+
+        for(var i = 0; i < 1000*NB_UPDATED_PARTICLES_PER_SECONDS/dt ; ++i){
+            this.smoke.pop();
+        }
+        this.smoke = smokeFill(this.smoke,SMOKE_NB_PARTICLES);
+
+
     }
     
     hit(x,y) {
@@ -151,6 +166,12 @@ export class Level {
         let playerX = this.player.x - srcX;
         let playerY = this.player.y - srcY;
         this.player.render(ctx, playerX, playerY);
+
+
+        // smoke on the border of the screen
+        this.smoke.forEach(particle => {
+            particle.render(ctx,srcX,srcY);
+        });
     }
 
 
@@ -365,4 +386,19 @@ function rienADroite(map, l, c) {
 }
 function rienAuDessus(map, l, c) {
     return !map[l-1] || map[l-1][c] != 1;
+}
+
+function smokeFill(smoke,nbParticles) {
+
+    while(smoke.length < nbParticles){
+        smoke.push(
+            new Particle(
+                Math.random()*WIDTH*SMOKE_SCREEN_PROPORTION-PARTICLE_SIZE,
+                Math.random()*HEIGHT,
+                Math.floor(Math.random()*SMOKE_SPRITE_NB_FRAMES)
+            )
+        );
+    }
+
+    return smoke;
 }

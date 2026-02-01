@@ -15,7 +15,11 @@ const MAX_SPEED = 0.4;
 const MAX_FALL_SPEED = 0.8;
 
 /** Player dimensions */
-const PLAYER_W = 40, PLAYER_H = 40;
+const FRAME_HEIGHT = 30;
+const FRAME_WIDTH = 23;
+const PLAYER_SCALE = 1.5;
+const PLAYER_W = FRAME_WIDTH * PLAYER_SCALE;
+const PLAYER_H = FRAME_HEIGHT * PLAYER_SCALE;
 
 /** Draw hitbox */
 const DEBUG = false;
@@ -23,7 +27,7 @@ const DEBUG = false;
 const MASK = { NONE: "normal", BIRD: "bird", WRESTLER: "wrestler", NINJA: "ninja"};
 
 const DEFAULT_ANIM_DELAY = 200;
-const FRAME_SIZE = 30;
+
 
 const STILL_R_ANIMATION = {
     length: 1,
@@ -377,9 +381,9 @@ export class Player {
         ctx.drawImage(
             data[this.getSpriteDependingOnMask()], 
             0,
-            (this.currentAnimation.frame * FRAME_SIZE),
-            FRAME_SIZE,
-            FRAME_SIZE,
+            (this.currentAnimation.frame * FRAME_HEIGHT),
+            FRAME_WIDTH,
+            FRAME_HEIGHT,
             Math.floor(x - PLAYER_W / 2),
             Math.floor(y - PLAYER_H + 1),
             PLAYER_W, 

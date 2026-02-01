@@ -46,7 +46,7 @@ const data = {
     "menu-button": "./assets/sprites/menus/menu_button.png",
 
     // musics
-    "music1": "./assets/sounds/musiqueFond1.mp3",
+    // "music1": "./assets/sounds/musiqueFond1.mp3",
 
     // Sounds
     "fx-bird": "./assets/sounds/fx-bird.mp3",
@@ -71,6 +71,9 @@ const data = {
     "bloc12": "./assets/sprites/blocks/dirt/12.png",
     "bloc13": "./assets/sprites/blocks/dirt/13.png",
     "bloc14": "./assets/sprites/blocks/dirt/14.png",
+
+    // smoke
+    "smokeparticles":"./assets/sprites/smoke/pixilart-sprite.png",,
     "block-broken1": "./assets/sprites/blocks/breakable/brick_cracked.png",
     "block-broken2": "./assets/sprites/blocks/breakable/brick.png",
     
