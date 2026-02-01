@@ -156,10 +156,11 @@ export class Level {
 
         this.exits.forEach(exit => {
             ctx.fillStyle = "red";
-            ctx.fillRect(
+            ctx.drawImage(
+                data["portal"],
                 exit.x * SIZE - srcX, 
                 exit.y * SIZE - srcY, 
-                exit.width * SIZE, 
+                exit.width * SIZE,
                 exit.height * SIZE
             );        
         })
