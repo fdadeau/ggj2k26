@@ -55,7 +55,7 @@ export class Level {
     update(dt, keys) {
         if (this.cameraPath.length == 0) {
             this.player.update(dt, keys, this);
-            return;
+            return this.isOnExit(this.player.x, this.player.y, this.player.width / 2, this.player.height / 2)?.nextLevel;
         }
 
         const exit = this.isOnExit(this.player.x, this.player.y, this.player.width / 2, this.player.height / 2);
