@@ -17,7 +17,7 @@ const MAX_FALL_SPEED = 0.8;
 /** Player dimensions */
 const FRAME_HEIGHT = 30;
 const FRAME_WIDTH = 23;
-const PLAYER_SCALE = 1.5;
+const PLAYER_SCALE = 1;
 const PLAYER_W = FRAME_WIDTH * PLAYER_SCALE;
 const PLAYER_H = FRAME_HEIGHT * PLAYER_SCALE;
 
@@ -228,7 +228,7 @@ export class Player {
         }
 
         if (!this.dead) this.determineAnimation(dt);        
-    }
+    } 
 
 
     /**
