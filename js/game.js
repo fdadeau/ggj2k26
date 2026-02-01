@@ -47,6 +47,7 @@ export class Game {
         this.msg = "";
         this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, continue: 0, pause: 0 };
         this.previousButtons = new Set();
+        audio.playMusic("music1", 0.7);
     }
 
     changeLevel(levelId) {

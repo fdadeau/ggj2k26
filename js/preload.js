@@ -43,7 +43,8 @@ const data = {
     "frame-normal": "./assets/sprites/frames/empty_frame.png",
 
     // musics
-    
+    "music1": "./assets/sounds/musiqueFond1.mp3",
+
     // Sounds
     "fx-bird": "./assets/sounds/fx-bird.mp3",
     "fx-ninja": "./assets/sounds/fx-ninja.mp3",
