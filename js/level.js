@@ -28,12 +28,6 @@ const MASK_SIZE = 20;
 
 const BREAKABLE_HITS = 2;
 
-const SMOKE_SCREEN_PROPORTION = 0.02;
-
-const NB_UPDATED_PARTICLES_PER_SECONDS = 10;
-
-const SMOKE_NB_PARTICLES = 500 ;
-
 export class Level {
 
     constructor(n) {  
@@ -48,7 +42,7 @@ export class Level {
         this.size = SIZE;
         this.cameraPath = LEVELS[n].camera.path.map(({x,y,speed}) => { return {x: x*SIZE, y: (MAX-y)*SIZE, speed}; });
         this.player = new Player(LEVELS[n].player.startPosition.x * SIZE, (MAX-LEVELS[n].player.startPosition.y-1) * SIZE);
-        this.smoke = smokeFill([],SMOKE_NB_PARTICLES);
+        this.smoke = smokeFill([],SMOKE_NB_PARTICLES,this.camera);
     }
 
 
@@ -103,9 +97,9 @@ export class Level {
         });
 
         for(var i = 0; i < 1000*NB_UPDATED_PARTICLES_PER_SECONDS/dt ; ++i){
-            this.smoke.pop();
+            this.smoke.shift();
         }
-        this.smoke = smokeFill(this.smoke,SMOKE_NB_PARTICLES);
+        this.smoke = smokeFill(this.smoke,SMOKE_NB_PARTICLES, this.camera);
 
 
     }
@@ -396,13 +390,23 @@ function rienAuDessus(map, l, c) {
     return !map[l-1] || map[l-1][c] != 1;
 }
 
-function smokeFill(smoke,nbParticles) {
+
+const SMOKE_SCREEN_PROPORTION = 0.15;
+
+const NB_UPDATED_PARTICLES_PER_SECONDS = 0.005;
+
+const SMOKE_NB_PARTICLES = 500;
+
+function smokeFill(smoke, nbParticles, camera) {
+
+    const srcX = camera.x - WIDTH / 2;
+    const srcY = camera.y - HEIGHT / 2 + HEIGHT / 3;
 
     while(smoke.length < nbParticles){
         smoke.push(
             new Particle(
-                Math.random()*WIDTH*SMOKE_SCREEN_PROPORTION-PARTICLE_SIZE,
-                Math.random()*HEIGHT,
+                srcX + Math.random()*WIDTH*SMOKE_SCREEN_PROPORTION-PARTICLE_SIZE,
+                srcY + Math.random()*(HEIGHT + 100),
                 Math.floor(Math.random()*SMOKE_SPRITE_NB_FRAMES)
             )
         );
