@@ -230,10 +230,13 @@ function loadLevel(level) {
         for (let c=0; c < map[l].length; c++) {
             switch (map[l][c]) {
                 case 1: 
+                    ctx.drawImage(determineBlock(map, l, c), c*SIZE, l*SIZE, SIZE, SIZE);
+                    /*
                     ctx.fillStyle = "grey";
                     ctx.fillRect(c*SIZE, l*SIZE, SIZE, SIZE);
                     ctx.fillStyle = "lightgrey";
                     ctx.fillRect(c*SIZE + 2, l*SIZE + 2, SIZE - 4, SIZE - 4);
+                    */
                     break;
                 /*
                 case 2: 
@@ -291,3 +294,61 @@ function loadLevel(level) {
     return {osc,map,masks,breakables};
 }
 
+function determineBlock(map, l, c) {
+    if (rienEnDessous(map, l, c) && rienAGauche(map, l, c) && !rienADroite(map, l, c) && rienAuDessus(map, l, c)) {
+        return data["bloc1"];
+    }
+    if (!rienAGauche(map, l, c) && !rienADroite(map, l, c) && rienAuDessus(map, l, c)) {
+        return data["bloc2"];
+    }
+    if (rienEnDessous(map, l, c) && !rienAGauche(map, l, c) && rienADroite(map, l, c) && rienAuDessus(map, l, c)) {
+        return data["bloc3"];
+    }
+    if (!rienEnDessous(map, l, c) && rienAGauche(map, l, c) && !rienADroite(map, l, c) && rienAuDessus(map, l, c)) {
+        return data["bloc4"];
+    }
+    if (!rienEnDessous(map, l, c) && !rienAGauche(map, l, c) && rienADroite(map, l, c) && rienAuDessus(map, l, c)) {
+        return data["bloc5"];
+    }
+    if (rienEnDessous(map, l, c) && rienAGauche(map, l, c) && !rienADroite(map, l, c) && !rienAuDessus(map, l, c)) {
+        return data["bloc6"];
+    }
+    if (rienEnDessous(map, l, c) && !rienAGauche(map, l, c) && !rienADroite(map, l, c) && !rienAuDessus(map, l, c)) {
+        return data["bloc7"];
+    }
+    if (rienEnDessous(map, l, c) && !rienAGauche(map, l, c) && rienADroite(map, l, c) && !rienAuDessus(map, l, c)) {
+        return data["bloc8"];
+    }
+    if (!rienEnDessous(map, l, c) && rienAGauche(map, l, c) && !rienADroite(map, l, c) && !rienAuDessus(map, l, c)) {
+        return data["bloc9"];
+    }
+    if (!rienEnDessous(map, l, c) && !rienAGauche(map, l, c) && rienADroite(map, l, c) && !rienAuDessus(map, l, c)) {
+        return data["bloc10"];
+    }
+    if (!rienEnDessous(map, l, c) && rienAGauche(map, l, c) && rienADroite(map, l, c) && rienAuDessus(map, l, c)) {
+        return data["bloc11"];
+    }
+    if (!rienEnDessous(map, l, c) && rienAGauche(map, l, c) && rienADroite(map, l, c) && !rienAuDessus(map, l, c)) {
+        return data["bloc12"];
+    }
+    if (rienEnDessous(map, l, c) && rienAGauche(map, l, c) && rienADroite(map, l, c) && !rienAuDessus(map, l, c)) {
+        return data["bloc13"];
+    }
+    if (rienEnDessous(map, l, c) && rienAGauche(map, l, c) && rienADroite(map, l, c) && rienAuDessus(map, l, c)) {
+        return data["bloc12"];
+    }
+    return data["bloc7"];
+} 
+
+function rienEnDessous(map, l, c) {
+    return !map[l+1] || map[l+1][c] != 1;
+}
+function rienAGauche(map, l, c) {
+    return map[l][c-1] != 1;
+}
+function rienADroite(map, l, c) {
+    return map[l][c+1] != 1;
+}
+function rienAuDessus(map, l, c) {
+    return !map[l-1] || map[l-1][c] != 1;
+}

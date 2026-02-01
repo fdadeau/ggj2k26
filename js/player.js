@@ -75,7 +75,7 @@ export class Player {
         this.complete = false;
         this.lastDir = 1;
         this.dash = null;
-        this.mask = MASK.WRESTLER;
+        this.mask = MASK.NINJA;
         this.mask2 = MASK.NONE;
         this.jumpCount = 0;
         this.currentAnimation = { frame: 0, currentDelay: STILL_R_ANIMATION.delay, animation: STILL_R_ANIMATION };
@@ -124,7 +124,7 @@ export class Player {
         if (keys.action && this.mask == MASK.NINJA && !this.dash) {
             keys.action = 0;
             audio.playSound("fx-ninja", 1, 1);
-            this.dash = { delay: 80, save: 0*this.speedX };
+            this.dash = { delay: 100, save: 0*this.speedX };
             this.speedX = this.lastDir * MAX_SPEED * 3;
         }
         if (this.dash) {
