@@ -93,7 +93,7 @@ export class Level {
         this.breakables.forEach(b => {
             if (b.broken && x >= b.x * SIZE && x <= b.x * SIZE + SIZE && y >= b.y * SIZE && y <= b.y * SIZE + b.h * SIZE) {
                 b.broken--;
-                audio.playSound("fx-wrestler", "player", 1);
+                audio.playSound(b.broken == 0 ? "fx-collapse" : "fx-wrestler", "player", 1);
                 if (b.broken == 0) {
                     b.blocks.forEach(coords => this.map[coords[0]][coords[1]] = 0);
                 } 
@@ -117,10 +117,15 @@ export class Level {
         this.breakables.forEach(b => {
             if (b.broken > 0) {
                 b.blocks.forEach(bl => {
+                    if (b.broken > 0) {
+                        ctx.drawImage(data[`block-broken${b.broken}`], bl[1]*SIZE - srcX, bl[0]*SIZE - srcY, SIZE, SIZE);
+                    }
+                    /*
                     ctx.fillStyle = b.broken == 2 ? "darkred" : "red";
                     ctx.fillRect(bl[1]*SIZE - srcX, bl[0]*SIZE - srcY, SIZE, SIZE);
                     ctx.fillStyle = b.broken == 2 ? "red" : "orange";
                     ctx.fillRect(bl[1]*SIZE + 2 - srcX, bl[0]*SIZE + 2 - srcY, SIZE - 4, SIZE - 4);
+                    */
                 });
             }    
         });

@@ -48,6 +48,7 @@ const data = {
     "fx-bird": "./assets/sounds/fx-bird.mp3",
     "fx-ninja": "./assets/sounds/fx-ninja.mp3",
     "fx-wrestler": "./assets/sounds/fx-wrestler.mp3",
+    "fx-collapse": "./assets/sounds/fx-collapse.mp3",
     "death": "./assets/sounds/wilhelm.mp3",
     "victory": "./assets/sounds/victory.mp3",
 
@@ -65,7 +66,10 @@ const data = {
     "bloc11": "./assets/sprites/blocks/dirt/11.png", 
     "bloc12": "./assets/sprites/blocks/dirt/12.png",
     "bloc13": "./assets/sprites/blocks/dirt/13.png",
-    "bloc14": "./assets/sprites/blocks/dirt/14.png"
+    "bloc14": "./assets/sprites/blocks/dirt/14.png",
+    "block-broken1": "./assets/sprites/blocks/breakable/brick_cracked.png",
+    "block-broken2": "./assets/sprites/blocks/breakable/brick.png",
+    
 }
 
 /***

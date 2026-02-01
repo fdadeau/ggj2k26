@@ -75,7 +75,7 @@ export class Player {
         this.complete = false;
         this.lastDir = 1;
         this.dash = null;
-        this.mask = MASK.NINJA;
+        this.mask = MASK.WRESTLER;
         this.mask2 = MASK.NONE;
         this.jumpCount = 0;
         this.currentAnimation = { frame: 0, currentDelay: STILL_R_ANIMATION.delay, animation: STILL_R_ANIMATION };
