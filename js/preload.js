@@ -76,6 +76,10 @@ const data = {
     "smokeparticles":"./assets/sprites/smoke/pixilart-sprite.png",
     "block-broken1": "./assets/sprites/blocks/breakable/brick_cracked.png",
     "block-broken2": "./assets/sprites/blocks/breakable/brick.png",
+
+    // backgrounds
+    "background": "./assets/sprites/background/mountains.png",
+    "trees": "./assets/sprites/background/trees.png",
     
 }
 

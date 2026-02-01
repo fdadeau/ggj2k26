@@ -126,6 +126,14 @@ export class Level {
         // compute background position w.r.t. the player
         let srcX = this.camera.x - WIDTH / 2;
         let srcY = this.camera.y - HEIGHT / 2;
+
+        // background with scrolling
+        const X1 = Math.floor(srcX / 20) % WIDTH, Y1 = HEIGHT/8;
+        const X2 = Math.floor(srcX / 5) % WIDTH;
+        ctx.drawImage(data["background"], 0, 0, WIDTH, HEIGHT, -X1, Y1, WIDTH, HEIGHT);
+        ctx.drawImage(data["background"], 0, 0, WIDTH, HEIGHT, -X1+WIDTH, Y1, WIDTH, HEIGHT);
+        ctx.drawImage(data["trees"], X2, 0, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT);
+
         ctx.drawImage(this.background, srcX, srcY, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT);
        
         // render masks
