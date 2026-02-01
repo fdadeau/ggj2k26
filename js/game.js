@@ -7,6 +7,8 @@ import { audio } from "./audio.js";
 
 import { getGamepadFromNavigator } from "./gamepad.js";
 
+import { data } from "./preload.js"; 
+
 const STATES = {
     LOADING: 0, 
     MENU: 5, 
@@ -15,12 +17,11 @@ const STATES = {
     PAUSE: 15, 
     GAME_OVER: 20, 
     COMPLETED: 30, 
-    TIME_OUT: 40
 }; 
 
 const DEBUG = 1;
 
-const START_LEVEL = 2;
+const START_LEVEL = 1;
 
 const DELAY = 60;
 let frame = -10, df = 1, delay = DELAY, max = 50;
@@ -34,17 +35,25 @@ export class Game {
         this.ctx.imageSmoothingEnabled = false;
         this.nLevel = START_LEVEL;
         this.state = STATES.LOADING;
-        this.msg = "Loading...";
         this.gamepadHandler = gamepadHandler;        
         this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, continue: 0, pause: 0 };
         this.previousButtons = new Set();
+        this.loadingMessage = "";
         this.smoke = [];
     }
 
     reset() {
         this.level = new Level(this.nLevel);
         this.state = STATES.IN_GAME;
-        this.msg = "";
+        this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, continue: 0, pause: 0 };
+        this.previousButtons = new Set();
+        audio.playMusic("music1", 0.7);
+    }
+
+    changeLevel(levelId) {
+        this.nLevel = levelId;
+        this.level = new Level(this.nLevel);
+        this.state = STATES.COMPLETED;
         this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, continue: 0, pause: 0 };
         this.previousButtons = new Set();
     }
@@ -52,10 +61,10 @@ export class Game {
     loading(loaded, total) {
         if (loaded >= total) {
             this.state = STATES.MENU;
-            this.msg = "Press spacebar to start";
             return;
         }
-        this.msg = "Loading... (" + loaded + "/" + total + ")";
+
+        this.loadingMessage = `${loaded}/${total}`;
     }
 
     pause(){
@@ -92,22 +101,32 @@ export class Game {
         // deal with prioritary keys
         
         switch (this.state) {
+            case STATES.LOADING:
+                return;
+            case STATES.LEVEL_SELECTION:
+                throw new Error("Not Implemented yet");
             case STATES.IN_GAME:
                 if (this.keys.pause) {
                     this.pause();
                     return;
                 }
                 if (this.state == STATES.IN_GAME) {
-                    this.level.update(dt, this.keys);
+                    const nextLevel = this.level.update(dt, this.keys);
+                    if(nextLevel !== undefined){
+                        this.changeLevel(
+                            nextLevel,
+                        );
+                    }
+
                     if (this.level.player.dead) {
                         this.state = STATES.GAME_OVER;
                         this.msg = "GAME OVER";
-                        //audio.playSound("death", "player", 0.7, false);
+                        audio.playSound("death", "player", 0.4, false);
                         return true;
                     }
                     else if (this.level.player.complete) {
                         this.state = STATES.COMPLETED;
-                        //audio.playSound("victory", "player", 0.7, false);
+                        audio.playSound("victory", "player", 0.7, false);
                     }
                 }   
                 break;
@@ -119,7 +138,14 @@ export class Game {
                     this.msg = "IN_GAME";
                 }                
                 break;
-
+            case STATES.COMPLETED:
+                this.msg = "Press spacebar continue to next level"
+                if (this.keys.continue) {
+                    this.keys.continue = 0;
+                    this.state = STATES.IN_GAME;
+                    this.msg = "IN_GAME";
+                }
+                break;
 			case STATES.PAUSE:
 				if(this.keys.continue){
 					this.unpause()
@@ -128,12 +154,13 @@ export class Game {
                     this.reset();
                 }
                 break;
-            
             case STATES.GAME_OVER: 
                 if (this.keys.continue) {
                     this.reset();
                 }
-
+                break;
+            default: 
+                throw new Error(`Unhandled game state, got ${this.state}`);
         }
 
         return true;
@@ -141,51 +168,68 @@ export class Game {
 
 
     render() {
-        // 
         this.ctx.clearRect(0, 0, WIDTH, HEIGHT);
-        // 
-        if (this.state == STATES.IN_GAME) {
-            this.level.render(this.ctx);
-        }
-        this.ctx.textAlign = "left";
-        if (this.msg) {
-            this.ctx.fillText(this.msg, WIDTH / 2, HEIGHT / 2);
-        }
+        this.ctx.fillStyle = "white";
 
-        if (this.state == STATES.PAUSE) {
-            this.ctx.fillStyle = "white";
-            this.ctx.fillRect(WIDTH / 2 - 160, HEIGHT / 2 - 100, 320, 200);
-            this.ctx.fillStyle = "black";
-            this.ctx.fillRect(WIDTH / 2 - 150, HEIGHT / 2 - 90, 300, 180);
-            this.ctx.fillStyle = "white";
-            this.ctx.textAlign = "center";
-            this.ctx.fillText("GAME PAUSED", WIDTH/2, HEIGHT/2 - 60);
-            this.ctx.fillText("Press Escape again to restart", WIDTH/2, HEIGHT/2);
-            this.ctx.fillText("Press Spacebar to resume", WIDTH/2, HEIGHT/2 + 50);
-        }
-        else if (this.state == STATES.GAME_OVER) {
-            this.ctx.fillStyle = "white";
-            this.ctx.fillRect(WIDTH / 2 - 160, HEIGHT / 2 - 100, 320, 200);
-            this.ctx.fillStyle = "black";
-            this.ctx.fillRect(WIDTH / 2 - 150, HEIGHT / 2 - 90, 300, 180);
-            this.ctx.fillStyle = "white";
-            this.ctx.textAlign = "center";
-            this.ctx.fillText("GAME OVER", WIDTH/2, HEIGHT/2 - 60);
-            this.ctx.fillText("Press Spacebar to restart", WIDTH/2, HEIGHT/2 + 50);
-        }
-
-        if (DEBUG) {
-            this.ctx.font = "12px courier";
-            this.ctx.fillText(`keys = ${JSON.stringify(this.keys)}`, 10, 40);
-            this.ctx.fillStyle = "white";
-            this.ctx.textAlign = "left";
-            this.ctx.fillText(lastFPS, 20, 20)
+        switch(this.state){
+            case STATES.PAUSE:
+                this.ctx.drawImage(data["menu-background"], 0, 0, 32 * 3, 32 * 2, WIDTH / 2 - 160, HEIGHT / 2 - 100, 320, 200);
+                this.ctx.font = '400 32px pixel-sans';
+                this.ctx.textAlign = "center";
+                this.ctx.fillText("GAME PAUSED", WIDTH / 2, HEIGHT / 2 - 30);
+                this.ctx.font = '16px pixel-sans';
+                this.ctx.textAlign = "center";
+                this.ctx.fillText("Press ESCAPE to reset", WIDTH / 2, HEIGHT / 2 + 30);
+                this.ctx.fillText("Press SPACE to resume", WIDTH / 2, HEIGHT / 2 + 60);
+                break;
+            case STATES.GAME_OVER: 
+                this.ctx.drawImage(data["menu-background"], 0, 0, 32 * 3, 32 * 2, WIDTH / 2 - 160, HEIGHT / 2 - 100, 320, 200);
+                this.ctx.font = '400 32px pixel-sans';
+                this.ctx.textAlign = "center";
+                this.ctx.fillText("GAME OVER", WIDTH / 2, HEIGHT / 2 - 30);
+                this.ctx.font = '16px pixel-sans';
+                this.ctx.textAlign = "center";
+                this.ctx.fillText("Press SPACE to restart", WIDTH / 2, HEIGHT / 2 + 30);
+                break;
+            case STATES.COMPLETED:
+                this.ctx.drawImage(data["menu-background"], 0, 0, 32 * 3, 32 * 2, WIDTH / 2 - 160, HEIGHT / 2 - 100, 320, 200);
+                this.ctx.font = '400 32px pixel-sans';
+                this.ctx.textAlign = "center";
+                this.ctx.fillText("LEVEL COMPLETED!", WIDTH / 2, HEIGHT / 2 - 30);
+                this.ctx.font = '16px pixel-sans';
+                this.ctx.textAlign = "center";
+                this.ctx.fillText("Press SPACE to continue", WIDTH / 2, HEIGHT / 2 + 30);
+                break;
+            case STATES.IN_GAME:
+                this.level.render(this.ctx)
+                break;
+            case STATES.MENU:
+                this.ctx.drawImage(data["menu-background"], 0, 0, 32 * 3, 32 * 2, WIDTH / 2 - 160, HEIGHT / 2 - 100, 320, 200);
+                this.ctx.font = '400 48px pixel-sans';
+                this.ctx.textAlign = "center";
+                this.ctx.fillText("INSERT NAME", WIDTH / 2, HEIGHT / 2 - 30);
+                this.ctx.font = '16px pixel-sans';
+                this.ctx.textAlign = "center";
+                this.ctx.fillText("Press SPACE to start", WIDTH / 2, HEIGHT / 2 + 30);
+                break;
+            case STATES.LEVEL_SELECTION:
+                throw new Error("Not Implemented yet");
+            case STATES.LOADING:
+                this.ctx.font = '400 32px pixel-sans';
+                this.ctx.textAlign = "center";
+                this.ctx.fillText("LOADING", WIDTH / 2, HEIGHT / 2 - 30);
+                this.ctx.font = '16px pixel-sans';
+                this.ctx.textAlign = "center";
+                this.ctx.fillText(this.loadingMessage, WIDTH / 2, HEIGHT / 2 + 30);
+                break;
+            default:
+                throw new Error(`Unhandled game state, got ${this.state}`);
         }
     }
 
 	handleGamepadActions(gamepad){
         const axisMoved = this.gamepadHandler.getAxeOrientationAndIntensity(gamepad)
-		const {pressedButtons, notPressedButtons} = this.gamepadHandler.getButtonState(gamepad) 
+		const { pressedButtons } = this.gamepadHandler.getButtonState(gamepad) 
         const currentButtons = new Set(pressedButtons);
 
         const jumpPressed = currentButtons.has("JUMP") && !this.previousButtons.has("JUMP");
@@ -219,15 +263,9 @@ export class Game {
     pressKey(code) {
         switch (code) {
             case "ArrowLeft":
-                if(this.level.player.lastDir === 1 && this.level.player.isJumping){
-                    return;
-                }
                 this.keys.left = 1;
                 break;
             case "ArrowRight":
-                if(this.level.player.lastDir === 0 && this.level.player.isJumping){
-                    return;
-                }
                 this.keys.right = 1;
                 break;
             case "KeyA":

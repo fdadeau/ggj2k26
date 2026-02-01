@@ -60,3 +60,8 @@ body {
 	width: 99vmin;
 	height: calc(99vmin * 10 / 16);
 }
+
+@font-face {
+    font-family: "pixel-sans";
+    src: url("./fonts/Pixelify_Sans/PixelifySans-VariableFont_wght.ttf");
+}

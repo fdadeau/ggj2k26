@@ -42,12 +42,19 @@ const data = {
     "frame-ninja": "./assets/sprites/frames/ninja_frame.png",
     "frame-normal": "./assets/sprites/frames/empty_frame.png",
 
+    "menu-background": "./assets/sprites/menus/menu.png",
+    "menu-button": "./assets/sprites/menus/menu_button.png",
+
     // musics
-    
+    // "music1": "./assets/sounds/musiqueFond1.mp3",
+
     // Sounds
     "fx-bird": "./assets/sounds/fx-bird.mp3",
     "fx-ninja": "./assets/sounds/fx-ninja.mp3",
     "fx-wrestler": "./assets/sounds/fx-wrestler.mp3",
+    "fx-collapse": "./assets/sounds/fx-collapse.mp3",
+    "death": "./assets/sounds/wilhelm.mp3",
+    "victory": "./assets/sounds/victory.mp3",
 
     //briques
     "bloc1": "./assets/sprites/blocks/dirt/1.png", 
@@ -66,7 +73,10 @@ const data = {
     "bloc14": "./assets/sprites/blocks/dirt/14.png",
 
     // smoke
-    "smokeparticles":"./assets/sprites/smoke/pixilart-sprite.png",
+    "smokeparticles":"./assets/sprites/smoke/pixilart-sprite.png",,
+    "block-broken1": "./assets/sprites/blocks/breakable/brick_cracked.png",
+    "block-broken2": "./assets/sprites/blocks/breakable/brick.png",
+    
 }
 
 /***

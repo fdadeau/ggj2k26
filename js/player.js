@@ -15,7 +15,11 @@ const MAX_SPEED = 0.4;
 const MAX_FALL_SPEED = 0.8;
 
 /** Player dimensions */
-const PLAYER_W = 40, PLAYER_H = 40;
+const FRAME_HEIGHT = 30;
+const FRAME_WIDTH = 23;
+const PLAYER_SCALE = 1.5;
+const PLAYER_W = FRAME_WIDTH * PLAYER_SCALE;
+const PLAYER_H = FRAME_HEIGHT * PLAYER_SCALE;
 
 /** Draw hitbox */
 const DEBUG = false;
@@ -23,7 +27,7 @@ const DEBUG = false;
 const MASK = { NONE: "normal", BIRD: "bird", WRESTLER: "wrestler", NINJA: "ninja"};
 
 const DEFAULT_ANIM_DELAY = 200;
-const FRAME_SIZE = 30;
+
 
 const STILL_R_ANIMATION = {
     length: 1,
@@ -70,12 +74,11 @@ export class Player {
         this.speedY = GRAVITY;
         this.onGround = 0;
         this.onPlatform = null;     
-        this.active = true;
         this.dead = false;
-        this.complete = false;
         this.lastDir = 1;
         this.dash = null;
-        this.mask = MASK.NINJA;
+        this.knock = null;
+        this.mask = MASK.WRESTLER;
         this.mask2 = MASK.NONE;
         this.jumpCount = 0;
         this.currentAnimation = { frame: 0, currentDelay: STILL_R_ANIMATION.delay, animation: STILL_R_ANIMATION };
@@ -117,13 +120,22 @@ export class Player {
             this.mask2 = tmp;
             keys.swap = 0;
         }
-        if (keys.action && this.mask == MASK.WRESTLER) {
+        // knock (wrestler)
+        if (keys.action && this.mask == MASK.WRESTLER && !this.knock) {
             level.hit(this.x + this.lastDir*this.width, this.y);
+            this.knock = { delay: 200 };
             keys.action = 0;
         }
+        if (this.knock) {
+            this.knock.delay -= dt;
+            if (this.knock.delay <= 0) {
+                this.knock = null;    
+            }
+        }
+        // dash (ninja)
         if (keys.action && this.mask == MASK.NINJA && !this.dash) {
             keys.action = 0;
-            audio.playSound("fx-ninja", 1, 1);
+            audio.playSound("fx-ninja", "player", 1);
             this.dash = { delay: 100, save: 0*this.speedX };
             this.speedX = this.lastDir * MAX_SPEED * 3;
         }
@@ -146,7 +158,7 @@ export class Player {
                 this.jumpCount++;
                 this.isJumping = true;
                 if (this.jumpCount == 2) {
-                    audio.playSound("fx-bird", 1, 1);
+                    audio.playSound("fx-bird", "player", 1);
                 }
             }
             keys.jump = 0;
@@ -170,12 +182,6 @@ export class Player {
         }
 
 
-        // key up on exit door
-        if (keys.up && this.isOnTheGround(level) && level.isOnExit(this.x, this.y, PLAYER_W)) {
-            this.complete = true;
-            keys.up = 0;
-            return;
-        }
 
         if (!this.dash) {
 
@@ -204,23 +210,6 @@ export class Player {
             this.updateYPosition(dt, level);
             if (this.dead) return;  // out of bounds --> dead
         }
-        // moving on a platform
-        /*
-        if (this.onPlatform != null) {
-            this.y = this.onPlatform.y;
-            if (this.onPlatform.dX) {
-                this.x += this.onPlatform.x - this.onPlatform.lastX;
-            }
-            // check if platform has reached the ground. if so, set Y coordinate to ground level.
-            let t = this.isOnTheGround(level); 
-            if (t > 0) {
-                this.y = t - 1;
-                this.onPlatform = null;
-            }
-        }
-            */
-        //this.checkAboveCollision(level);
-        //if (this.dead) return;
 
         this.updateXPosition(dt, level);
                 
@@ -275,15 +264,6 @@ export class Player {
         // check vertical collision
         let newY = this.y + this.speedY * dt;
 
-        // check if out of bounds --> dead
-        /*
-        if (newY >= level.world.height - 10) {
-            this.y = newY;
-            this.dead = true;
-            return;
-        }
-            */
-
         // check intersection with a tile
         let intersectingTile = level.intersectsWith(this.x, newY, PLAYER_W, PLAYER_H);
         if (intersectingTile == 0) {
@@ -311,33 +291,7 @@ export class Player {
         return 0;
     }
 
-    /*
-    isOnPlatform(level) {
-        for (let i=0; i < level.platforms.length; i++) {
-            let p = level.platforms[i];
-            if (this.speedY >= 0 && p.intersects(this.x, this.y+1, this.lastX, this.lastY, PLAYER_W) && !this.collidesAbove(level)) {
-                return p;
-            }
-        }
-        if (this.isOnTheGround(level)) {
-            this.onGround = true;
-
-        }
-        return null;
-    };
-    */
-
-    /*
-    checkAboveCollision(level) {
-        if (this.collidesAbove(level)) {
-            this.dead = true;
-        }
-    }
-    collidesAbove(level) {
-        return (level.whichTile(this.x-PLAYER_W/2, this.y-PLAYER_H) != 0 || level.whichTile(this.x+PLAYER_W/2,this.y-PLAYER_H) != 0)
-    }
-        */
-
+ 
     determineAnimation(dt){
         if(this.speedY !== 0){
             const isStartingJump = this.speedY < 0.6 * -JUMP_FORCE;
@@ -404,6 +358,9 @@ export class Player {
     }
 
     getSpriteDependingOnMask(){
+        if (this.knock) {
+            return this.lastDir > 0 ? "wrestler-runR" : "wrestler-runL";
+        }
         return `${this.mask}-${this.currentAnimation.animation.ref}`;
         /*
         switch(this.mask){
@@ -424,9 +381,9 @@ export class Player {
         ctx.drawImage(
             data[this.getSpriteDependingOnMask()], 
             0,
-            (this.currentAnimation.frame * FRAME_SIZE),
-            FRAME_SIZE,
-            FRAME_SIZE,
+            (this.currentAnimation.frame * FRAME_HEIGHT),
+            FRAME_WIDTH,
+            FRAME_HEIGHT,
             Math.floor(x - PLAYER_W / 2),
             Math.floor(y - PLAYER_H + 1),
             PLAYER_W, 
@@ -436,14 +393,14 @@ export class Player {
         ctx.drawImage(data[`frame-${this.mask}`], 10, 10, 30, 30);
         ctx.drawImage(data[`frame-${this.mask2}`], 50, 20, 20, 20);
 
-        ctx.fillText(JSON.stringify(this.dash), 10, 50)
+        //ctx.fillText(JSON.stringify(this.dash), 10, 50)
 
         let scale = 1;
         // debug info (pressed keys)
         if (DEBUG) {
             ctx.textAlign = "left";
             ctx.font = "12px arial";
-            ctx.fillText(`x=${this.x.toFixed(2)},y=${this.y.toFixed(2)},onPlatform=${this.onPlatform != null},complete=${this.complete},dead=${this.dead},jc=${this.jumpCount}`, 10, 60);
+            ctx.fillText(`x=${this.x.toFixed(2)},y=${this.y.toFixed(2)},onPlatform=${this.onPlatform != null},dead=${this.dead},jc=${this.jumpCount}`, 10, 60);
             ctx.strokeStyle = "#F00";
             ctx.strokeRect(x - PLAYER_W/2, y-PLAYER_H, PLAYER_W, PLAYER_H);
         }

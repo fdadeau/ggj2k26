@@ -131,10 +131,10 @@ export const LEVELS = {
         "endings":[
             {
                 "area":{
-                    "x": 75,
-                    "y":1,
+                    "x": 77,
+                    "y": 3,
                     "width":2,
-                    "height":2
+                    "height":1
                 },
                 "nextLevel": 2
             }
