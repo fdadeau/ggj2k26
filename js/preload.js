@@ -73,7 +73,7 @@ const data = {
     "bloc14": "./assets/sprites/blocks/dirt/14.png",
 
     // smoke
-    "smokeparticles":"./assets/sprites/smoke/pixilart-sprite.png",,
+    "smokeparticles":"./assets/sprites/smoke/pixilart-sprite.png",
     "block-broken1": "./assets/sprites/blocks/breakable/brick_cracked.png",
     "block-broken2": "./assets/sprites/blocks/breakable/brick.png",
     
