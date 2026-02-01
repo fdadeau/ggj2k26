@@ -1,8 +1,8 @@
 import { data } from "./preload.js"; 
 
-export const PARTICLE_SIZE = 5;
+export const PARTICLE_SIZE = 16;
 
-export const SMOKE_SPRITE_NB_FRAMES = 8;
+export const SMOKE_SPRITE_NB_FRAMES = 5;
 
 export class Particle {
     constructor(x, y, spriteIndex){
