@@ -29,25 +29,33 @@ const BREAKABLE_HITS = 2;
 
 export class Level {
 
-    constructor(n) {        
+    constructor(n) {  
         const lvl = loadLevel(LEVELS[n]);
         this.background = lvl.osc;
         this.map = lvl.map;
         this.masks = lvl.masks;
         this.breakables = lvl.breakables;
-        this.exit = lvl.exits;
-        
+        this.exits = lvl.exits;
         this.world = { height: this.background.height, width: this.background.width};
         this.camera = { x: LEVELS[n].camera.startPosition.x * SIZE, y: (MAX-LEVELS[n].camera.startPosition.y) * SIZE };
         this.size = SIZE;
-        // 
         this.cameraPath = LEVELS[n].camera.path.map(({x,y,speed}) => { return {x: x*SIZE, y: (MAX-y)*SIZE, speed}; });
         this.player = new Player(LEVELS[n].player.startPosition.x * SIZE, (MAX-LEVELS[n].player.startPosition.y-1) * SIZE);
     }
 
 
     update(dt, keys) {
-        if (this.cameraPath.length == 0) return;
+        if (this.cameraPath.length == 0) {
+            this.player.update(dt, keys, this);
+            return;
+        }
+
+        const exit = this.isOnExit(this.player.x, this.player.y, this.player.width / 2, this.player.height / 2);
+        if(exit){
+            this.player.update(dt, keys, this);
+            return exit.nextLevel;
+        }
+
         const target = { x: this.cameraPath[0].x, y: this.cameraPath[0].y, speed: this.cameraPath[0].speed };
         const cameraDirection = { 
             x: target.x-this.camera.x, 
@@ -88,7 +96,6 @@ export class Level {
     }
     
     hit(x,y) {
-        // console.log(x,y);
         let l = Math.floor(y / this.size), c = Math.floor(x / this.size);
         this.breakables.forEach(b => {
             if (b.broken && x >= b.x * SIZE && x <= b.x * SIZE + SIZE && y >= b.y * SIZE && y <= b.y * SIZE + b.h * SIZE) {
@@ -113,6 +120,7 @@ export class Level {
                 ctx.drawImage(data[`mask-${m.kind}`], m.x - srcX, m.y - srcY, MASK_SIZE, MASK_SIZE);
             }
         });
+
         // render breakables 
         this.breakables.forEach(b => {
             if (b.broken > 0) {
@@ -129,6 +137,16 @@ export class Level {
                 });
             }    
         });
+
+        this.exits.forEach(exit => {
+            ctx.fillStyle = "red";
+            ctx.fillRect(
+                exit.x * SIZE - srcX, 
+                exit.y * SIZE - srcY, 
+                exit.width * SIZE, 
+                exit.height * SIZE
+            );        
+        })
 
         // determine player's position in screen
         let playerX = this.player.x - srcX;
@@ -163,8 +181,23 @@ export class Level {
 
     }
 
-    isOnExit(x,y,w) {
-        return x-w/2 > this.exit.c * this.size && x+w/2 < (this.exit.c+1)*this.size && y > this.exit.l * this.size && y <= this.size*(this.exit.l +1);
+    isOnExit(x, y, w, h) {
+        const pLeft = x - w / 2;
+        const pRight = x + w / 2;
+        const pBottom = y;
+        const pTop = y - h;
+
+        return this.exits.find(exit => {
+            const eLeft = exit.x * SIZE;
+            const eRight = (exit.x + exit.width) * SIZE;
+            const eTop = exit.y * SIZE;
+            const eBottom = (exit.y + exit.height) * SIZE;
+
+            return pRight > eLeft && 
+                pLeft < eRight && 
+                pBottom > eTop && 
+                pTop < eBottom;
+        });
     }
 
 }
@@ -178,6 +211,13 @@ function loadLevel(level) {
     const breakables = level.stuff.filter(s => s.kind == "Breakable").map(p => {
         return { x: Number(p.x), y: (MAX-Number(p.y)-p.height), w: Number(p.width), h: Number(p.height), broken: BREAKABLE_HITS };
     });
+    const exits = level.endings.map(ending => ({
+        x: ending.area.x,
+        y: MAX - ending.area.y - ending.area.height, 
+        width: ending.area.width,
+        height: ending.area.height,
+        nextLevel: ending.nextLevel
+    }));
     
     let maxX = Math.max(...platforms.map(p => p.x + p.w));
     let maxY = Math.max(...platforms.map(p => p.y + p.h));
@@ -243,36 +283,6 @@ function loadLevel(level) {
                     ctx.fillRect(c*SIZE + 2, l*SIZE + 2, SIZE - 4, SIZE - 4);
                     */
                     break;
-                /*
-                case 2: 
-                    ctx.fillStyle = "darkred";
-                    ctx.fillRect(c*SIZE, l*SIZE, SIZE, SIZE);
-                    ctx.fillStyle = "red";
-                    ctx.fillRect(c*SIZE + 2, l*SIZE + 2, SIZE - 4, SIZE - 4);
-                    break;
-                case 3: 
-                    ctx.fillStyle = "red";
-                    ctx.fillRect(c*SIZE, l*SIZE, SIZE, SIZE);
-                    ctx.fillStyle = "pink";
-                    ctx.fillRect(c*SIZE + 2, l*SIZE + 2, SIZE - 4, SIZE - 4);
-                    break;
-                case 4: 
-                    ctx.moveTo((c+1)*SIZE, l*SIZE);
-                    ctx.beginPath();
-                    ctx.lineTo((c+1)*SIZE, (l+1)*SIZE);
-                    ctx.lineTo((c)*SIZE, (l+1)*SIZE);
-                    ctx.lineTo((c+1)*SIZE, (l)*SIZE);
-                    ctx.fill();
-                    break;
-                case 5: 
-                    ctx.moveTo((c+1)*SIZE, (l+1)*SIZE);
-                    ctx.beginPath();
-                    ctx.lineTo((c)*SIZE, (l)*SIZE);
-                    ctx.lineTo((c)*SIZE, (l+1)*SIZE);
-                    ctx.lineTo((c+1)*SIZE, (l+1)*SIZE);
-                    ctx.fill();
-                    break;
-                */
             }
         }
     }
@@ -296,7 +306,7 @@ function loadLevel(level) {
         ctx.fillRect(e.x * SIZE, e.y * SIZE, e.w * SIZE, e.h * SIZE);
         ctx.fillText("EXIT", e.x * SIZE + SIZE/2, e.y * SIZE - SIZE / 2);
     });
-    return {osc,map,masks,breakables};
+    return {osc, map, masks, breakables, exits};
 }
 
 function determineBlock(map, l, c) {

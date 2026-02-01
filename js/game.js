@@ -15,10 +15,11 @@ const STATES = {
     PAUSE: 15, 
     GAME_OVER: 20, 
     COMPLETED: 30, 
-    TIME_OUT: 40
+    TIME_OUT: 40,
+    WAITING_NEXT_LEVEL: 45,
 }; 
 
-const DEBUG = 0;
+const DEBUG = 1;
 
 const START_LEVEL = 1;
 
@@ -44,6 +45,14 @@ export class Game {
         this.level = new Level(this.nLevel);
         this.state = STATES.IN_GAME;
         this.msg = "";
+        this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, continue: 0, pause: 0 };
+        this.previousButtons = new Set();
+    }
+
+    changeLevel(levelId) {
+        this.nLevel = levelId;
+        this.level = new Level(this.nLevel);
+        this.state = STATES.WAITING_NEXT_LEVEL;
         this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, continue: 0, pause: 0 };
         this.previousButtons = new Set();
     }
@@ -97,7 +106,13 @@ export class Game {
                     return;
                 }
                 if (this.state == STATES.IN_GAME) {
-                    this.level.update(dt, this.keys);
+                    const nextLevel = this.level.update(dt, this.keys);
+                    if(nextLevel !== undefined){
+                        this.changeLevel(
+                            nextLevel,
+                        );
+                    }
+
                     if (this.level.player.dead) {
                         this.state = STATES.GAME_OVER;
                         this.msg = "GAME OVER";
@@ -118,6 +133,14 @@ export class Game {
                     this.msg = "IN_GAME";
                 }                
                 break;
+
+            case STATES.WAITING_NEXT_LEVEL:
+                this.msg = "Press spacebar continue to next level"
+                if (this.keys.continue) {
+                    this.keys.continue = 0;
+                    this.state = STATES.IN_GAME;
+                    this.msg = "IN_GAME";
+                }
 
 			case STATES.PAUSE:
 				if(this.keys.continue){
@@ -161,8 +184,7 @@ export class Game {
             this.ctx.fillText("GAME PAUSED", WIDTH/2, HEIGHT/2 - 60);
             this.ctx.fillText("Press Escape again to restart", WIDTH/2, HEIGHT/2);
             this.ctx.fillText("Press Spacebar to resume", WIDTH/2, HEIGHT/2 + 50);
-        }
-        else if (this.state == STATES.GAME_OVER) {
+        } else if (this.state == STATES.GAME_OVER) {
             this.ctx.fillStyle = "white";
             this.ctx.fillRect(WIDTH / 2 - 160, HEIGHT / 2 - 100, 320, 200);
             this.ctx.fillStyle = "black";
@@ -274,7 +296,7 @@ export class Game {
         }
         return;
     }
-
+        
 }
 
 function mkButton(ctx, txt, txt2, x, y, selected) {
