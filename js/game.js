@@ -19,6 +19,8 @@ const STATES = {
     COMPLETED: 30, 
 }; 
 
+const DEBUG = 1;
+
 const START_LEVEL = 1;
 
 const DELAY = 60;
@@ -37,6 +39,7 @@ export class Game {
         this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, continue: 0, pause: 0 };
         this.previousButtons = new Set();
         this.loadingMessage = "";
+        this.smoke = [];
     }
 
     reset() {
@@ -204,10 +207,10 @@ export class Game {
                 this.ctx.drawImage(data["menu-background"], 0, 0, 32 * 3, 32 * 2, WIDTH / 2 - 160, HEIGHT / 2 - 100, 320, 200);
                 this.ctx.font = '400 48px pixel-sans';
                 this.ctx.textAlign = "center";
-                this.ctx.fillText("INSERT NAME", WIDTH / 2, HEIGHT / 2 - 30);
+                this.ctx.fillText("LIMASK", WIDTH / 2, HEIGHT / 2 - 10);
                 this.ctx.font = '16px pixel-sans';
                 this.ctx.textAlign = "center";
-                this.ctx.fillText("Press SPACE to start", WIDTH / 2, HEIGHT / 2 + 30);
+                this.ctx.fillText("Press SPACE to start", WIDTH / 2, HEIGHT / 2 + 50);
                 break;
             case STATES.LEVEL_SELECTION:
                 throw new Error("Not Implemented yet");
@@ -311,4 +314,17 @@ export class Game {
         return;
     }
         
+}
+
+function mkButton(ctx, txt, txt2, x, y, selected) {
+    ctx.font = "arial 30px";
+    ctx.textAlign = "center";
+        
+    if (selected) {
+        ctx.fillStyle = "#600";
+        ctx.fillRect(x - 20, y - 28, 40, 40);
+    }
+    ctx.fillStyle = "white";
+    ctx.fillText(txt, x, y);
+    ctx.fillText(txt2, x, y+40);
 }

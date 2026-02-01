@@ -56,9 +56,10 @@ body {
     display: block;
     border: none;
     border: solid 1px #000;
-    background-image: linear-gradient(to bottom, rgb(48, 51, 203), rgb(185, 184, 204));
-	width: 99vmin;
-	height: calc(99vmin * 10 / 16);
+	background-color: rgb(111,167,168);
+    /*background-image: linear-gradient(to bottom, rgb(48, 51, 203), rgb(185, 184, 204));*/
+	height: 99vmin;
+	width: calc(99vmin * 16 / 10);
 }
 
 @font-face {

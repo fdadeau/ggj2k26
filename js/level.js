@@ -10,7 +10,9 @@ import { Player } from "./player.js";
 
 import { data } from "./preload.js";
 
-import { audio } from "./audio.js";       
+import { audio } from "./audio.js";
+
+import {Particle, SMOKE_SPRITE_NB_FRAMES, PARTICLE_SIZE} from "./smoke.js";
 
 const CAMERA_SPEED = 0.2;
 
@@ -26,7 +28,6 @@ const MASK_SIZE = 20;
 
 const BREAKABLE_HITS = 2;
 
-
 export class Level {
 
     constructor(n) {  
@@ -41,13 +42,14 @@ export class Level {
         this.size = SIZE;
         this.cameraPath = LEVELS[n].camera.path.map(({x,y,speed}) => { return {x: x*SIZE, y: (MAX-y)*SIZE, speed}; });
         this.player = new Player(LEVELS[n].player.startPosition.x * SIZE, (MAX-LEVELS[n].player.startPosition.y-1) * SIZE);
+        this.smoke = smokeFill([],SMOKE_NB_PARTICLES,this.camera);
     }
 
 
     update(dt, keys) {
         if (this.cameraPath.length == 0) {
             this.player.update(dt, keys, this);
-            return;
+            return this.isOnExit(this.player.x, this.player.y, this.player.width / 2, this.player.height / 2)?.nextLevel;
         }
 
         const exit = this.isOnExit(this.player.x, this.player.y, this.player.width / 2, this.player.height / 2);
@@ -93,6 +95,13 @@ export class Level {
             this.player.addMask(m.kind);
             m.active = false;
         });
+
+        for(var i = 0; i < 1000*NB_UPDATED_PARTICLES_PER_SECONDS/dt ; ++i){
+            this.smoke.shift();
+        }
+        this.smoke = smokeFill(this.smoke,SMOKE_NB_PARTICLES, this.camera);
+
+
     }
     
     hit(x,y) {
@@ -111,6 +120,14 @@ export class Level {
         // compute background position w.r.t. the player
         let srcX = this.camera.x - WIDTH / 2;
         let srcY = this.camera.y - HEIGHT / 2;
+
+        // background with scrolling
+        const X1 = Math.floor(srcX / 10) % WIDTH, Y1 = HEIGHT/10;
+        const X2 = Math.floor(srcX / 5) % WIDTH;
+        ctx.drawImage(data["background"], 0, 0, WIDTH, HEIGHT, -X1, Y1, WIDTH, HEIGHT);
+        ctx.drawImage(data["background"], 0, 0, WIDTH, HEIGHT, -X1+WIDTH, Y1, WIDTH, HEIGHT);
+        ctx.drawImage(data["trees"], 0, 0, WIDTH*2, HEIGHT, -X2, 0, WIDTH*2, HEIGHT);
+
         ctx.drawImage(this.background, srcX, srcY, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT);
        
         // render masks
@@ -145,10 +162,11 @@ export class Level {
 
         this.exits.forEach(exit => {
             ctx.fillStyle = "red";
-            ctx.fillRect(
+            ctx.drawImage(
+                data["portal"],
                 exit.x * SIZE - srcX, 
                 exit.y * SIZE - srcY, 
-                exit.width * SIZE, 
+                exit.width * SIZE,
                 exit.height * SIZE
             );        
         })
@@ -157,6 +175,16 @@ export class Level {
         let playerX = this.player.x - srcX;
         let playerY = this.player.y - srcY;
         this.player.render(ctx, playerX, playerY);
+
+        let X3 = (srcX * 1.4) % (2*WIDTH);
+        ctx.drawImage(data["grass"], 0, 0, WIDTH*2, HEIGHT, -X3, 0, WIDTH*2, HEIGHT);
+        ctx.drawImage(data["grass"], 0, 0, WIDTH*2, HEIGHT, -X3+WIDTH*2, 0, WIDTH*2, HEIGHT);
+        
+
+        // smoke on the border of the screen
+        this.smoke.forEach(particle => {
+            particle.render(ctx,srcX,srcY);
+        });
     }
 
 
@@ -209,6 +237,7 @@ export class Level {
 
 
 function loadLevel(level) {
+
     const platforms = level.stuff.filter(s => s.kind == "Permanent").map(p => {
         return { x: Number(p.x), y: (MAX-Number(p.y)-p.height), w: Number(p.width), h: Number(p.height) };
     });
@@ -235,6 +264,7 @@ function loadLevel(level) {
 
     const osc = new OffscreenCanvas(W, H);
     const ctx = osc.getContext("2d");
+    ctx.imageSmoothingEnabled = false;
     // sky
     /*
     for (let i=0; i < H; i++) {
@@ -372,4 +402,38 @@ function rienADroite(map, l, c) {
 }
 function rienAuDessus(map, l, c) {
     return !map[l-1] || map[l-1][c] != 1;
+}
+
+
+const SMOKE_SCREEN_PROPORTION = 0.15;
+
+const NB_UPDATED_PARTICLES_PER_SECONDS = 0.005;
+
+const SMOKE_NB_PARTICLES = 500;
+
+function betterRandomForSmoke(){
+    const lambda = 5;
+    const rd = Math.random();
+    return Math.exp(-lambda*rd)-Math.exp(-lambda)/lambda;
+}
+
+function smokeFill(smoke, nbParticles, camera) {
+
+    const srcX = camera.x - WIDTH / 2;
+    const srcY = camera.y - HEIGHT / 2 + HEIGHT / 3;
+
+    while(smoke.length < nbParticles){
+        
+        smoke.push(
+            new Particle(
+                //srcX + Math.random()*WIDTH*SMOKE_SCREEN_PROPORTION-PARTICLE_SIZE,
+                //srcY + Math.random()*(HEIGHT + 100),
+                srcX + betterRandomForSmoke()*(WIDTH+PARTICLE_SIZE)*SMOKE_SCREEN_PROPORTION+PARTICLE_SIZE/2,
+                srcY + Math.random()*(HEIGHT+PARTICLE_SIZE)-PARTICLE_SIZE,
+                Math.floor(Math.random()*SMOKE_SPRITE_NB_FRAMES)
+            )
+        );
+    }
+
+    return smoke;
 }
