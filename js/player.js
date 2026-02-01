@@ -17,7 +17,7 @@ const MAX_FALL_SPEED = 0.8;
 /** Player dimensions */
 const FRAME_HEIGHT = 30;
 const FRAME_WIDTH = 23;
-const PLAYER_SCALE = 1.5;
+const PLAYER_SCALE = 1;
 const PLAYER_W = FRAME_WIDTH * PLAYER_SCALE;
 const PLAYER_H = FRAME_HEIGHT * PLAYER_SCALE;
 
@@ -228,7 +228,7 @@ export class Player {
         }
 
         if (!this.dead) this.determineAnimation(dt);        
-    }
+    } 
 
 
     /**
@@ -390,8 +390,8 @@ export class Player {
             PLAYER_H
         );
 
-        ctx.drawImage(data[`frame-${this.mask}`], 10, 10, 30, 30);
-        ctx.drawImage(data[`frame-${this.mask2}`], 50, 20, 20, 20);
+        ctx.drawImage(data[`frame-${this.mask}`], 20, 10, 40, 40);
+        ctx.drawImage(data[`frame-${this.mask2}`], 70, 20, 30, 30);
 
         //ctx.fillText(JSON.stringify(this.dash), 10, 50)
 
