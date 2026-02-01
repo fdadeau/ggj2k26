@@ -171,6 +171,11 @@ export class Game {
         this.ctx.clearRect(0, 0, WIDTH, HEIGHT);
         this.ctx.fillStyle = "white";
 
+        if (this.state !== STATES.LOADING) {
+            this.ctx.drawImage(data["background"], 0, 0, WIDTH, HEIGHT);
+            this.ctx.drawImage(data["trees"], -WIDTH/4, 0, WIDTH*2, HEIGHT);
+        }
+
         switch(this.state){
             case STATES.PAUSE:
                 this.ctx.drawImage(data["menu-background"], 0, 0, 32 * 3, 32 * 2, WIDTH / 2 - 160, HEIGHT / 2 - 100, 320, 200);
