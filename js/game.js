@@ -21,7 +21,7 @@ const STATES = {
 
 const DEBUG = 1;
 
-const START_LEVEL = 1;
+const START_LEVEL = 2;
 
 const DELAY = 60;
 let frame = -10, df = 1, delay = DELAY, max = 50;
@@ -116,17 +116,6 @@ export class Game {
                         this.changeLevel(
                             nextLevel,
                         );
-                    }
-
-                    if (this.level.player.dead) {
-                        this.state = STATES.GAME_OVER;
-                        this.msg = "GAME OVER";
-                        audio.playSound("death", "player", 0.4, false);
-                        return true;
-                    }
-                    else if (this.level.player.complete) {
-                        this.state = STATES.COMPLETED;
-                        audio.playSound("victory", "player", 0.7, false);
                     }
                 }   
                 break;
