@@ -28,11 +28,11 @@ const MASK_SIZE = 20;
 
 const BREAKABLE_HITS = 2;
 
-const SMOKE_SCREEN_PROPORTION = 0.05;
+const SMOKE_SCREEN_PROPORTION = 0.1;
 
 const NB_UPDATED_PARTICLES_PER_SECONDS = 10;
 
-const SMOKE_NB_PARTICLES = 200;
+const SMOKE_NB_PARTICLES = 500;
 
 export class Level {
 
@@ -398,7 +398,7 @@ function rienAuDessus(map, l, c) {
 }
 
 function betterRandomForSmoke(){
-    const lambda = 1;
+    const lambda = 5;
     const rd = Math.random();
     return Math.exp(-lambda*rd)-Math.exp(-lambda)/lambda;
 }
