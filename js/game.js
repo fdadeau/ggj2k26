@@ -36,7 +36,7 @@ export class Game {
         this.nLevel = START_LEVEL;
         this.state = STATES.LOADING;
         this.gamepadHandler = gamepadHandler;        
-        this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, continue: 0, pause: 0 };
+        this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, pause: 0 };
         this.previousButtons = new Set();
         this.loadingMessage = "";
         this.smoke = [];
@@ -45,7 +45,7 @@ export class Game {
     reset() {
         this.level = new Level(this.nLevel);
         this.state = STATES.IN_GAME;
-        this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, continue: 0, pause: 0 };
+        this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, pause: 0 };
         this.previousButtons = new Set();
         audio.playMusic("music1", 0.7);
     }
@@ -54,7 +54,7 @@ export class Game {
         this.nLevel = levelId;
         this.level = new Level(this.nLevel);
         this.state = STATES.COMPLETED;
-        this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, continue: 0, pause: 0 };
+        this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, pause: 0 };
         this.previousButtons = new Set();
     }
 
@@ -68,6 +68,9 @@ export class Game {
     }
 
     pause(){
+        if(this.state === STATES.PAUSE){
+            return;
+        }
         this.state = STATES.PAUSE;
         this.keys.pause = 0;
     }
@@ -77,7 +80,10 @@ export class Game {
     }
 
     unpause(){
-        this.keys.continue = 0;
+        if(this.state !== STATES.PAUSE){
+            return;
+        }
+        this.keys.jump = 0;
         this.state = STATES.IN_GAME;
     }
 
@@ -120,7 +126,6 @@ export class Game {
 
                     if (this.level.player.dead) {
                         this.state = STATES.GAME_OVER;
-                        this.msg = "GAME OVER";
                         audio.playSound("death", "player", 0.4, false);
                         return true;
                     }
@@ -131,23 +136,20 @@ export class Game {
                 }   
                 break;
             case STATES.MENU: 
-                if (this.keys.continue) {
-                    this.keys.continue = 0;
+                if (this.keys.jump) {
+                    this.keys.jump = 0;
                     this.reset();
                     this.state = STATES.IN_GAME;
-                    this.msg = "IN_GAME";
                 }                
                 break;
             case STATES.COMPLETED:
-                this.msg = "Press spacebar continue to next level"
-                if (this.keys.continue) {
-                    this.keys.continue = 0;
+                if (this.keys.jump) {
+                    this.keys.jump = 0;
                     this.state = STATES.IN_GAME;
-                    this.msg = "IN_GAME";
                 }
                 break;
 			case STATES.PAUSE:
-				if(this.keys.continue){
+				if(this.keys.jump){
 					this.unpause()
 				}
                 else if (this.keys.pause) {
@@ -155,7 +157,7 @@ export class Game {
                 }
                 break;
             case STATES.GAME_OVER: 
-                if (this.keys.continue) {
+                if (this.keys.jump) {
                     this.reset();
                 }
                 break;
@@ -276,14 +278,14 @@ export class Game {
             case "KeyA":
                 this.keys.action = 1;
                 break;
-            case "KeyD":
-                this.keys.jump = 1;
-                break;
+            // case "KeyD":
+            //     this.keys.jump = 1;
+            //     break;
             case "KeyS":
                 this.keys.swap = 1;
                 break;
             case "Space":
-                this.keys.continue = 1;
+                this.keys.jump = 1;
                 break;
             case "Escape": 
                 this.keys.pause = 1;
@@ -306,11 +308,11 @@ export class Game {
             case "KeyS":
                 this.keys.swap = 0;
                 break;
-            case "KeyD": 
-                this.keys.jump = 0;
-                break;
+            // case "KeyD": 
+            //     this.keys.jump = 0;
+            //     break;
             case "Space":
-                this.keys.continue = 0;
+                this.keys.jump = 0;
                 break;
             case "Escape": 
                 this.keys.pause = 0;
