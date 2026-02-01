@@ -13,7 +13,6 @@ const GRAVITY = 0.05;
 const ACCELERATION = 0.02;
 const MAX_SPEED = 0.4;
 const MAX_FALL_SPEED = 0.8;
-const DASH_LENGTH = 5;
 
 /** Player dimensions */
 const FRAME_HEIGHT = 30;
@@ -79,8 +78,8 @@ export class Player {
         this.lastDir = 1;
         this.dash = null;
         this.knock = null;
-        this.mask = MASK.NINJA;
-        this.mask2 = MASK.WRESTLER;
+        this.mask = MASK.NONE;
+        this.mask2 = MASK.NONE;
         this.jumpCount = 0;
         this.currentAnimation = { frame: 0, currentDelay: STILL_R_ANIMATION.delay, animation: STILL_R_ANIMATION };
         this.isJumping = false;
@@ -138,7 +137,7 @@ export class Player {
             keys.action = 0;
             audio.playSound("fx-ninja", "player", 1);
             this.dash = { delay: 100, save: 0*this.speedX };
-            this.speedX = this.lastDir * MAX_SPEED * DASH_LENGTH;
+            this.speedX = this.lastDir * MAX_SPEED * 3;
         }
         if (this.dash) {
             this.dash.delay -= dt;

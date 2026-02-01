@@ -1,48 +1,48 @@
 export const LEVELS = {
     1: {
         "player":{
-            "startPosition":{"x":108,"y":6},
-            // "startPosition":{"x":8,"y":3},
+            // "startPosition":{"x":121,"y":3},
+            "startPosition":{"x":8,"y":3},
         },
         "camera":{
-            "startPosition":{"x":108 ,"y":6},
-            // "startPosition":{"x":8 ,"y":5},
+            // "startPosition":{"x":121 ,"y":5},
+            "startPosition":{"x":8 ,"y":5},
             "path":[
-                // {
-                //     "x":38,
-                //     "y":5,
-                //     "speed":0.5
-                // },
-                // {
-                //     "x":60,
-                //     "y":5,
-                //     "speed":0.3
-                // },
-                // {
-                //     "x":60,
-                //     "y":15,
-                //     "speed":0.3
-                // },
-                // {
-                //     "x":70,
-                //     "y":15,
-                //     "speed":0.8
-                // },
-                // {
-                //     "x":85,
-                //     "y":12,
-                //     "speed":0.8
-                // },
-                // {
-                //     "x":110,
-                //     "y":12,
-                //     "speed":0.5
-                // },
-                // {
-                //     "x":110,
-                //     "y":5,
-                //     "speed":0.8
-                // },
+                {
+                    "x":38,
+                    "y":5,
+                    "speed":0.5
+                },
+                {
+                    "x":60,
+                    "y":5,
+                    "speed":0.3
+                },
+                {
+                    "x":60,
+                    "y":15,
+                    "speed":0.3
+                },
+                {
+                    "x":70,
+                    "y":15,
+                    "speed":0.8
+                },
+                {
+                    "x":85,
+                    "y":12,
+                    "speed":0.8
+                },
+                {
+                    "x":110,
+                    "y":12,
+                    "speed":0.5
+                },
+                {
+                    "x":110,
+                    "y":5,
+                    "speed":0.8
+                },
                 {
                     "x":130,
                     "y":5,
@@ -351,12 +351,12 @@ export const LEVELS = {
                 "y":4,
                 "startLiving":0,
                 "stopLiving": undefined,
-                "width":10,
+                "width":8,
                 "height":15
             },
             {
                 "kind":"Permanent",
-                "x":118,
+                "x":116,
                 "y":1,
                 "startLiving":0,
                 "stopLiving": undefined,
@@ -365,21 +365,66 @@ export const LEVELS = {
             },
             {
                 "kind":"Permanent",
-                "x":125,
+                "x":121,
                 "y":1,
                 "startLiving":0,
                 "stopLiving": undefined,
-                "width":3,
+                "width":5,
                 "height":1
-            }
+            },
+            {
+                "kind":"Breakable",
+                "x":126,
+                "y":2,
+                "startLiving":0,
+                "stopLiving": "punched",
+                "width": 1,
+                "height": 3
+            },
+            {
+                "kind":"Permanent",
+                "x":126,
+                "y":5,
+                "startLiving":0,
+                "stopLiving": undefined,
+                "width":5,
+                "height":1
+            },
+            {
+                "kind":"Permanent",
+                "x":126,
+                "y":0,
+                "startLiving":0,
+                "stopLiving": undefined,
+                "width":9,
+                "height":2
+            },
+            {
+                "kind":"Permanent",
+                "x":133,
+                "y":0,
+                "startLiving":0,
+                "stopLiving": undefined,
+                "width":2,
+                "height":4
+            },
+            {
+                "kind":"Permanent",
+                "x":135,
+                "y":0,
+                "startLiving":0,
+                "stopLiving": undefined,
+                "width":5,
+                "height":10
+            },
         ],
         "endings":[
             {
                 "area":{
-                    "x": 150,
-                    "y": 3,
-                    "width":2,
-                    "height":1
+                    "x": 128,
+                    "y": 6,
+                    "width":1,
+                    "height":2
                 },
                 "nextLevel": 2
             }
