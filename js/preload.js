@@ -48,6 +48,22 @@ const data = {
     "fx-bird": "./assets/sounds/fx-bird.mp3",
     "fx-ninja": "./assets/sounds/fx-ninja.mp3",
     "fx-wrestler": "./assets/sounds/fx-wrestler.mp3",
+
+    //briques
+    "bloc1": "./assets/sprites/blocks/dirt/1.png", 
+    "bloc2": "./assets/sprites/blocks/dirt/2.png", 
+    "bloc3": "./assets/sprites/blocks/dirt/3.png",
+    "bloc4": "./assets/sprites/blocks/dirt/4.png", 
+    "bloc5": "./assets/sprites/blocks/dirt/5.png", 
+    "bloc6": "./assets/sprites/blocks/dirt/6.png", 
+    "bloc7": "./assets/sprites/blocks/dirt/7.png", 
+    "bloc8": "./assets/sprites/blocks/dirt/8.png", 
+    "bloc9": "./assets/sprites/blocks/dirt/9.png", 
+    "bloc10": "./assets/sprites/blocks/dirt/10.png",
+    "bloc11": "./assets/sprites/blocks/dirt/11.png", 
+    "bloc12": "./assets/sprites/blocks/dirt/12.png",
+    "bloc13": "./assets/sprites/blocks/dirt/13.png",
+    "bloc14": "./assets/sprites/blocks/dirt/14.png"
 }
 
 /***
