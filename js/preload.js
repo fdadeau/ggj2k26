@@ -42,6 +42,9 @@ const data = {
     "frame-ninja": "./assets/sprites/frames/ninja_frame.png",
     "frame-normal": "./assets/sprites/frames/empty_frame.png",
 
+    "menu-background": "./assets/sprites/menus/menu.png",
+    "menu-button": "./assets/sprites/menus/menu_button.png",
+
     // musics
     "music1": "./assets/sounds/musiqueFond1.mp3",
 
