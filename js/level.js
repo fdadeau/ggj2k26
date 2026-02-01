@@ -28,11 +28,11 @@ const MASK_SIZE = 20;
 
 const BREAKABLE_HITS = 2;
 
-const SMOKE_SCREEN_PROPORTION = 0.02;
+const SMOKE_SCREEN_PROPORTION = 0.05;
 
 const NB_UPDATED_PARTICLES_PER_SECONDS = 10;
 
-const SMOKE_NB_PARTICLES = 500 ;
+const SMOKE_NB_PARTICLES = 200;
 
 export class Level {
 
@@ -388,13 +388,20 @@ function rienAuDessus(map, l, c) {
     return !map[l-1] || map[l-1][c] != 1;
 }
 
+function betterRandomForSmoke(){
+    const lambda = 1;
+    const rd = Math.random();
+    return Math.exp(-lambda*rd)-Math.exp(-lambda)/lambda;
+}
+
 function smokeFill(smoke,nbParticles) {
 
     while(smoke.length < nbParticles){
+        
         smoke.push(
             new Particle(
-                Math.random()*WIDTH*SMOKE_SCREEN_PROPORTION-PARTICLE_SIZE,
-                Math.random()*HEIGHT,
+                betterRandomForSmoke()*(WIDTH+PARTICLE_SIZE)*SMOKE_SCREEN_PROPORTION-PARTICLE_SIZE,
+                Math.random()*(HEIGHT+PARTICLE_SIZE)-PARTICLE_SIZE,
                 Math.floor(Math.random()*SMOKE_SPRITE_NB_FRAMES)
             )
         );
