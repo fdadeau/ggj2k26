@@ -70,9 +70,7 @@ export class Player {
         this.speedY = GRAVITY;
         this.onGround = 0;
         this.onPlatform = null;     
-        this.active = true;
         this.dead = false;
-        this.complete = false;
         this.lastDir = 1;
         this.dash = null;
         this.mask = MASK.NINJA;
@@ -170,12 +168,6 @@ export class Player {
         }
 
 
-        // key up on exit door
-        if (keys.up && this.isOnTheGround(level) && level.isOnExit(this.x, this.y, PLAYER_W)) {
-            this.complete = true;
-            keys.up = 0;
-            return;
-        }
 
         if (!this.dash) {
 
@@ -391,7 +383,7 @@ export class Player {
         if (DEBUG) {
             ctx.textAlign = "left";
             ctx.font = "12px arial";
-            ctx.fillText(`x=${this.x.toFixed(2)},y=${this.y.toFixed(2)},onPlatform=${this.onPlatform != null},complete=${this.complete},dead=${this.dead},jc=${this.jumpCount}`, 10, 60);
+            ctx.fillText(`x=${this.x.toFixed(2)},y=${this.y.toFixed(2)},onPlatform=${this.onPlatform != null},dead=${this.dead},jc=${this.jumpCount}`, 10, 60);
             ctx.strokeStyle = "#F00";
             ctx.strokeRect(x - PLAYER_W/2, y-PLAYER_H, PLAYER_W, PLAYER_H);
         }
