@@ -63,7 +63,10 @@ const data = {
     "bloc11": "./assets/sprites/blocks/dirt/11.png", 
     "bloc12": "./assets/sprites/blocks/dirt/12.png",
     "bloc13": "./assets/sprites/blocks/dirt/13.png",
-    "bloc14": "./assets/sprites/blocks/dirt/14.png"
+    "bloc14": "./assets/sprites/blocks/dirt/14.png",
+
+    // smoke
+    "smokeparticles":"./assets/sprites/smoke/pixilart-sprite.png",
 }
 
 /***

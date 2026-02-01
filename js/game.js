@@ -20,7 +20,7 @@ const STATES = {
 
 const DEBUG = 1;
 
-const START_LEVEL = 1;
+const START_LEVEL = 2;
 
 const DELAY = 60;
 let frame = -10, df = 1, delay = DELAY, max = 50;
@@ -38,6 +38,7 @@ export class Game {
         this.gamepadHandler = gamepadHandler;        
         this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, continue: 0, pause: 0 };
         this.previousButtons = new Set();
+        this.smoke = [];
     }
 
     reset() {
