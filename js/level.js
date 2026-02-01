@@ -67,8 +67,8 @@ export class Level {
         if (
             (target.speed > 0 && this.player.x < this.camera.x - WIDTH/2 - this.player.width) ||
             (target.speed < 0 && this.player.x > this.camera.x + WIDTH/2 + this.player.width) ||
-            (this.player.y > this.camera.y + HEIGHT / 2 + this.player.height * 1.5) ||
-            (this.player.y < this.camera.y - HEIGHT / 2 - this.player.height / 2)
+            (target.speed > 0 && this.player.y > this.camera.y + HEIGHT / 2 + this.player.height * 1.5) ||
+            (target.speed < 0 && this.player.y < this.camera.y - HEIGHT / 2 - this.player.height / 2)
         ) {
             this.player.dead = true;
         }
