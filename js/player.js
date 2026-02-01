@@ -206,7 +206,7 @@ export class Player {
         }
 
         // if flying
-        if (this.speedY != 0) {
+        if (this.speedY != 0 && !this.dash) {
             this.updateYPosition(dt, level);
             if (this.dead) return;  // out of bounds --> dead
         }

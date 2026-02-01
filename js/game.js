@@ -28,6 +28,8 @@ let frame = -10, df = 1, delay = DELAY, max = 50;
 
 let fps = 0, time = 1000, lastFPS = 0;
 
+const perso = { delay: 3000, max: 3000, dir: "L", frame: "normal", frames: ["normal", "ninja", "wrestler", "bird"] }
+
 export class Game {
 
     constructor(cvs, gamepadHandler) {
@@ -165,13 +167,32 @@ export class Game {
                 throw new Error(`Unhandled game state, got ${this.state}`);
         }
 
+        perso.delay -= dt;
+        if (perso.delay < 0) {
+            if (Math.random() > 0.5) {
+                perso.frame = perso.frame != perso.frames[0] ? perso.frames[0] : perso.frames[Math.floor(1+Math.random()*3)];
+            }
+            else {
+                perso.dir = perso.dir == "L" ? "R" : "L";
+            }
+            perso.delay = perso.max;
+            
+        }
+
         return true;
     }
-
 
     render() {
         this.ctx.clearRect(0, 0, WIDTH, HEIGHT);
         this.ctx.fillStyle = "white";
+
+    
+
+        if (this.state !== STATES.LOADING) {
+            this.ctx.drawImage(data["background"], 0, 0, WIDTH, HEIGHT);
+            this.ctx.drawImage(data["trees"], -WIDTH/4, 0, WIDTH*2, HEIGHT);
+            this.ctx.drawImage(data[`${perso.frame}-still${perso.dir}`], 200, 40, 60, 60)
+        }
 
         switch(this.state){
             case STATES.PAUSE:
@@ -206,13 +227,35 @@ export class Game {
                 this.level.render(this.ctx)
                 break;
             case STATES.MENU:
-                this.ctx.drawImage(data["menu-background"], 0, 0, 32 * 3, 32 * 2, WIDTH / 2 - 160, HEIGHT / 2 - 100, 320, 200);
+                this.ctx.drawImage(
+                    data["menu-background"],
+                    0, 0, 32 * 3, 32 * 2,
+                    WIDTH / 2 - 160, HEIGHT / 2 - 100,
+                    320, 200
+                );
+                // Titre
                 this.ctx.font = '400 48px pixel-sans';
                 this.ctx.textAlign = "center";
-                this.ctx.fillText("LIMASK", WIDTH / 2, HEIGHT / 2 - 10);
+                this.ctx.fillText("LIMASK", WIDTH / 2, HEIGHT / 2 - 30);
+
                 this.ctx.font = '16px pixel-sans';
                 this.ctx.textAlign = "center";
-                this.ctx.fillText("Press SPACE to start", WIDTH / 2, HEIGHT / 2 + 50);
+                this.ctx.fillText("Press SPACE to start", WIDTH / 2, HEIGHT / 2 );
+
+    
+                this.ctx.font = '14px pixel-sans';
+                this.ctx.textAlign = "left";
+
+                const controlsX = WIDTH / 2 - 40;
+                let controlsY = HEIGHT / 2 + 20;
+                console.log("Drawing controls...", this.keys);
+                this.ctx.fillText("Move : ← → ", controlsX, controlsY);
+                controlsY += 18;
+                this.ctx.fillText("Jump : ESP", controlsX, controlsY);
+                controlsY += 18;
+                this.ctx.fillText("Pause : ESC", controlsX, controlsY);
+                controlsY += 18;
+                this.ctx.fillText("action : a", controlsX, controlsY);
                 break;
             case STATES.LEVEL_SELECTION:
                 throw new Error("Not Implemented yet");
