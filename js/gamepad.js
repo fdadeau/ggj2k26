@@ -1,3 +1,5 @@
+import { HEIGHT, WIDTH } from "./main.js";
+
 const AXE_TRESHOLD = 0.5;
 
 /**
@@ -117,15 +119,14 @@ export class GamepadHandler {
   }
 
   renderStep(action){
-    this.ctx.fillStyle = "white";
-    this.ctx.fillRect(this.cvs.width / 2 - 160, this.cvs.height / 2 - 100, 320, 200);
-    this.ctx.fillStyle = "black";
-    this.ctx.fillRect(this.cvs.width / 2 - 150, this.cvs.height / 2 - 90, 300, 180);
-    this.ctx.fillStyle = "white";
+    this.ctx.clearRect(0, 0, WIDTH, HEIGHT);
+    this.ctx.fillStyle = "black"
     this.ctx.textAlign = "center";
-    this.ctx.fillText("Gamepad detected", this.cvs.width/2, this.cvs.height/2 - 60);
-    this.ctx.fillText("Let's configure your gamepad!", this.cvs.width/2, this.cvs.height/2);
-    this.ctx.fillText(action, this.cvs.width/2, this.cvs.height/2 + 50);
+    this.ctx.font = '400 32px pixel-sans';
+    this.ctx.fillText("Controller Detected", WIDTH / 2, HEIGHT / 2 - 30);
+    this.ctx.font = '400 24px pixel-sans';
+    this.ctx.fillText("Let's configure it!", WIDTH / 2, HEIGHT / 2 + 0);
+    this.ctx.fillText(action, WIDTH / 2, HEIGHT / 2 + 50);
   }
 
   /**
