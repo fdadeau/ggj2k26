@@ -6,11 +6,7 @@ import { WIDTH, HEIGHT } from "./main.js";
 
 import { LEVELS } from "./LEVELS.js"; 
 
-import { Player } from "./player.js";
-
 import { data } from "./preload.js";
-
-import { audio } from "./audio.js";
 
 import {Particle, SMOKE_SPRITE_NB_FRAMES, PARTICLE_SIZE} from "./smoke.js";
 
@@ -34,30 +30,18 @@ export class Level {
         const lvl = loadLevel(LEVELS[n]);
         this.background = lvl.osc;
         this.map = lvl.map;
-        this.masks = lvl.masks;
-        this.breakables = lvl.breakables;
-        this.exits = lvl.exits;
         this.world = { height: this.background.height, width: this.background.width};
         this.camera = { x: LEVELS[n].camera.startPosition.x * SIZE, y: (MAX-LEVELS[n].camera.startPosition.y) * SIZE };
         this.size = SIZE;
         this.cameraPath = LEVELS[n].camera.path.map(({x,y,speed}) => { return {x: x*SIZE, y: (MAX-y)*SIZE, speed}; });
-        this.player = new Player(LEVELS[n].player.startPosition.x * SIZE, (MAX-LEVELS[n].player.startPosition.y-1) * SIZE);
-        this.smoke = smokeFill([],SMOKE_NB_PARTICLES,this.camera);
+        this.smoke = [];
     }
 
 
     update(dt, keys) {
-        if (this.cameraPath.length == 0) {
-            this.player.update(dt, keys, this);
-            return this.isOnExit(this.player.x, this.player.y, this.player.width / 2, this.player.height / 2)?.nextLevel;
+        if(this.cameraPath[0] == undefined){
+            return;
         }
-
-        const exit = this.isOnExit(this.player.x, this.player.y, this.player.width / 2, this.player.height / 2);
-        if(exit){
-            this.player.update(dt, keys, this);
-            return exit.nextLevel;
-        }
-
         const target = { x: this.cameraPath[0].x, y: this.cameraPath[0].y, speed: this.cameraPath[0].speed };
         const cameraDirection = { 
             x: target.x-this.camera.x, 
@@ -73,47 +57,11 @@ export class Level {
         if (Math.abs(this.camera.x - target.x) < EPSILON && Math.abs(this.camera.y - target.y) < EPSILON) {
             this.cameraPath.shift();
         }
-
-        if (
-            (target.speed > 0 && this.player.x < this.camera.x - WIDTH/2 - this.player.width) ||
-            (target.speed < 0 && this.player.x > this.camera.x + WIDTH/2 + this.player.width) ||
-            (target.speed > 0 && this.player.y > this.camera.y + HEIGHT / 2 + this.player.height * 1.5) ||
-            (target.speed < 0 && this.player.y < this.camera.y - HEIGHT / 2 - this.player.height / 2)
-        ) {
-            this.player.dead = true;
-        }
-
-        this.player.update(dt, keys, this);
-        
-        this.masks.filter(m => 
-            m.active && 
-            m.x + m.size /2 >= this.player.x - this.player.width / 2 &&
-            m.x + m.size /2 <= this.player.x + this.player.width / 2 && 
-            m.y + m.size /2 <= this.player.y && 
-            m.y + m.size /2 >= this.player.y - this.player.height
-        ).forEach(m => {
-            this.player.addMask(m.kind);
-            m.active = false;
-        });
-
         for(var i = 0; i < 1000*NB_UPDATED_PARTICLES_PER_SECONDS/dt ; ++i){
             this.smoke.shift();
         }
-        this.smoke = smokeFill(this.smoke,SMOKE_NB_PARTICLES, this.camera);
-
-
-    }
-    
-    hit(x,y) {
-        this.breakables.forEach(b => {
-            if (b.broken && x >= b.x * SIZE && x <= b.x * SIZE + SIZE && y >= b.y * SIZE && y <= b.y * SIZE + b.h * SIZE) {
-                b.broken--;
-                audio.playSound(b.broken == 0 ? "fx-collapse" : "fx-wrestler", "player", 1);
-                if (b.broken == 0) {
-                    b.blocks.forEach(coords => this.map[coords[0]][coords[1]] = 0);
-                } 
-            }
-        })
+        alert(JSON.stringify(normalCameraDirection));
+        this.smoke = smokeFill2(this.smoke,SMOKE_NB_PARTICLES, this.camera, normalCameraDirection);
     }
 
     render(ctx) {
@@ -232,17 +180,6 @@ function loadLevel(level) {
         return { x: Number(p.x), y: (MAX-Number(p.y)-p.height), w: Number(p.width), h: Number(p.height) };
     });
 
-    const breakables = level.stuff.filter(s => s.kind == "Breakable").map(p => {
-        return { x: Number(p.x), y: (MAX-Number(p.y)-p.height), w: Number(p.width), h: Number(p.height), broken: BREAKABLE_HITS };
-    });
-    const exits = level.endings.map(ending => ({
-        x: ending.area.x,
-        y: MAX - ending.area.y - ending.area.height, 
-        width: ending.area.width,
-        height: ending.area.height,
-        nextLevel: ending.nextLevel
-    }));
-    
     let maxX = Math.max(...platforms.map(p => p.x + p.w));
     let maxY = Math.max(...platforms.map(p => p.y + p.h));
 
@@ -255,24 +192,6 @@ function loadLevel(level) {
     const osc = new OffscreenCanvas(W, H);
     const ctx = osc.getContext("2d");
     ctx.imageSmoothingEnabled = false;
-    // sky
-    /*
-    for (let i=0; i < H; i++) {
-        ctx.fillStyle = `hsl(240, 80%, ${Math.floor(50+i/70)}%)`;
-        ctx.fillRect(0, i, W, 1);
-    }
-        */
-    // elements in the map
-    ctx.fillStyle = "lightgrey";
-
-    if (level.texts) {
-        ctx.fillStyle = "lightblue";
-        ctx.font = "20px arial";
-        ctx.textAlign = "center";
-        level.texts.forEach(t => {
-            ctx.fillText(t.text, t.x, t.y);
-        });
-    }
 
     const map = [];
     while (map.length < maxY) {
@@ -389,7 +308,7 @@ function rienAuDessus(map, l, c) {
 
 const SMOKE_SCREEN_PROPORTION = 0.15;
 
-const NB_UPDATED_PARTICLES_PER_SECONDS = 0.005;
+const NB_UPDATED_PARTICLES_PER_SECONDS = 0.05;
 
 const SMOKE_NB_PARTICLES = 500;
 
@@ -398,20 +317,39 @@ function betterRandomForSmoke(){
     const rd = Math.random();
     return Math.exp(-lambda*rd)-Math.exp(-lambda)/lambda;
 }
+function vecSum(v, w){
+    return {x:v.x+w.x, y:v.y+w.y};
+}
 
-function smokeFill(smoke, nbParticles, camera) {
+function scalarMult(vec,scalar){
+    return {x:vec.x*scalar, y:vec.y*scalar};
+}
 
-    const srcX = camera.x - WIDTH / 2;
-    const srcY = camera.y - HEIGHT / 2 + HEIGHT / 3;
+function smokeFill2(smoke, nbParticles, cameraPosition, cameraNormalDirection) {
+    const COEFF = 1000; // sorry for the magic constant
 
     while(smoke.length < nbParticles){
-        
+        const oppositePointFromCamDir = {
+            x: cameraPosition.x-cameraNormalDirection.x*WIDTH/2-PARTICLE_SIZE/2,
+            y: cameraPosition.y-cameraNormalDirection.y*HEIGHT/2-PARTICLE_SIZE/2
+        };
+        const antiCameraNormalDirection = scalarMult(cameraNormalDirection,-1);
+        const leftSpread = {
+            x:-antiCameraNormalDirection.y,
+            y:antiCameraNormalDirection.x
+        };
+        const rightSpread = {
+            x:antiCameraNormalDirection.y,
+            y:-antiCameraNormalDirection.x
+        };
+        const startingPointOfParticle = Math.random() < 0.5 ? 
+        vecSum(oppositePointFromCamDir,scalarMult(leftSpread,Math.random()*COEFF)):
+        vecSum(oppositePointFromCamDir,scalarMult(rightSpread,Math.random()*COEFF));
+
         smoke.push(
             new Particle(
-                //srcX + Math.random()*WIDTH*SMOKE_SCREEN_PROPORTION-PARTICLE_SIZE,
-                //srcY + Math.random()*(HEIGHT + 100),
-                srcX + betterRandomForSmoke()*(WIDTH+PARTICLE_SIZE)*SMOKE_SCREEN_PROPORTION+PARTICLE_SIZE/2,
-                srcY + Math.random()*(HEIGHT+PARTICLE_SIZE)-PARTICLE_SIZE,
+                startingPointOfParticle.x,
+                startingPointOfParticle.y,
                 Math.floor(Math.random()*SMOKE_SPRITE_NB_FRAMES)
             )
         );
