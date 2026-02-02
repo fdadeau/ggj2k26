@@ -422,9 +422,9 @@ export const LEVELS = {
             {
                 "area":{
                     "x": 128,
-                    "y": 6,
-                    "width":1,
-                    "height":2
+                    "y": 8,
+                    "width":2,
+                    "height":1
                 },
                 "nextLevel": 2
             }

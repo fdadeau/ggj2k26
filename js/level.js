@@ -12,11 +12,9 @@ import { data } from "./preload.js";
 
 import { audio } from "./audio.js";
 
-import {Particle, SMOKE_SPRITE_NB_FRAMES, PARTICLE_SIZE} from "./smoke.js";
+import {Particle, PARTICLE_SIZE} from "./smoke.js";
 
 const CAMERA_SPEED = 0.2;
-
-const DEBUG = false;
 
 const SIZE = 42;
 
@@ -27,6 +25,10 @@ const MAX = 52;
 const MASK_SIZE = 20;
 
 const BREAKABLE_HITS = 2;
+
+const NB_UPDATED_PARTICLES_PER_SECONDS = 0.1;
+
+const SMOKE_NB_PARTICLES = 500;
 
 export class Level {
 
@@ -42,7 +44,7 @@ export class Level {
         this.size = SIZE;
         this.cameraPath = LEVELS[n].camera.path.map(({x,y,speed}) => { return {x: x*SIZE, y: (MAX-y)*SIZE, speed}; });
         this.player = new Player(LEVELS[n].player.startPosition.x * SIZE, (MAX-LEVELS[n].player.startPosition.y-1) * SIZE);
-        this.smoke = smokeFill([],SMOKE_NB_PARTICLES,this.camera);
+        this.smoke = []
     }
 
 
@@ -99,9 +101,7 @@ export class Level {
         for(var i = 0; i < 1000*NB_UPDATED_PARTICLES_PER_SECONDS/dt ; ++i){
             this.smoke.shift();
         }
-        this.smoke = smokeFill(this.smoke,SMOKE_NB_PARTICLES, this.camera);
-
-
+        this.smoke = smokeFill(this.smoke,SMOKE_NB_PARTICLES, this.camera, normalCameraDirection);;
     }
     
     hit(x,y) {
@@ -394,43 +394,52 @@ function determineBlock(map, l, c) {
 function rienEnDessous(map, l, c) {
     return !map[l+1] || map[l+1][c] != 1;
 }
+
 function rienAGauche(map, l, c) {
     return map[l][c-1] != 1;
 }
+
 function rienADroite(map, l, c) {
     return map[l][c+1] != 1;
 }
+
 function rienAuDessus(map, l, c) {
     return !map[l-1] || map[l-1][c] != 1;
 }
 
-
-const SMOKE_SCREEN_PROPORTION = 0.15;
-
-const NB_UPDATED_PARTICLES_PER_SECONDS = 0.005;
-
-const SMOKE_NB_PARTICLES = 500;
-
-function betterRandomForSmoke(){
-    const lambda = 5;
-    const rd = Math.random();
-    return Math.exp(-lambda*rd)-Math.exp(-lambda)/lambda;
+function vecSum(v, w){
+    return {x:v.x+w.x, y:v.y+w.y};
 }
 
-function smokeFill(smoke, nbParticles, camera) {
+function scalarMult(vec,scalar){
+    return {x:vec.x*scalar, y:vec.y*scalar};
+}
 
-    const srcX = camera.x - WIDTH / 2;
-    const srcY = camera.y - HEIGHT / 2 + HEIGHT / 3;
+function smokeFill(smoke, nbParticles, cameraPosition, cameraNormalDirection) {
+    const COEFF = 1000; // sorry for the magic constant
 
     while(smoke.length < nbParticles){
-        
+        const oppositePointFromCamDir = {
+            x: cameraPosition.x-cameraNormalDirection.x*WIDTH/2-PARTICLE_SIZE/2,
+            y: cameraPosition.y-cameraNormalDirection.y*HEIGHT/2-PARTICLE_SIZE/2
+        };
+        const antiCameraNormalDirection = scalarMult(cameraNormalDirection,-1);
+        const leftSpread = {
+            x:-antiCameraNormalDirection.y,
+            y:antiCameraNormalDirection.x
+        };
+        const rightSpread = {
+            x:antiCameraNormalDirection.y,
+            y:-antiCameraNormalDirection.x
+        };
+        const startingPointOfParticle = Math.random() < 0.5 ? 
+        vecSum(oppositePointFromCamDir,scalarMult(leftSpread,Math.random()*COEFF)):
+        vecSum(oppositePointFromCamDir,scalarMult(rightSpread,Math.random()*COEFF));
+
         smoke.push(
             new Particle(
-                //srcX + Math.random()*WIDTH*SMOKE_SCREEN_PROPORTION-PARTICLE_SIZE,
-                //srcY + Math.random()*(HEIGHT + 100),
-                srcX + betterRandomForSmoke()*(WIDTH+PARTICLE_SIZE)*SMOKE_SCREEN_PROPORTION+PARTICLE_SIZE/2,
-                srcY + Math.random()*(HEIGHT+PARTICLE_SIZE)-PARTICLE_SIZE,
-                Math.floor(Math.random()*SMOKE_SPRITE_NB_FRAMES)
+                startingPointOfParticle.x,
+                startingPointOfParticle.y,
             )
         );
     }
