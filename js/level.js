@@ -18,13 +18,13 @@ const CAMERA_SPEED = 0.2;
 
 const DEBUG = false;
 
-const SIZE = 42;
+const SIZE = 52;
 
 const EPSILON = 1;
 
 const MAX = 52;
 
-const MASK_SIZE = 20;
+const MASK_SIZE = 30;
 
 const BREAKABLE_HITS = 2;
 
@@ -150,12 +150,6 @@ export class Level {
                     if (b.broken > 0) {
                         ctx.drawImage(data[`block-broken${b.broken}`], bl[1]*SIZE - srcX, bl[0]*SIZE - srcY, SIZE, SIZE);
                     }
-                    /*
-                    ctx.fillStyle = b.broken == 2 ? "darkred" : "red";
-                    ctx.fillRect(bl[1]*SIZE - srcX, bl[0]*SIZE - srcY, SIZE, SIZE);
-                    ctx.fillStyle = b.broken == 2 ? "red" : "orange";
-                    ctx.fillRect(bl[1]*SIZE + 2 - srcX, bl[0]*SIZE + 2 - srcY, SIZE - 4, SIZE - 4);
-                    */
                 });
             }    
         });
@@ -206,12 +200,8 @@ export class Level {
         }
 
         let l = Math.floor(y / this.size), c = Math.floor(x / this.size);
-        
 
         return (this.map[l] && this.map[l][c]) ? this.map[l][c] : 0;
-
-
-
     }
 
     isOnExit(x, y, w, h) {
@@ -308,16 +298,8 @@ function loadLevel(level) {
     });
     for (let l=0; l < map.length; l++) {
         for (let c=0; c < map[l].length; c++) {
-            switch (map[l][c]) {
-                case 1: 
-                    ctx.drawImage(determineBlock(map, l, c), c*SIZE, l*SIZE, SIZE, SIZE);
-                    /*
-                    ctx.fillStyle = "grey";
-                    ctx.fillRect(c*SIZE, l*SIZE, SIZE, SIZE);
-                    ctx.fillStyle = "lightgrey";
-                    ctx.fillRect(c*SIZE + 2, l*SIZE + 2, SIZE - 4, SIZE - 4);
-                    */
-                    break;
+            if (map[l][c] == 1) {
+                ctx.drawImage(determineBlock(map, l, c), c*SIZE, l*SIZE, SIZE, SIZE);
             }
         }
     }

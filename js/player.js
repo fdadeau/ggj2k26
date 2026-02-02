@@ -8,7 +8,7 @@ import { WIDTH, HEIGHT } from "./main.js";
 import { data } from "./preload.js"; 
 
 /** Movement characteristics */
-const JUMP_FORCE = 0.7;
+const JUMP_FORCE = 0.8;
 const GRAVITY = 0.05;
 const ACCELERATION = 0.02;
 const MAX_SPEED = 0.4;
@@ -17,7 +17,7 @@ const MAX_FALL_SPEED = 0.8;
 /** Player dimensions */
 const FRAME_HEIGHT = 30;
 const FRAME_WIDTH = 23;
-const PLAYER_SCALE = 1;
+const PLAYER_SCALE = 2;
 const PLAYER_W = FRAME_WIDTH * PLAYER_SCALE;
 const PLAYER_H = FRAME_HEIGHT * PLAYER_SCALE;
 
@@ -114,6 +114,7 @@ export class Player {
             return;
         }
 
+        // mask swap
         if (keys.swap) {
             const tmp = this.mask;
             this.mask = this.mask2;
