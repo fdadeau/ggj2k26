@@ -21,7 +21,7 @@ const STATES = {
 
 const DEBUG = 1;
 
-const START_LEVEL = 2;
+const START_LEVEL = 1;
 
 const DELAY = 60;
 let frame = -10, df = 1, delay = DELAY, max = 50;
@@ -248,7 +248,6 @@ export class Game {
 
                 const controlsX = WIDTH / 2 - 40;
                 let controlsY = HEIGHT / 2 + 20;
-                console.log("Drawing controls...", this.keys);
                 this.ctx.fillText("Move : ← → ", controlsX, controlsY);
                 controlsY += 18;
                 this.ctx.fillText("Jump : ESP", controlsX, controlsY);

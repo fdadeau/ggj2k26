@@ -74,7 +74,7 @@ const data = {
     "portal": "./assets/sprites/blocks/portal.png",
 
     // smoke
-    "smokeparticles":"./assets/sprites/smoke/pixilart-sprite-50.png",
+    "smoke-particles":"./assets/sprites/smoke/pixilart-sprite-60.png",
     "block-broken1": "./assets/sprites/blocks/breakable/brick_cracked.png",
     "block-broken2": "./assets/sprites/blocks/breakable/brick.png",
 

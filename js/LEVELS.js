@@ -422,9 +422,9 @@ export const LEVELS = {
             {
                 "area":{
                     "x": 128,
-                    "y": 6,
-                    "width":1,
-                    "height":2
+                    "y": 8,
+                    "width":2,
+                    "height":1
                 },
                 "nextLevel": 2
             }
@@ -438,37 +438,12 @@ export const LEVELS = {
             "startPosition":{"x":5,"y":5},
             "path":[
                 {
-                    "x": 10,
+                    "x": 13,
                     "y": 5,
                     "speed": 0.5
                 },
                 {
-                    "x": 10,
-                    "y": 10,
-                    "speed": 0.3
-                },
-                {
-                    "x": 5,
-                    "y": 10,
-                    "speed": 0.3
-                },
-                {
-                    "x": 5,
-                    "y": 5,
-                    "speed": 0.3
-                },
-                {
-                    "x": 10,
-                    "y": 10,
-                    "speed": 0.3
-                },
-                {
-                    "x": 10,
-                    "y": 5,
-                    "speed": 0.3
-                },
-                {
-                    "x": 5,
+                    "x": 20,
                     "y": 10,
                     "speed": 0.3
                 },
