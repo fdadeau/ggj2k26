@@ -79,6 +79,7 @@ export class Level {
             m.y + m.size /2 >= this.player.y - this.player.height
         ).forEach(m => {
             this.player.addMask(m.kind);
+            audio.playSound("fx-pickup", "player", 1, 0);
             m.active = false;
         });
 

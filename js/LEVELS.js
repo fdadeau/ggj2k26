@@ -8,7 +8,7 @@ export const LEVELS = {
             { text: "Run away from the smoke!", x: 4, y: 5},
             { text: "Press Space to jump", x: 14, y: 6},
             { text: "Press S to swap between masks", x: 40, y: 6},
-            { text: "The bird mask lets you\njump again while in the air", x: 46, y: 8}
+            { text: "The bird mask lets you jump again while in the air", x: 46, y: 8}
         ],
         "camera":{
             // "startPosition":{"x":112 ,"y":5},

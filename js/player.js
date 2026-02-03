@@ -116,6 +116,7 @@ export class Player {
             this.mask = this.mask2;
             this.mask2 = tmp;
             keys.swap = 0;
+            audio.playSound("fx-swap", "player", 1, 0);
         }
         // knock (wrestler)
         if (keys.action && this.mask == MASK.WRESTLER && this.isOnTheGround(level) && !this.knock) {
@@ -156,13 +157,15 @@ export class Player {
                 if (this.jumpCount == 2) {
                     audio.playSound("fx-bird", "player", 1);
                 }
+                else {
+                    audio.playSound("fx-jump", "player", 1);
+                }
             }
             keys.jump = 0;
         }
 
         if(keys.gamepadJump) { // gamepad routine (using gamepadJump & gamepadJumpSinglePress)
             const grounded = this.isOnTheGround(level);
-
             if (grounded) {
                 this.speedY = -JUMP_FORCE;
                 this.jumpCount = 0; 
@@ -207,7 +210,7 @@ export class Player {
         }
 
         this.updateXPosition(dt, level);
-                
+
         if (this.isOnTheGround(level) == 0) {
             this.speedY += GRAVITY * dt / (1000/60);
             if (this.speedY > MAX_FALL_SPEED) { this.speedY = MAX_FALL_SPEED; }
@@ -218,6 +221,7 @@ export class Player {
             this.jumpCount = 0;
         }
 
+        
 //        if (this.y >= level.world.height + 100) {
         //    this.dead = true;
  //       }

@@ -53,6 +53,10 @@ const data = {
     "fx-ninja": "./assets/sounds/fx-ninja.mp3",
     "fx-wrestler": "./assets/sounds/fx-wrestler.mp3",
     "fx-collapse": "./assets/sounds/fx-collapse.mp3",
+    "fx-swap": "./assets/sounds/pickup.mp3",
+    "fx-pickup": "./assets/sounds/swap.mp3",
+    "fx-jump": "./assets/sounds/fx-jump.mp3",
+    "fx-ground": "./assets/sounds/fx-ground.mp3",
     "death": "./assets/sounds/wilhelm.mp3",
     "victory": "./assets/sounds/victory.mp3",
 
