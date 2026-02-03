@@ -316,9 +316,6 @@ export class Game {
             case "KeyA":
                 this.keys.action = 1;
                 break;
-            // case "KeyD":
-            //     this.keys.jump = 1;
-            //     break;
             case "KeyS":
                 this.keys.swap = 1;
                 break;
