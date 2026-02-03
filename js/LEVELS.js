@@ -2,11 +2,17 @@ export const LEVELS = {
     1: {
         "player":{
             // "startPosition":{"x":112,"y":3},
-            "startPosition":{"x":8,"y":3},
+            "startPosition":{"x":1,"y":3},
         },
+        "texts" : [
+            { text: "Run away from the smoke!", x: 4, y: 5},
+            { text: "Press Space to jump", x: 14, y: 6},
+            { text: "Press S to swap between masks", x: 40, y: 6},
+            { text: "You can now jump in the air", x: 48, y: 8}
+        ],
         "camera":{
             // "startPosition":{"x":112 ,"y":5},
-            "startPosition":{"x":8 ,"y":5},
+            "startPosition":{"x":-1 ,"y":5},
             "path":[
                 {
                     "x":38,

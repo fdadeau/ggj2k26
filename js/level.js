@@ -251,11 +251,11 @@ function loadLevel(level) {
     ctx.fillStyle = "lightgrey";
 
     if (level.texts) {
-        ctx.fillStyle = "lightblue";
+        ctx.fillStyle = "black";
         ctx.font = "20px arial";
         ctx.textAlign = "center";
         level.texts.forEach(t => {
-            ctx.fillText(t.text, t.x, t.y);
+            ctx.fillText(t.text, t.x * SIZE, (MAX - t.y) * SIZE);
         });
     }
 
