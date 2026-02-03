@@ -14,17 +14,21 @@ import { audio } from "./audio.js";
 
 import {Particle, PARTICLE_SIZE} from "./smoke.js";
 
-const CAMERA_SPEED = 0.2;
+const CAMERA_SPEED = 0.3;
 
 const SIZE = 52;
 
 const EPSILON = 1;
 
-const MAX = 52;
+let MAX = 52;
 
 const MASK_SIZE = 30;
 
-const BREAKABLE_HITS = 2;
+const BREAKABLE_HITS = 4;
+
+const NB_UPDATED_PARTICLES_PER_SECONDS = 0.1;
+
+const SMOKE_NB_PARTICLES = 400;
 
 export class Level {
 
@@ -93,7 +97,7 @@ export class Level {
             this.player.addMask(m.kind);
             m.active = false;
         });
-
+        
         for(var i = 0; i < 1000*NB_UPDATED_PARTICLES_PER_SECONDS/dt ; ++i){
             this.smoke.shift();
         }
@@ -144,7 +148,7 @@ export class Level {
             if (b.broken > 0) {
                 b.blocks.forEach(bl => {
                     if (b.broken > 0) {
-                        ctx.drawImage(data[`block-broken${b.broken}`], bl[1]*SIZE - srcX, bl[0]*SIZE - srcY, SIZE, SIZE);
+                        ctx.drawImage(data[`block-broken${b.broken == BREAKABLE_HITS ? 2 : 1}`], bl[1]*SIZE - srcX, bl[0]*SIZE - srcY, SIZE, SIZE);
                     }
                 });
             }    
@@ -223,6 +227,8 @@ export class Level {
 
 
 function loadLevel(level) {
+
+    MAX = level.stuff.reduce((acc,s) => Number(s.y) + Number(s.height) > acc ? Number(s.y) + Number(s.height) : acc, 0) + 10;
 
     const platforms = level.stuff.filter(s => s.kind == "Permanent").map(p => {
         return { x: Number(p.x), y: (MAX-Number(p.y)-p.height), w: Number(p.width), h: Number(p.height) };

@@ -188,7 +188,7 @@ export class Game {
 
     
 
-        if (this.state !== STATES.LOADING) {
+        if (this.state !== STATES.LOADING && this.state !== STATES.IN_GAME) {
             this.ctx.drawImage(data["background"], 0, 0, WIDTH, HEIGHT);
             this.ctx.drawImage(data["trees"], -WIDTH/4, 0, WIDTH*2, HEIGHT);
             this.ctx.drawImage(data[`${perso.frame}-still${perso.dir}`], 200, 40, 50, 60)
