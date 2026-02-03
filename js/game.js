@@ -120,20 +120,20 @@ export class Game {
                 }
                 if (this.state == STATES.IN_GAME) {
                     this.level.update(dt, this.keys);
-                    if(this.level.completed){
+                    if(this.level.completed) {
                         this.changeLevel(this.level.completed.next);
                         return;
                     }
-
                     if (this.level.player.dead) {
                         this.state = STATES.GAME_OVER;
                         audio.playSound("death", "player", 0.4, false);
                         return true;
                     }
+                    /*
                     else if (this.level.player.complete) {
                         this.state = STATES.COMPLETED;
                         audio.playSound("victory", "player", 0.7, false);
-                    }
+                    }*/
                 }   
                 break;
             case STATES.MENU: 

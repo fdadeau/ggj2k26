@@ -36,7 +36,6 @@ export class Level {
         this.breakables = lvl.breakables;
         this.exits = lvl.exits;
         //this.world = { height: this.background.height, width: this.background.width};
-        
         this.size = SIZE;
 
         // Camera 
@@ -56,20 +55,13 @@ export class Level {
         // Camera movement
         this.camera.update(dt);
 
-        /*
-        if (this.cameraPath.length == 0) {
-            this.player.update(dt, keys, this);
-            return this.isOnExit(this.player.x, this.player.y, this.player.width / 2, this.player.height / 2)?.nextLevel;
-        }
-            */
-
         // Player update
         this.player.update(dt, keys, this);
         
         // Check end of level        
         const exit = this.isOnExit(this.player.x, this.player.y, this.player.width / 2, this.player.height / 2);
         if (exit) {
-            this.complete = { next: exit.nextLevel };
+            this.completed = { next: exit.nextLevel };
             return exit.nextLevel;
         }
 
