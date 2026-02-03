@@ -2,7 +2,7 @@ import { data } from "./preload.js";
 
 export const PARTICLE_SIZE = 50;
 
-const SMOKE_SPRITE_NB_FRAMES = 5;
+export const SMOKE_SPRITE_NB_FRAMES = 5;
 
 const FRAME_SIZE = 16;
 
