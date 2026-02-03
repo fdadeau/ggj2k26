@@ -249,11 +249,13 @@ export class Game {
                 let controlsY = HEIGHT / 2 + 20;
                 this.ctx.fillText("Move : ← → ", controlsX, controlsY);
                 controlsY += 18;
-                this.ctx.fillText("Jump : ESP", controlsX, controlsY);
+                this.ctx.fillText("Jump : SPACE", controlsX, controlsY);
                 controlsY += 18;
                 this.ctx.fillText("Pause : ESC", controlsX, controlsY);
                 controlsY += 18;
-                this.ctx.fillText("action : a", controlsX, controlsY);
+                this.ctx.fillText("Action : a", controlsX, controlsY);
+                controlsY += 18;
+                this.ctx.fillText("Mask swap : s", controlsX, controlsY);
                 break;
             case STATES.LEVEL_SELECTION:
                 throw new Error("Not Implemented yet");
