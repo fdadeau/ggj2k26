@@ -252,7 +252,7 @@ function loadLevel(level) {
 
     if (level.texts) {
         ctx.fillStyle = "black";
-        ctx.font = "20px arial";
+        ctx.font = '24px pixel-sans';
         ctx.textAlign = "center";
         level.texts.forEach(t => {
             ctx.fillText(t.text, t.x * SIZE, (MAX - t.y) * SIZE);
