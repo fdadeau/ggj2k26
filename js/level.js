@@ -12,7 +12,7 @@ import { data } from "./preload.js";
 
 import { audio } from "./audio.js";
 
-import {Particle, PARTICLE_SIZE} from "./smoke.js";
+import {Particle, PARTICLE_SIZE, SMOKE_SPRITE_NB_FRAMES} from "./smoke.js";
 
 const CAMERA_SPEED = 0.3;
 
@@ -26,7 +26,7 @@ const MASK_SIZE = 30;
 
 const BREAKABLE_HITS = 4;
 
-const NB_UPDATED_PARTICLES_PER_SECONDS = 0.1;
+const NB_UPDATED_PARTICLES_PER_SECONDS = 1;
 
 const SMOKE_NB_PARTICLES = 400;
 
@@ -391,6 +391,12 @@ function rienAuDessus(map, l, c) {
     return !map[l-1] || map[l-1][c] != 1;
 }
 
+
+function betterRandomForSmoke(){
+    const lambda = 5;
+    const rd = Math.random();
+    return Math.exp(-lambda*rd)-Math.exp(-lambda)/lambda;
+}
 function vecSum(v, w){
     return {x:v.x+w.x, y:v.y+w.y};
 }
@@ -401,6 +407,7 @@ function scalarMult(vec,scalar){
 
 function smokeFill(smoke, nbParticles, cameraPosition, cameraNormalDirection) {
     const COEFF = 1000; // sorry for the magic constant
+    const distanceToBorder = 200;// other magic constant
 
     while(smoke.length < nbParticles){
         const oppositePointFromCamDir = {
@@ -420,10 +427,14 @@ function smokeFill(smoke, nbParticles, cameraPosition, cameraNormalDirection) {
         vecSum(oppositePointFromCamDir,scalarMult(leftSpread,Math.random()*COEFF)):
         vecSum(oppositePointFromCamDir,scalarMult(rightSpread,Math.random()*COEFF));
 
+        const borderShift = scalarMult(cameraNormalDirection,betterRandomForSmoke()*distanceToBorder);
+        const finalParticle = vecSum(startingPointOfParticle,borderShift);
+
         smoke.push(
             new Particle(
-                startingPointOfParticle.x,
-                startingPointOfParticle.y,
+                finalParticle.x,
+                finalParticle.y,
+                Math.floor(Math.random()*SMOKE_SPRITE_NB_FRAMES)
             )
         );
     }
