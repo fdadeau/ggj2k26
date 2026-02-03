@@ -12,13 +12,12 @@ import { data } from "./preload.js";
 
 import { audio } from "./audio.js";
 
-import {Particle, PARTICLE_SIZE, SMOKE_SPRITE_NB_FRAMES} from "./smoke.js";
+import { Smoke } from "./smoke.js";
 
-const CAMERA_SPEED = 0.3;
+import { Camera } from "./camera.js";
+
 
 const SIZE = 52;
-
-const EPSILON = 1;
 
 let MAX = 52;
 
@@ -26,9 +25,6 @@ const MASK_SIZE = 30;
 
 const BREAKABLE_HITS = 4;
 
-const NB_UPDATED_PARTICLES_PER_SECONDS = 1;
-
-const SMOKE_NB_PARTICLES = 400;
 
 export class Level {
 
@@ -39,54 +35,50 @@ export class Level {
         this.masks = lvl.masks;
         this.breakables = lvl.breakables;
         this.exits = lvl.exits;
-        this.world = { height: this.background.height, width: this.background.width};
-        this.camera = { x: LEVELS[n].camera.startPosition.x * SIZE, y: (MAX-LEVELS[n].camera.startPosition.y) * SIZE };
+        //this.world = { height: this.background.height, width: this.background.width};
+        
         this.size = SIZE;
-        this.cameraPath = LEVELS[n].camera.path.map(({x,y,speed}) => { return {x: x*SIZE, y: (MAX-y)*SIZE, speed}; });
+
+        // Camera 
+        const camStart = { x: LEVELS[n].camera.startPosition.x * SIZE, y: (MAX-LEVELS[n].camera.startPosition.y) * SIZE };
+        const camPath = LEVELS[n].camera.path.map(({x,y,speed}) => { return {x: x*SIZE, y: (MAX-y)*SIZE, speed}; });
+        this.camera = new Camera(camStart, camPath);
+        // Player         
         this.player = new Player(LEVELS[n].player.startPosition.x * SIZE, (MAX-LEVELS[n].player.startPosition.y-1) * SIZE);
-        this.smoke = []
+        this.completed = null;
+        // Smoke
+        this.smoke = new Smoke(this.camera);
     }
 
 
     update(dt, keys) {
+
+        // Camera movement
+        this.camera.update(dt);
+
+        /*
         if (this.cameraPath.length == 0) {
             this.player.update(dt, keys, this);
             return this.isOnExit(this.player.x, this.player.y, this.player.width / 2, this.player.height / 2)?.nextLevel;
         }
+            */
 
+        // Player update
+        this.player.update(dt, keys, this);
+        
+        // Check end of level        
         const exit = this.isOnExit(this.player.x, this.player.y, this.player.width / 2, this.player.height / 2);
-        if(exit){
-            this.player.update(dt, keys, this);
+        if (exit) {
+            this.complete = { next: exit.nextLevel };
             return exit.nextLevel;
         }
 
-        const target = { x: this.cameraPath[0].x, y: this.cameraPath[0].y, speed: this.cameraPath[0].speed };
-        const cameraDirection = { 
-            x: target.x-this.camera.x, 
-            y: target.y-this.camera.y 
-        };
-        const normalCameraDirection = {
-            x: cameraDirection.x/Math.sqrt(cameraDirection.x*cameraDirection.x + cameraDirection.y*cameraDirection.y),
-            y: cameraDirection.y/Math.sqrt(cameraDirection.x*cameraDirection.x + cameraDirection.y*cameraDirection.y)
-        };
-        //alert(JSON.stringify(target)+JSON.stringify(cameraDirection)+JSON.stringify(normalCameraDirection));
-        this.camera.x += normalCameraDirection.x * CAMERA_SPEED * target.speed * dt;
-        this.camera.y += normalCameraDirection.y * CAMERA_SPEED * target.speed * dt;
-        if (Math.abs(this.camera.x - target.x) < EPSILON && Math.abs(this.camera.y - target.y) < EPSILON) {
-            this.cameraPath.shift();
-        }
-
-        if (
-            (target.speed > 0 && this.player.x < this.camera.x - WIDTH/2 - this.player.width) ||
-            (target.speed < 0 && this.player.x > this.camera.x + WIDTH/2 + this.player.width) ||
-            (target.speed > 0 && this.player.y > this.camera.y + HEIGHT / 2 + this.player.height * 1.5) ||
-            (target.speed < 0 && this.player.y < this.camera.y - HEIGHT / 2 - this.player.height / 2)
-        ) {
+        // Check if player has reached the end of the screen
+        if (this.camera.playerOutOfBounds(this.player)) {
             this.player.dead = true;
         }
 
-        this.player.update(dt, keys, this);
-        
+        // mask collecting
         this.masks.filter(m => 
             m.active && 
             m.x + m.size /2 >= this.player.x - this.player.width / 2 &&
@@ -97,11 +89,8 @@ export class Level {
             this.player.addMask(m.kind);
             m.active = false;
         });
-        
-        for(var i = 0; i < 1000*NB_UPDATED_PARTICLES_PER_SECONDS/dt ; ++i){
-            this.smoke.shift();
-        }
-        this.smoke = smokeFill(this.smoke,SMOKE_NB_PARTICLES, this.camera, normalCameraDirection);;
+
+        this.smoke.update(dt);
     }
     
     hit(x,y) {
@@ -155,7 +144,7 @@ export class Level {
         });
 
         this.exits.forEach(exit => {
-            ctx.fillStyle = "red";
+            //ctx.fillStyle = "red";
             ctx.drawImage(
                 data["portal"],
                 exit.x * SIZE - srcX, 
@@ -170,15 +159,15 @@ export class Level {
         let playerY = this.player.y - srcY;
         this.player.render(ctx, playerX, playerY);
 
+        /*
         let X3 = (srcX * 1.4) % (2*WIDTH);
         ctx.drawImage(data["grass"], 0, 0, WIDTH*2, HEIGHT, -X3, 0, WIDTH*2, HEIGHT);
         ctx.drawImage(data["grass"], 0, 0, WIDTH*2, HEIGHT, -X3+WIDTH*2, 0, WIDTH*2, HEIGHT);
+        */
         
-
-        // smoke on the border of the screen
-        this.smoke.forEach(particle => {
-            particle.render(ctx,srcX,srcY);
-        });
+        this.smoke.render(ctx, srcX, srcY);
+        this.player.renderMasks(ctx);
+       
     }
 
 
@@ -195,9 +184,11 @@ export class Level {
         return this.whichTile(x-w/2, y-h) || this.whichTile(x+w/2, y-h) || this.whichTile(x-w/2,y) || this.whichTile(x+w/2,y);
     }
     whichTile(x, y) {
+        /*
         if (x < 0 || x >= this.world.width) {
-            return 1;
+            return 0;       // TODO : should return 0 to remove borders from 
         }
+            */
 
         let l = Math.floor(y / this.size), c = Math.floor(x / this.size);
 
@@ -392,52 +383,3 @@ function rienAuDessus(map, l, c) {
 }
 
 
-function betterRandomForSmoke(){
-    const lambda = 5;
-    const rd = Math.random();
-    return Math.exp(-lambda*rd)-Math.exp(-lambda)/lambda;
-}
-function vecSum(v, w){
-    return {x:v.x+w.x, y:v.y+w.y};
-}
-
-function scalarMult(vec,scalar){
-    return {x:vec.x*scalar, y:vec.y*scalar};
-}
-
-function smokeFill(smoke, nbParticles, cameraPosition, cameraNormalDirection) {
-    const COEFF = 1000; // sorry for the magic constant
-    const distanceToBorder = 200;// other magic constant
-
-    while(smoke.length < nbParticles){
-        const oppositePointFromCamDir = {
-            x: cameraPosition.x-cameraNormalDirection.x*WIDTH/2-PARTICLE_SIZE/2,
-            y: cameraPosition.y-cameraNormalDirection.y*HEIGHT/2-PARTICLE_SIZE/2
-        };
-        const antiCameraNormalDirection = scalarMult(cameraNormalDirection,-1);
-        const leftSpread = {
-            x:-antiCameraNormalDirection.y,
-            y:antiCameraNormalDirection.x
-        };
-        const rightSpread = {
-            x:antiCameraNormalDirection.y,
-            y:-antiCameraNormalDirection.x
-        };
-        const startingPointOfParticle = Math.random() < 0.5 ? 
-        vecSum(oppositePointFromCamDir,scalarMult(leftSpread,Math.random()*COEFF)):
-        vecSum(oppositePointFromCamDir,scalarMult(rightSpread,Math.random()*COEFF));
-
-        const borderShift = scalarMult(cameraNormalDirection,betterRandomForSmoke()*distanceToBorder);
-        const finalParticle = vecSum(startingPointOfParticle,borderShift);
-
-        smoke.push(
-            new Particle(
-                finalParticle.x,
-                finalParticle.y,
-                Math.floor(Math.random()*SMOKE_SPRITE_NB_FRAMES)
-            )
-        );
-    }
-
-    return smoke;
-}

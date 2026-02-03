@@ -3,7 +3,6 @@
  */
 
 import { audio } from "./audio.js";
-import { WIDTH, HEIGHT } from "./main.js";
 
 import { data } from "./preload.js"; 
 
@@ -100,9 +99,6 @@ export class Player {
         }
     }
 
-    getHitbox() {
-        return { x: this.x - PLAYER_W / 2, y: this.y - PLAYER_H, w: PLAYER_W, h: PLAYER_H };
-    }
 
 
     update(dt, keys, level) {
@@ -148,14 +144,13 @@ export class Player {
             }
         }
 
-        if(this.isJumping && (this.isOnTheGround(level) || this.onPlatform)){
+        if(this.isJumping && this.isOnTheGround(level)){
             this.isJumping = false;
         }
 
         if (keys.jump) { // keyboard routine
-            if (this.isOnTheGround(level) || this.onPlatform || this.mask == MASK.BIRD && this.jumpCount == 1) {
+            if (this.isOnTheGround(level) || this.mask == MASK.BIRD && this.jumpCount == 1) {
                 this.speedY = -JUMP_FORCE;
-                this.onPlatform = null;
                 this.jumpCount++;
                 this.isJumping = true;
                 if (this.jumpCount == 2) {
@@ -166,11 +161,10 @@ export class Player {
         }
 
         if(keys.gamepadJump) { // gamepad routine (using gamepadJump & gamepadJumpSinglePress)
-            const grounded = this.isOnTheGround(level) || this.onPlatform;
+            const grounded = this.isOnTheGround(level);
 
             if (grounded) {
                 this.speedY = -JUMP_FORCE;
-                this.onPlatform = null;
                 this.jumpCount = 0; 
                 this.isJumping = true;
             } else if (keys.gamepadJumpSinglePress && this.mask === MASK.BIRD && this.jumpCount === 1) {
@@ -214,19 +208,19 @@ export class Player {
 
         this.updateXPosition(dt, level);
                 
-        if (!this.onPlatform && this.isOnTheGround(level) == 0) {
+        if (this.isOnTheGround(level) == 0) {
             this.speedY += GRAVITY * dt / (1000/60);
-            if (this.jumpCount == 0) this.jumpCount = 1;
             if (this.speedY > MAX_FALL_SPEED) { this.speedY = MAX_FALL_SPEED; }
+            if (this.jumpCount == 0) this.jumpCount = 1;
         }
         else {
             this.speedY = 0;
             this.jumpCount = 0;
         }
 
-        if (this.y >= level.world.height + 100) {
-            this.dead = true;
-        }
+//        if (this.y >= level.world.height + 100) {
+        //    this.dead = true;
+ //       }
 
         if (!this.dead) this.determineAnimation(dt);        
     } 
@@ -363,19 +357,6 @@ export class Player {
             return this.lastDir > 0 ? "wrestler-runR" : "wrestler-runL";
         }
         return `${this.mask}-${this.currentAnimation.animation.ref}`;
-        /*
-        switch(this.mask){
-            case MASK.BIRD:
-                return `bird-${this.currentAnimation.animation.ref}`
-            case MASK.NINJA:
-                return `ninja-${this.currentAnimation.animation.ref}`
-            case MASK.WRESTLER:
-                return `wrestler-${this.currentAnimation.animation.ref}`
-            case MASK.NONE:
-            default:
-                return `normal-${this.currentAnimation.animation.ref}`
-        }
-        */
     }
     
     render(ctx, x, y) {
@@ -391,19 +372,19 @@ export class Player {
             PLAYER_H
         );
 
-        ctx.drawImage(data[`frame-${this.mask}`], 20, 10, 40, 40);
-        ctx.drawImage(data[`frame-${this.mask2}`], 70, 20, 30, 30);
-
-        //ctx.fillText(JSON.stringify(this.dash), 10, 50)
-
         let scale = 1;
         // debug info (pressed keys)
         if (DEBUG) {
             ctx.textAlign = "left";
             ctx.font = "12px arial";
-            ctx.fillText(`x=${this.x.toFixed(2)},y=${this.y.toFixed(2)},onPlatform=${this.onPlatform != null},dead=${this.dead},jc=${this.jumpCount}`, 10, 60);
+            ctx.fillText(`x=${this.x.toFixed(2)},y=${this.y.toFixed(2)},dead=${this.dead},jc=${this.jumpCount}`, 10, 60);
             ctx.strokeStyle = "#F00";
             ctx.strokeRect(x - PLAYER_W/2, y-PLAYER_H, PLAYER_W, PLAYER_H);
         }
+    }
+
+    renderMasks(ctx) {
+        ctx.drawImage(data[`frame-${this.mask}`], 10, 10, 45, 45);
+        ctx.drawImage(data[`frame-${this.mask2}`], 65, 25, 30, 30);
     }
 }

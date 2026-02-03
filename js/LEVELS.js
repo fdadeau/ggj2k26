@@ -14,12 +14,12 @@ export const LEVELS = {
                     "speed":0.5
                 },
                 {
-                    "x":60,
+                    "x":59,
                     "y":5,
                     "speed":0.3
                 },
                 {
-                    "x":60,
+                    "x":59,
                     "y":15,
                     "speed":0.3
                 },

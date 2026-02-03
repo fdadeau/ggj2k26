@@ -119,11 +119,10 @@ export class Game {
                     return;
                 }
                 if (this.state == STATES.IN_GAME) {
-                    const nextLevel = this.level.update(dt, this.keys);
-                    if(nextLevel !== undefined){
-                        this.changeLevel(
-                            nextLevel,
-                        );
+                    this.level.update(dt, this.keys);
+                    if(this.level.completed){
+                        this.changeLevel(this.level.completed.next);
+                        return;
                     }
 
                     if (this.level.player.dead) {
