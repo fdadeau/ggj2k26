@@ -69,9 +69,12 @@ export class Level {
             this.player.dead = true;
         }
         // Check if player has been touched by an enemy
-        if (this.enemies.some(e => e.intersects(this.player))) {
-            this.player.dead = true;
-        }
+        this.enemies.forEach(e => {
+            if (e.intersects(this.player)) {
+                this.player.dead = true;
+            }
+            e.update(dt);
+        });
 
         // mask collecting
         this.masks.filter(m => m.intersects(this.player)).forEach(m => {

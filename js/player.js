@@ -106,6 +106,7 @@ export class Player {
         this.lastX = this.x;
         this.lastY = this.y;
 
+
         // if player is dead --> no more moves are possible.
         if (this.dead) {
             return;
@@ -145,6 +146,8 @@ export class Player {
                 this.dash = null;
             }
         }
+
+
 
         if(this.isJumping && this.isOnTheGround(level)){
             this.isJumping = false;
@@ -203,7 +206,7 @@ export class Player {
                 }
             }
         }
-
+        
         // if flying
         if (this.speedY != 0 && !this.dash) {
             this.updateYPosition(dt, level);
@@ -222,12 +225,7 @@ export class Player {
             this.jumpCount = 0;
         }
 
-        
-//        if (this.y >= level.world.height + 100) {
-        //    this.dead = true;
- //       }
-
-        if (!this.dead) this.determineAnimation(dt);        
+        this.determineAnimation(dt);        
     } 
 
 
