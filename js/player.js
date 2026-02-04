@@ -27,6 +27,7 @@ const MASK = { NONE: "normal", BIRD: "bird", WRESTLER: "wrestler", NINJA: "ninja
 
 const DEFAULT_ANIM_DELAY = 200;
 
+const DASH_DELAY = 150;
 
 const STILL_R_ANIMATION = {
     length: 1,
@@ -77,8 +78,8 @@ export class Player {
         this.lastDir = 1;
         this.dash = null;
         this.knock = null;
-        this.mask = MASK.NONE;
-        this.mask2 = MASK.NONE;
+        this.mask = MASK.NINJA;
+        this.mask2 = MASK.WRESTLER;
         this.jumpCount = 0;
         this.currentAnimation = { frame: 0, currentDelay: STILL_R_ANIMATION.delay, animation: STILL_R_ANIMATION };
         this.isJumping = false;
@@ -134,7 +135,7 @@ export class Player {
         if (keys.action && this.mask == MASK.NINJA && !this.dash) {
             keys.action = 0;
             audio.playSound("fx-ninja", "player", 1);
-            this.dash = { delay: 150, save: 0*this.speedX };
+            this.dash = { delay: DASH_DELAY, save: 0*this.speedX };
             this.speedX = this.lastDir * MAX_SPEED * 3;
         }
         if (this.dash) {
@@ -363,15 +364,15 @@ export class Player {
         return `${this.mask}-${this.currentAnimation.animation.ref}`;
     }
     
-    render(ctx, x, y) {
+    render(ctx, srcX, srcY) {
         ctx.drawImage(
             data[this.getSpriteDependingOnMask()], 
             0,
             (this.currentAnimation.frame * FRAME_HEIGHT),
             FRAME_WIDTH,
             FRAME_HEIGHT,
-            Math.floor(x - PLAYER_W / 2),
-            Math.floor(y - PLAYER_H + 1),
+            Math.floor(this.x - PLAYER_W / 2) - srcX,
+            Math.floor(this.y - PLAYER_H + 1) - srcY,
             PLAYER_W, 
             PLAYER_H
         );

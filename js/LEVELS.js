@@ -423,6 +423,21 @@ export const LEVELS = {
                 "width":5,
                 "height":10
             },
+            //
+            {
+                "kind": "Enemy",
+                "x": 4,
+                "y": 2,
+                "width": 1,
+                "height": 2
+            },
+            {
+                kind: "Breakable",
+                x: 9,
+                y: 2, 
+                width: 2, 
+                height: 3
+            }
         ],
         "endings":[
             {

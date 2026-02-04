@@ -16,35 +16,34 @@ import { Smoke } from "./smoke.js";
 
 import { Camera } from "./camera.js";
 
+import { Enemy, Mask, Breakable, Exit } from "./entity.js";
 
+ 
 const SIZE = 52;
 
 let MAX = 52;
 
-const MASK_SIZE = 30;
-
-const BREAKABLE_HITS = 4;
-
-
 export class Level {
 
     constructor(n) {  
+        // level is completed 
+        this.completed = null;
+        // level content definition
         const lvl = loadLevel(LEVELS[n]);
         this.background = lvl.osc;
         this.map = lvl.map;
-        this.masks = lvl.masks;
-        this.breakables = lvl.breakables;
-        this.exits = lvl.exits;
-        //this.world = { height: this.background.height, width: this.background.width};
+        this.masks = lvl.masks.map(m => new Mask(m.x, m.y, m.blur, m.kind));
+        this.breakables = lvl.breakables.map(b => new Breakable(b.x, b.y, b.w, b.h, b.blocks, b.size)); 
+        this.exits = lvl.exits.map(e => new Exit(e.x, e.y, e.w, e.h, e.nextLevel));
         this.size = SIZE;
-
         // Camera 
         const camStart = { x: LEVELS[n].camera.startPosition.x * SIZE, y: (MAX-LEVELS[n].camera.startPosition.y) * SIZE };
         const camPath = LEVELS[n].camera.path.map(({x,y,speed}) => { return {x: x*SIZE, y: (MAX-y)*SIZE, speed}; });
         this.camera = new Camera(camStart, camPath);
         // Player         
         this.player = new Player(LEVELS[n].player.startPosition.x * SIZE, (MAX-LEVELS[n].player.startPosition.y-1) * SIZE);
-        this.completed = null;
+        // Enemies 
+        this.enemies = lvl.enemies.map(e => new Enemy(e.x, e.y, e.w, e.h));
         // Smoke
         this.smoke = new Smoke(this.camera);
     }
@@ -59,28 +58,26 @@ export class Level {
         this.player.update(dt, keys, this);
         
         // Check end of level        
-        const exit = this.isOnExit(this.player.x, this.player.y, this.player.width / 2, this.player.height / 2);
-        if (exit) {
-            this.completed = { next: exit.nextLevel };
-            return exit.nextLevel;
+        const exit = this.exits.filter(e => e.intersects(this.player));
+        if (exit.length > 0) {
+            this.completed = { next: exit[0].nextLevel };
+            return exit[0].nextLevel;
         }
 
         // Check if player has reached the end of the screen
         if (this.camera.playerOutOfBounds(this.player)) {
             this.player.dead = true;
         }
+        // Check if player has been touched by an enemy
+        if (this.enemies.some(e => e.intersects(this.player))) {
+            this.player.dead = true;
+        }
 
         // mask collecting
-        this.masks.filter(m => 
-            m.active && 
-            m.x + m.size /2 >= this.player.x - this.player.width / 2 &&
-            m.x + m.size /2 <= this.player.x + this.player.width / 2 && 
-            m.y + m.size /2 <= this.player.y && 
-            m.y + m.size /2 >= this.player.y - this.player.height
-        ).forEach(m => {
+        this.masks.filter(m => m.intersects(this.player)).forEach(m => {
             this.player.addMask(m.kind);
+            m.collect();
             audio.playSound("fx-pickup", "player", 1, 0);
-            m.active = false;
         });
 
         this.smoke.update(dt);
@@ -88,18 +85,12 @@ export class Level {
     
     hit(x,y) {
         this.breakables.forEach(b => {
-            if (b.broken && x >= b.x * SIZE && x <= b.x * SIZE + SIZE && y >= b.y * SIZE && y <= b.y * SIZE + b.h * SIZE) {
-                b.broken--;
-                audio.playSound(b.broken == 0 ? "fx-collapse" : "fx-wrestler", "player", 1);
-                if (b.broken == 0) {
-                    b.blocks.forEach(coords => this.map[coords[0]][coords[1]] = 0);
-                } 
-            }
-        })
+            b.hit(x,y,this.map);
+        });
     }
 
     render(ctx) {
-        // compute background position w.r.t. the player
+        // compute background position w.r.t. the camera center
         let srcX = this.camera.x - WIDTH / 2;
         let srcY = this.camera.y - HEIGHT / 2;
 
@@ -112,55 +103,31 @@ export class Level {
 
         ctx.drawImage(this.background, srcX, srcY, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT);
        
-        // render masks
-        this.masks.forEach(m => {
-            if (m.active) {
-                ctx.save();
-                ctx.globalCompositeOperation = "lighter";
-                ctx.shadowColor = m.blur ?? "rgba(255, 255, 255, 0.9)";
-                ctx.shadowBlur = 20;
-                ctx.globalAlpha = 1;
-                ctx.drawImage(data[`mask-${m.kind}`], m.x - srcX, m.y - srcY, MASK_SIZE, MASK_SIZE);
-                ctx.restore();
-            }
-        });
-
+        // render masks --add glow
+        ctx.save();
+        ctx.globalCompositeOperation = "lighter";
+        ctx.shadowBlur = 20;
+        ctx.globalAlpha = 1;
+        this.masks.forEach(m => m.render(ctx, srcX, srcY));
+        ctx.restore();
+          
         // render breakables 
-        this.breakables.forEach(b => {
-            if (b.broken > 0) {
-                b.blocks.forEach(bl => {
-                    if (b.broken > 0) {
-                        ctx.drawImage(data[`block-broken${b.broken == BREAKABLE_HITS ? 2 : 1}`], bl[1]*SIZE - srcX, bl[0]*SIZE - srcY, SIZE, SIZE);
-                    }
-                });
-            }    
-        });
+        this.breakables.forEach(b => b.render(ctx, srcX, srcY));
 
-        this.exits.forEach(exit => {
-            //ctx.fillStyle = "red";
-            ctx.drawImage(
-                data["portal"],
-                exit.x * SIZE - srcX, 
-                exit.y * SIZE - srcY, 
-                exit.width * SIZE,
-                exit.height * SIZE
-            );        
-        })
+        // render enemies 
+        this.enemies.forEach(e => e.render(ctx, srcX, srcY)); 
 
-        // determine player's position in screen
-        let playerX = this.player.x - srcX;
-        let playerY = this.player.y - srcY;
-        this.player.render(ctx, playerX, playerY);
+        // render exits
+        this.exits.forEach(exit => exit.render(ctx, srcX, srcY));
 
-        /*
-        let X3 = (srcX * 1.4) % (2*WIDTH);
-        ctx.drawImage(data["grass"], 0, 0, WIDTH*2, HEIGHT, -X3, 0, WIDTH*2, HEIGHT);
-        ctx.drawImage(data["grass"], 0, 0, WIDTH*2, HEIGHT, -X3+WIDTH*2, 0, WIDTH*2, HEIGHT);
-        */
-        
+        // render player
+        this.player.render(ctx, srcX, srcY);
+
+        // smoke
         this.smoke.render(ctx, srcX, srcY);
-        this.player.renderMasks(ctx);
-       
+        
+        // GUI displaying masks (above the rest)
+        this.player.renderMasks(ctx);  
     }
 
 
@@ -188,6 +155,7 @@ export class Level {
         return (this.map[l] && this.map[l][c]) ? this.map[l][c] : 0;
     }
 
+    /*
     isOnExit(x, y, w, h) {
         const pLeft = x - w / 2;
         const pRight = x + w / 2;
@@ -206,7 +174,7 @@ export class Level {
                 pTop < eBottom;
         });
     }
-
+    */
 }
 
 
@@ -219,15 +187,19 @@ function loadLevel(level) {
     });
 
     const breakables = level.stuff.filter(s => s.kind == "Breakable").map(p => {
-        return { x: Number(p.x), y: (MAX-Number(p.y)-p.height), w: Number(p.width), h: Number(p.height), broken: BREAKABLE_HITS };
+        return { x: Number(p.x), y: (MAX-Number(p.y)-p.height), w: Number(p.width), h: Number(p.height) };
     });
     const exits = level.endings.map(ending => ({
-        x: ending.area.x,
-        y: MAX - ending.area.y - ending.area.height, 
-        width: ending.area.width,
-        height: ending.area.height,
+        x: ending.area.x * SIZE,
+        y: (MAX - ending.area.y - ending.area.height) * SIZE, 
+        w: ending.area.width * SIZE,
+        h: ending.area.height * SIZE,
         nextLevel: ending.nextLevel
     }));
+
+    const enemies = level.stuff.filter(s => s.kind == "Enemy").map(p => {
+        return { x: Number(p.x) * SIZE, y: (MAX-Number(p.y)-p.height) * SIZE, w: Number(p.width) * SIZE, h: Number(p.height)*SIZE };
+    });
     
     let maxX = Math.max(...platforms.map(p => p.x + p.w));
     let maxY = Math.max(...platforms.map(p => p.y + p.h));
@@ -281,6 +253,11 @@ function loadLevel(level) {
                 p.blocks.push([p.y+dl,p.x+dc]);
             }
         }
+        p.size = SIZE;
+        p.x = p.x * SIZE;
+        p.y = p.y * SIZE;
+        p.w = p.w * SIZE;
+        p.h = p.h * SIZE; 
     });
     for (let l=0; l < map.length; l++) {
         for (let c=0; c < map[l].length; c++) {
@@ -293,12 +270,10 @@ function loadLevel(level) {
     // masks
     const masks = level.stuff.filter(s => s.kind == "Mask").map(m => {
         return { 
-            x: m.x * SIZE + SIZE/2 - MASK_SIZE/2, 
-            y: (MAX - m.y) * SIZE - MASK_SIZE,  
-            size: MASK_SIZE,
+            x: m.x * SIZE + SIZE/2, 
+            y: (MAX - m.y) * SIZE,  
             kind: m.type,
-            blur: m.blur,
-            active: true
+            blur: m.blur
         }
     });
 
@@ -310,7 +285,7 @@ function loadLevel(level) {
         ctx.fillRect(e.x * SIZE, e.y * SIZE, e.w * SIZE, e.h * SIZE);
         ctx.fillText("EXIT", e.x * SIZE + SIZE/2, e.y * SIZE - SIZE / 2);
     });
-    return {osc, map, masks, breakables, exits};
+    return {osc, map, masks, breakables, exits, enemies};
 }
 
 function determineBlock(map, l, c) {
