@@ -33,7 +33,7 @@ document.addEventListener("DOMContentLoaded", function() {
     function update(e) {
         const cvs = document.getElementById("cvs");
         cvs.style.backgroundColor = "rgb(111,167,168)";
-        const bg = BG[SELECT.value-1];
+        const bg = BG[SELECT.value];
         const W = Number(bg.width), H = Number(bg.height);
         cvs.setAttribute("width", W);
         cvs.setAttribute("height", H);
