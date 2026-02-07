@@ -339,6 +339,7 @@ export class GUI {
                 50,
                 60
             );
+            this.ctx.drawImage(data["logo-GGJ"], 530, 10, 100, 100);
         }
 
         switch(this.state){

@@ -49,6 +49,7 @@ const data = {
 
     "home-icon": "./assets/icons/home.png",
     "key-icon": "./assets/icons/key.png",
+    "logo-GGJ": "./assets/icons/logoGGJ.png",
 
     // musics
     "music-ingame": "./assets/sounds/musiquedefond.mp3",
