@@ -42,8 +42,13 @@ const data = {
     "frame-ninja": "./assets/sprites/frames/ninja_frame.png",
     "frame-normal": "./assets/sprites/frames/empty_frame.png",
 
-    "menu-background": "./assets/sprites/menus/menu.png",
+    "menu-background": "./assets/sprites/menus/96x48.png",
+    "menu-background-large": "./assets/sprites/menus/menu.png",
     "menu-button": "./assets/sprites/menus/menu_button.png",
+    "menu-button-rock": "./assets/sprites/menus/cailloux.png",
+
+    "home-icon": "./assets/icons/home.png",
+    "key-icon": "./assets/icons/key.png",
 
     // musics
     "music1": "./assets/sounds/musiquedefond.mp3",

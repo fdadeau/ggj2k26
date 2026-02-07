@@ -1,5 +1,5 @@
 export const LEVELS = {
-    1: {
+    0: {
         "player":{
             // "startPosition":{"x":112,"y":3},
             "startPosition":{"x":1,"y":3},
@@ -447,11 +447,11 @@ export const LEVELS = {
                     "width":2,
                     "height":1
                 },
-                "nextLevel": 2
+                "nextLevel": 1
             }
         ]
     },
-    2:{
+    1:{
         "player":{
             "startPosition":{"x":6,"y":1},
         },
