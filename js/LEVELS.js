@@ -12,7 +12,7 @@ export const LEVELS = {
         ],
         "camera":{
             // "startPosition":{"x":112 ,"y":5},
-            "startPosition":{"x":-1 ,"y":5},
+            "startPosition":{"x":0 ,"y":5},
             "path":[
                 {
                     "x":38,

@@ -2,8 +2,6 @@
  * Levels
  */
 
-import { WIDTH, HEIGHT } from "./main.js";
-
 import { LEVELS } from "./LEVELS.js"; 
 
 import { Player } from "./player.js";
@@ -18,7 +16,9 @@ import { Camera } from "./camera.js";
 
 import { Enemy, Mask, Breakable, Exit } from "./entity.js";
 
- 
+export const WIDTH = 640;
+export const HEIGHT = WIDTH * 10 / 16;
+
 const SIZE = 52;
 
 let MAX = 52;
@@ -207,8 +207,8 @@ function loadLevel(level) {
     let maxX = Math.max(...platforms.map(p => p.x + p.w));
     let maxY = Math.max(...platforms.map(p => p.y + p.h));
 
-    const CAP_X = WIDTH / 32;
-    const CAP_Y = HEIGHT / 32;
+    const CAP_X = 0; //WIDTH / 32;
+    const CAP_Y = 0; //HEIGHT / 32;
 
     const W = SIZE * maxX + CAP_X;
     const H = SIZE * maxY + CAP_Y;

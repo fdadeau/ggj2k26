@@ -1,5 +1,5 @@
 
-import { WIDTH, HEIGHT } from "./main.js";
+import { WIDTH, HEIGHT } from "./level.js";
 
 const CAMERA_SPEED = 0.4;
 

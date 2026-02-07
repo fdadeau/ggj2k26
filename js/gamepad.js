@@ -1,4 +1,4 @@
-import { HEIGHT, WIDTH } from "./main.js";
+import { HEIGHT, WIDTH } from "./level.js";
 
 const AXE_TRESHOLD = 0.5;
 

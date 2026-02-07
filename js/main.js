@@ -3,9 +3,7 @@
 import { Game } from "./game.js";
 import { GamepadHandler, getGamepadFromNavigator } from "./gamepad.js";
 import { preload } from "./preload.js";
-
-export const WIDTH = 640;
-export const HEIGHT = WIDTH * 10 / 16;
+import { WIDTH, HEIGHT } from "./level.js";
 
 document.addEventListener("DOMContentLoaded", function(_e) {
 

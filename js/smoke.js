@@ -1,6 +1,6 @@
 import { data } from "./preload.js"; 
 
-import { WIDTH, HEIGHT } from "./main.js";
+import { WIDTH, HEIGHT } from "./level.js";
 
 const PARTICLE_SIZE = 50;
 

@@ -1,7 +1,5 @@
 
-import { WIDTH, HEIGHT } from "./main.js";
-
-import { Level } from "./level.js";
+import { Level, WIDTH, HEIGHT } from "./level.js";
 
 import { audio } from "./audio.js";
 
