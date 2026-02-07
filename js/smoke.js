@@ -103,3 +103,63 @@ class Particle {
     }
 }
 
+
+const SMOKE_TITLE_SPEED = 0.1;
+const SMOKE_TITLE_MAX_PARTICLES = 140;
+
+export class SmokeTitle {
+
+    constructor() {
+        this.position = WIDTH + WIDTH + HEIGHT + HEIGHT / 2;
+        this.direction = 1;
+        this.particles = [];
+    }
+
+    update(dt) {
+        this.position = this.normalize(this.position + this.direction * SMOKE_TITLE_SPEED * dt);
+        if (this.particles.length == SMOKE_TITLE_MAX_PARTICLES) {
+            this.particles.shift();
+        }   
+        while (this.particles.length < SMOKE_TITLE_MAX_PARTICLES) {
+            const AMPLITUDE = HEIGHT * 1.1;
+            const rand = Math.floor(Math.random() * AMPLITUDE) + this.position - AMPLITUDE/2;
+            const coords = this.getCoordsFor(this.normalize(rand));
+
+            const deltaX = WIDTH / 2 - coords.x, deltaY = HEIGHT / 2 - coords.y;
+            const dist = Math.sqrt(deltaX*deltaX + deltaY * deltaY);
+            const vec = { x: deltaX / dist, y : deltaY / dist };
+            coords.x += vec.x * Math.floor(betterRandomForSmoke() * 2 * PARTICLE_SIZE)
+            coords.y += vec.y * Math.floor(betterRandomForSmoke() * PARTICLE_SIZE)
+            coords.shape = Math.floor(Math.random() * 5);
+            this.particles.push(coords);
+        }
+
+        
+    }
+
+    render(ctx) {
+        const saveFS = ctx.fillStyle;
+        this.particles.forEach(p => ctx.drawImage(data["smoke-particles"], PARTICLE_SIZE * p.shape, 0, FRAME_SIZE, FRAME_SIZE, p.x - PARTICLE_SIZE/2, p.y - PARTICLE_SIZE/2, PARTICLE_SIZE, PARTICLE_SIZE));
+        //this.particles.forEach(p => ctx.fillRect(p.x - 5, p.y - 5, 10, 10));
+        const p = this.getCoordsFor(this.position);
+        ctx.fillStyle = "red";
+        //ctx.fillRect(p.x - 10, p.y - 10, 20, 20);
+        ctx.fillStyle = saveFS;
+    }
+
+    getCoordsFor(pos) {
+        const PERIMETER =  (2 * WIDTH + 2 * HEIGHT);
+        if (pos < WIDTH) {
+            return { x: pos, y: 0 };
+        }
+        if (pos < WIDTH+HEIGHT) {
+            return { x: WIDTH, y: pos - WIDTH };
+        }
+        return pos < 2*WIDTH+HEIGHT ? { x: PERIMETER - pos - HEIGHT, y: HEIGHT } : { x: 0, y: PERIMETER - pos };
+    }
+    normalize(pos) {
+        const PERIMETER =  (2 * WIDTH + 2 * HEIGHT);
+        return (pos < 0) ? pos - PERIMETER :  pos % PERIMETER;
+    }
+
+}

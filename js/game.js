@@ -7,6 +7,8 @@ import { getGamepadFromNavigator } from "./gamepad.js";
 
 import { data } from "./preload.js"; 
 
+import { SmokeTitle } from "./smoke.js";
+
 const STATES = {
     LOADING: 0, 
     MENU: 5, 
@@ -39,7 +41,7 @@ export class Game {
         this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, pause: 0 };
         this.previousButtons = new Set();
         this.loadingMessage = "";
-        this.smoke = [];
+        this.smokeTitle = new SmokeTitle();
     }
 
     reset() {
@@ -135,6 +137,7 @@ export class Game {
                 }   
                 break;
             case STATES.MENU: 
+                this.smokeTitle.update(dt);
                 if (this.keys.jump) {
                     this.keys.jump = 0;
                     this.reset();
@@ -142,12 +145,14 @@ export class Game {
                 }                
                 break;
             case STATES.COMPLETED:
+                this.smokeTitle.update(dt);
                 if (this.keys.jump) {
                     this.keys.jump = 0;
                     this.state = STATES.IN_GAME;
                 }
                 break;
 			case STATES.PAUSE:
+                this.smokeTitle.update(dt);
 				if(this.keys.jump){
 					this.unpause()
 				}
@@ -155,7 +160,8 @@ export class Game {
                     this.reset();
                 }
                 break;
-            case STATES.GAME_OVER: 
+            case STATES.GAME_OVER:
+                this.smokeTitle.update(dt); 
                 if (this.keys.jump) {
                     this.reset();
                 }
@@ -164,6 +170,7 @@ export class Game {
                 throw new Error(`Unhandled game state, got ${this.state}`);
         }
 
+        // Character animation
         perso.delay -= dt;
         if (perso.delay < 0) {
             if (Math.random() > 0.5) {
@@ -182,8 +189,6 @@ export class Game {
     render() {
         this.ctx.clearRect(0, 0, WIDTH, HEIGHT);
         this.ctx.fillStyle = "white";
-
-    
 
         if (this.state !== STATES.LOADING && this.state !== STATES.IN_GAME) {
             this.ctx.drawImage(data["background"], 0, 0, WIDTH, HEIGHT);
@@ -267,6 +272,11 @@ export class Game {
                 break;
             default:
                 throw new Error(`Unhandled game state, got ${this.state}`);
+        }
+
+        if (this.state !== STATES.LOADING && this.state !== STATES.IN_GAME) {
+            // smoke title
+            this.smokeTitle.render(this.ctx);
         }
     }
 

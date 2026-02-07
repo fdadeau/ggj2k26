@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const L = new Level(n);
         const W = L.background.width, H = L.background.height;
         const ctx = L.background.getContext("2d");
-        ctx.fillStyle = "black";
+        ctx.strokeStyle = ctx.fillStyle = "black";
         ctx.textAlign = "center";
         const size = L.size;
         ctx.font = "12px arial";
