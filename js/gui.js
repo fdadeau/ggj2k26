@@ -44,10 +44,11 @@ export class GUI {
 
     loading(loaded, total) {
         if (loaded >= total) {
-            this.state = STATES.MENU;
+            //this.state = STATES.MENU;
+            // Pour permettre de déclencher une musique
+            this.loadingMessage = "Loading complete. Press SPACE to play.";
             return;
         }
-
         this.loadingMessage = `${loaded}/${total}`;
     }
 
@@ -116,6 +117,7 @@ export class GUI {
         this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, pause: 0 };
         this.previousButtons = new Set();
         this.game.changeLevel(0);
+        audio.playMusic("music-ingame", 0.7, 0);
         this.state = STATES.IN_GAME;
     }
 
@@ -139,6 +141,11 @@ export class GUI {
 
         switch(this.state){
             case STATES.LOADING:
+                if (this.keys.jump) {
+                    audio.playMusic("title-track", 0.7, 0);
+                    this.state = STATES.MENU;
+                    this.keys.jump = 0;
+                }
                 return;
             case STATES.LEVEL_SELECTION:
                 throw new Error("Not Implemented yet");
@@ -167,6 +174,7 @@ export class GUI {
                 if(this.keys.jump){
                     this.keys.jump = 0;
                     this.reset();
+                    audio.playMusic("music-ingame", 0.7);
                     this.state = STATES.IN_GAME;
                 }
                 break;
@@ -200,6 +208,7 @@ export class GUI {
                 }
                 else if (this.keys.pause) {
                     this.goBackToMenu();
+                    audio.playMusic("title-track", 0.7);
                 }
                 break;
             case STATES.GAME_OVER: 
@@ -208,6 +217,7 @@ export class GUI {
                     this.reset()
                 }
                 else if (this.keys.pause) {
+                    audio.playMusic("title-track", 0.7, 0);
                     this.goBackToMenu();
                 }
                 break;

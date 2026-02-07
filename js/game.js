@@ -11,7 +11,6 @@ export class Game {
 
     reset() {
         this.level = new Level(this.nLevel);
-        audio.playMusic("music1", 0.7);
     }
 
     changeLevel(levelId) {

@@ -51,7 +51,8 @@ const data = {
     "key-icon": "./assets/icons/key.png",
 
     // musics
-    "music1": "./assets/sounds/musiquedefond.mp3",
+    "music-ingame": "./assets/sounds/musiquedefond.mp3",
+    "title-track": "./assets/sounds/title-track2.mp3",
 
     // Sounds
     "fx-bird": "./assets/sounds/fx-bird.mp3",
