@@ -184,7 +184,10 @@ export class Smoke2 extends SmokeTitle {
     }
 
     update(dt) {
-        if (this.cameraPathLength > this.camera.cameraPath.length) {
+        if (this.camera.cameraPath.length == 0) {
+        //    this.position = this.normalize(this.position + this.direction * SMOKE2_SPEED*0.5 * dt);
+        }
+        else if (this.cameraPathLength > this.camera.cameraPath.length) {
             this.updatePosition();
             this.cameraPathLength = this.camera.cameraPath.length;
         }
@@ -198,6 +201,8 @@ export class Smoke2 extends SmokeTitle {
         if (this.particles.length == SMOKE2_MAX_PARTICLES) {
             this.particles.pop();
             this.particles.pop();
+            this.particles.pop();
+            this.particles.pop();
         }   
         while (this.particles.length < SMOKE2_MAX_PARTICLES) {
             const p = this.getCoordsFor(this.position);
@@ -206,10 +211,10 @@ export class Smoke2 extends SmokeTitle {
             const coords = this.getCoordsFor(this.normalize(rand));
 
             if (coords.y == 0 || coords.y == HEIGHT) {
-                coords.y += (coords.y == 0 ? 1 : -1) * Math.floor(betterRandomForSmoke() * 2 * PARTICLE_SIZE + PARTICLE_SIZE);
+                coords.y += (coords.y == 0 ? 1 : -1) * Math.floor(betterRandomForSmoke() * 2 * PARTICLE_SIZE + (this.camera.cameraPath.length > 0 ? PARTICLE_SIZE/2 : 0));
             }
             else {
-                coords.x += (coords.x == 0 ? 1 : -1) * Math.floor(betterRandomForSmoke() * 2 * PARTICLE_SIZE + PARTICLE_SIZE);
+                coords.x += (coords.x == 0 ? 1 : -1) * Math.floor(betterRandomForSmoke() * 2 * PARTICLE_SIZE + (this.camera.cameraPath.length > 0 ? PARTICLE_SIZE/2 : 0));
             }
             coords.x += this.camera.x - WIDTH / 2;
             coords.y += this.camera.y - HEIGHT / 2;
@@ -220,7 +225,6 @@ export class Smoke2 extends SmokeTitle {
     }
 
     updatePosition() {
-        if (this.camera.cameraPath.length == 0) return;
         const vec = { x: this.camera.cameraPath[0].x - this.camera.x, y: this.camera.cameraPath[0].y - this.camera.y };
         const dist = Math.sqrt(vec.x*vec.x + vec.y*vec.y);
         vec.x /= dist;
