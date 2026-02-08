@@ -215,7 +215,7 @@ export class Player {
         this.updateXPosition(dt, level);
 
         if (this.isOnTheGround(level) == 0) {
-            this.speedY += GRAVITY * dt / (1000/60);
+            this.speedY += (!this.dash ? GRAVITY : 1) * dt / (1000/60);
             if (this.speedY > MAX_FALL_SPEED) { this.speedY = MAX_FALL_SPEED; }
             if (this.jumpCount == 0) this.jumpCount = 1;
         }
