@@ -2,17 +2,23 @@ export const LEVELS = {
     0: {
         "player":{
             // "startPosition":{"x":112,"y":3},
-            "startPosition":{"x":1,"y":3},
+            "startPosition":{"x":3,"y":3},
         },
         "texts" : [
-            { text: "Run away from the smoke!", x: 4, y: 5},
+            { text: "Run away from the smoke!", x: 5, y: 5},
             { text: "Press Space to jump", x: 14, y: 6},
             { text: "Press S to swap between masks", x: 40, y: 6},
-            { text: "The bird mask lets you jump again while in the air", x: 46, y: 8}
+            { text: "The bird mask lets you jump again while in the air", x: 46, y: 8},
+            { text: "The wrestler mask lets you destroy walls", x: 66, y: 17 },
+            { text: "Use A/Q against the wall to destroy it", x: 80, y: 13 },
+            { text: "Switch between masks!", x: 96, y: 15 },
+            { text: "Ninja masks lets you dash behind some obstacles", x: 109, y: 16 },
+            { text: "Use A/Q to dash!", x: 111, y: 4 },
+            { text: "Touch the portal to exit the level", x: 129, y: 7 },
         ],
         "camera":{
             // "startPosition":{"x":112 ,"y":5},
-            "startPosition":{"x":0 ,"y":5},
+            "startPosition":{"x":4 ,"y":5},
             "path":[
                 {
                     "x":38,
@@ -327,7 +333,7 @@ export const LEVELS = {
             {
                 "kind":"Permanent",
                 "x":107,
-                "y":5,
+                "y":6,
                 "startLiving":0,
                 "stopLiving": undefined,
                 "width":3,
@@ -344,11 +350,11 @@ export const LEVELS = {
             },
             {
                 "kind":"Permanent",
-                "x":111,
+                "x":112,
                 "y":1,
                 "startLiving":0,
                 "stopLiving": undefined,
-                "width":3,
+                "width":5,
                 "height":1
             },
             {
@@ -366,16 +372,16 @@ export const LEVELS = {
                 "y":1,
                 "startLiving":0,
                 "stopLiving": undefined,
-                "width":3,
+                "width":4,
                 "height":1
             },
             {
                 "kind":"Permanent",
-                "x":123,
+                "x":122,
                 "y":1,
                 "startLiving":0,
                 "stopLiving": undefined,
-                "width":3,
+                "width":4,
                 "height":1
             },
             {
@@ -423,20 +429,19 @@ export const LEVELS = {
                 "width":5,
                 "height":10
             },
-            //
             {
                 "kind": "Enemy",
-                "x": 4,
+                "x": 116,
                 "y": 2,
                 "width": 1,
                 "height": 2
             },
             {
-                kind: "Breakable",
-                x: 9,
+                kind: "Enemy",
+                x: 120,
                 y: 2, 
-                width: 2, 
-                height: 3
+                width: 1, 
+                height: 2
             }
         ],
         "endings":[
