@@ -433,7 +433,9 @@ export class GUI {
                 50,
                 60
             );
+            this.ctx.imageSmoothingEnabled = true;
             this.ctx.drawImage(data["logo-GGJ"], 530, 10, 100, 100);
+            this.ctx.imageSmoothingEnabled = false;
         }
 
         switch(this.state){
