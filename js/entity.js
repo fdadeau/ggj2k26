@@ -77,12 +77,13 @@ export class Mask extends Entity {
 const PIXEL_SIZE = 1;
 export class Enemy extends Entity {
 
-    constructor(x,y,w,h) {
+    constructor(x,y,w,h,d) {
         super(x,y,w,h);
 //        this.fireflies = Array(h/PIXEL_SIZE).fill(Array(w/PIXEL_SIZE).fill(0));
 
+        this.add = d;
         this.cols = Math.floor(w / PIXEL_SIZE);
-        this.rows = Math.floor(h / PIXEL_SIZE);
+        this.rows = Math.floor((h+d) / PIXEL_SIZE);
 
         // Intensité du feu
         this.fireflies = new Uint8Array(this.cols * this.rows);
@@ -137,7 +138,7 @@ export class Enemy extends Entity {
 
                 ctx.fillRect(
                     this.x + x * PIXEL_SIZE - srcX,
-                    this.y + y * PIXEL_SIZE - srcY,
+                    this.y + y * PIXEL_SIZE - srcY - this.add,
                     PIXEL_SIZE,
                     PIXEL_SIZE
                 );
@@ -188,7 +189,7 @@ export class Breakable extends Entity {
         this.life = BREAKABLE_HITS;
         this.blocks = b;
         this.size = s;
-        console.log(this);
+        //console.log(this);
     }
 
     render(ctx, srcX, srcY) {

@@ -3,7 +3,7 @@ import { WIDTH, HEIGHT } from "./level.js";
 
 const CAMERA_SPEED = 0.4;
 
-const EPSILON = 1;
+const EPSILON = 2;
 
 export class Camera {
 

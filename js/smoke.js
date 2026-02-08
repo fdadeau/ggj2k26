@@ -12,6 +12,8 @@ const SMOKE_NB_PARTICLES = 400;
 
 const FRAME_SIZE = 16;
 
+const DEBUG = 0;
+
 export class Smoke {
 
     constructor(camera) {
@@ -90,7 +92,7 @@ class Particle {
     }
 
     render(ctx, srcX, srcY) {
-        const image = data["smoke-particles"];
+        const image = data["smoke-particles0"];
         const sx = this.spriteIndex*FRAME_SIZE;
         const sy = 0;
         const sWidth = FRAME_SIZE;
@@ -106,7 +108,7 @@ class Particle {
 
 const SMOKE_TITLE_SPEED = 0.1;
 const SMOKE_TITLE_MAX_PARTICLES = 140;
-
+const NB_SMOKES = 7;
 export class SmokeTitle {
 
     constructor() {
@@ -115,10 +117,13 @@ export class SmokeTitle {
         this.particles = [];
     }
 
-    update(dt) {
-        this.position = this.normalize(this.position + this.direction * SMOKE_TITLE_SPEED * dt);
+    update(dt, noMove) {
+        if (!noMove) {
+            this.position = this.normalize(this.position + this.direction * SMOKE_TITLE_SPEED * dt);
+        }
         if (this.particles.length == SMOKE_TITLE_MAX_PARTICLES) {
-            this.particles.shift();
+            this.particles.pop();
+            this.particles.pop();
         }   
         while (this.particles.length < SMOKE_TITLE_MAX_PARTICLES) {
             const AMPLITUDE = HEIGHT * 1.1;
@@ -131,20 +136,19 @@ export class SmokeTitle {
             coords.x += vec.x * Math.floor(betterRandomForSmoke() * 2 * PARTICLE_SIZE)
             coords.y += vec.y * Math.floor(betterRandomForSmoke() * PARTICLE_SIZE)
             coords.shape = Math.floor(Math.random() * 5);
-            this.particles.push(coords);
+            this.particles.unshift(coords);
         }
-
-        
     }
 
     render(ctx) {
         const saveFS = ctx.fillStyle;
-        this.particles.forEach(p => ctx.drawImage(data["smoke-particles"], PARTICLE_SIZE * p.shape, 0, FRAME_SIZE, FRAME_SIZE, p.x - PARTICLE_SIZE/2, p.y - PARTICLE_SIZE/2, PARTICLE_SIZE, PARTICLE_SIZE));
+        this.particles.forEach((p,i) => ctx.drawImage(data["smoke-particles" + Math.floor(i/(SMOKE_TITLE_MAX_PARTICLES/NB_SMOKES))], PARTICLE_SIZE * p.shape, 0, FRAME_SIZE, FRAME_SIZE, p.x - PARTICLE_SIZE/2, p.y - PARTICLE_SIZE/2, PARTICLE_SIZE, PARTICLE_SIZE));
         //this.particles.forEach(p => ctx.fillRect(p.x - 5, p.y - 5, 10, 10));
         const p = this.getCoordsFor(this.position);
         ctx.fillStyle = "red";
         //ctx.fillRect(p.x - 10, p.y - 10, 20, 20);
         ctx.fillStyle = saveFS;
+
     }
 
     getCoordsFor(pos) {
@@ -159,7 +163,104 @@ export class SmokeTitle {
     }
     normalize(pos) {
         const PERIMETER =  (2 * WIDTH + 2 * HEIGHT);
-        return (pos < 0) ? pos - PERIMETER :  pos % PERIMETER;
+        return (pos < 0) ? pos + PERIMETER :  pos % PERIMETER;
+    }
+
+}
+
+const EPSILON = 5;
+const SMOKE2_SPEED = 0.5;
+const SMOKE2_MAX_PARTICLES = 140;
+export class Smoke2 extends SmokeTitle {
+
+    constructor(camera) {
+        super();
+        this.camera = camera;
+        this.cameraPathLength = camera.cameraPath.length;
+        this.position = 0;
+        this.updatePosition();
+        this.position = this.target;
+        this.target = null;
+    }
+
+    update(dt) {
+        if (this.cameraPathLength > this.camera.cameraPath.length) {
+            this.updatePosition();
+            this.cameraPathLength = this.camera.cameraPath.length;
+        }
+        if (this.target !== null) { 
+            this.position = this.normalize(this.position + this.direction * SMOKE2_SPEED * dt);
+            if (Math.abs(this.target - this.position) < EPSILON) {
+                this.position = this.target;
+                this.target = null;
+            }
+        }
+        if (this.particles.length == SMOKE2_MAX_PARTICLES) {
+            this.particles.pop();
+            this.particles.pop();
+        }   
+        while (this.particles.length < SMOKE2_MAX_PARTICLES) {
+            const p = this.getCoordsFor(this.position);
+            const AMPLITUDE = (p.y == 0 || p.y == HEIGHT) ? WIDTH : HEIGHT;
+            const rand = Math.floor(Math.random() * AMPLITUDE) + this.position - AMPLITUDE/2;
+            const coords = this.getCoordsFor(this.normalize(rand));
+
+            if (coords.y == 0 || coords.y == HEIGHT) {
+                coords.y += (coords.y == 0 ? 1 : -1) * Math.floor(betterRandomForSmoke() * 2 * PARTICLE_SIZE + PARTICLE_SIZE);
+            }
+            else {
+                coords.x += (coords.x == 0 ? 1 : -1) * Math.floor(betterRandomForSmoke() * 2 * PARTICLE_SIZE + PARTICLE_SIZE);
+            }
+            coords.x += this.camera.x - WIDTH / 2;
+            coords.y += this.camera.y - HEIGHT / 2;
+            //coords.y += vec.y * Math.floor(betterRandomForSmoke() * 1 * PARTICLE_SIZE) + this.camera.y - HEIGHT / 2  + PARTICLE_SIZE * (vec.y > 0 ? 1 : -1);
+            coords.shape = Math.floor(Math.random() * 5);
+            this.particles.unshift(coords);
+        }
+    }
+
+    updatePosition() {
+        if (this.camera.cameraPath.length == 0) return;
+        const vec = { x: this.camera.cameraPath[0].x - this.camera.x, y: this.camera.cameraPath[0].y - this.camera.y };
+        const dist = Math.sqrt(vec.x*vec.x + vec.y*vec.y);
+        vec.x /= dist;
+        vec.y /= dist;
+        if (Math.abs(vec.x) > Math.abs(vec.y)) {
+            this.target = vec.x > 0 ? 2*WIDTH + HEIGHT*1.5 : WIDTH + HEIGHT/2;
+        }
+        else if (Math.abs(vec.x) < Math.abs(vec.y)) {
+            this.target = vec.y > 0 ? WIDTH / 2 : WIDTH * 1.5 + HEIGHT;
+        }
+        else {
+            if (vec.x > 0) {
+                this.target = this.y > 0 ? 0 : WIDTH+HEIGHT;
+            }
+            else {
+                this.target = this.y > 0 ? WIDTH : 2*WIDTH+HEIGHT;
+            }
+        }
+        if (this.target > this.position) {
+            this.direction = (this.target - this.position < WIDTH+HEIGHT) ? 1 : -1;
+        }
+        else if (this.target < this.position) {
+            this.direction = (this.position - this.target < WIDTH+HEIGHT) ? -1 : 1;
+        }
+        else {
+            this.target = null;
+        }
+        this.position = Math.floor(this.position);
+    }
+
+    render(ctx, srcX, srcY) {
+        this.particles.forEach((p,i) => ctx.drawImage(data["smoke-particles" + Math.floor(i/(SMOKE2_MAX_PARTICLES/NB_SMOKES))], PARTICLE_SIZE * p.shape, 0, FRAME_SIZE, FRAME_SIZE, p.x - PARTICLE_SIZE/2 - srcX, p.y - PARTICLE_SIZE/2 - srcY, PARTICLE_SIZE, PARTICLE_SIZE));
+        if (DEBUG) {
+            const saveFS = ctx.fillStyle;
+            ctx.fillStyle = "red";
+            const p = this.getCoordsFor(this.position);
+            ctx.fillRect(p.x - 10, p.y - 10, 20, 20);
+            ctx.fillText(JSON.stringify(p), 200, 20)
+            ctx.fillStyle = saveFS;
+        }
     }
 
 }

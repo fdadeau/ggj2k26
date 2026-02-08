@@ -15,6 +15,7 @@ export const STATES = {
     COMPLETED: 30, 
     CREDITS: 40, 
     CONTROLS: 50, 
+    GAME_END: 100       // TODO faire une séquence de crédits
 }; 
 
 const perso = { delay: 2000, max: 2000, dir: "L", frame: "normal", frames: ["normal", "ninja", "wrestler", "bird"] }
@@ -28,12 +29,22 @@ export class GUI {
         this.ctx.imageSmoothingEnabled = false;
         this.state = STATES.LOADING;
 
-        this.buttons = {
-            "CONTROLS": new Button("Controls", 20, HEIGHT - 110, 160, 64, 20),
-            "TUTORIAL": new Button("Tutorial", WIDTH / 2 - 90, HEIGHT - 110, 160, 64, 20),
-            "CREDITS": new Button("Credits", WIDTH / 2 + 120, HEIGHT - 110, 160, 64, 20),
-        };
-        this.homeButton = new HomeButton(15, 15, 40, 40);
+        this.selection = 0;
+
+        this.buttons = [
+            /*"PLAY": */ new Button("Play", 20, HEIGHT - 110, 160, 64, 20),
+            /*"CONTROLS":*/ new Button("Controls", WIDTH / 2 - 90, HEIGHT - 110, 160, 64, 20),
+            //"TUTORIAL": new Button("Tutorial", WIDTH / 2 - 90, HEIGHT - 110, 160, 64, 20),
+            /*"CREDITS":*/ new Button("Credits", WIDTH / 2 + 120, HEIGHT - 110, 160, 64, 20)
+        ];
+        this.buttons[this.selection].selected = true;
+        //this.homeButton = new HomeButton(15, 15, 40, 40);
+
+        this.lvlButtons = [
+            new Button("Tutorial", 20, HEIGHT - 110, 160, 64, 20),
+            new Button("Level 1", WIDTH / 2 - 90, HEIGHT - 110, 160, 64, 20),
+            new Button("Level 2", WIDTH / 2 + 120, HEIGHT - 110, 160, 64, 20)
+        ]
 
         this.loadingMessage = "";
 
@@ -57,6 +68,8 @@ export class GUI {
             return;
         }
         this.state = STATES.PAUSE;
+        audio.ambiance.pause();
+        audio.playSound("fx-pause","player",0.7);
         this.keys.pause = 0;
     }
 
@@ -64,6 +77,7 @@ export class GUI {
         if(this.state !== STATES.PAUSE){
             return;
         }
+        audio.ambiance.play();
         this.keys.jump = 0;
         this.state = STATES.IN_GAME;
     }
@@ -96,6 +110,7 @@ export class GUI {
         this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, pause: 0 };
         this.previousButtons = new Set();
         this.game.reset();
+        audio.playMusic("music-ingame", 0.7, 0);
         this.state = STATES.IN_GAME;
     }
 
@@ -136,7 +151,6 @@ export class GUI {
                 perso.dir = perso.dir == "L" ? "R" : "L";
             }
             perso.delay = perso.max;
-            
         }
 
         switch(this.state){
@@ -148,7 +162,54 @@ export class GUI {
                 }
                 return;
             case STATES.LEVEL_SELECTION:
-                throw new Error("Not Implemented yet");
+                this.smokeTitle.update(dt); 
+                this.lvlButtons.forEach(b => b.update(dt));
+                if (this.keys.pause) {
+                    this.state = STATES.MENU;
+                    this.selection = 0;
+                    this.keys.pause = 0;
+                }
+                if (this.keys.right) {
+                    if (this.selection < Object.keys(this.lvlButtons).length-1) {
+                        this.lvlButtons[this.selection].selected = false;
+                        this.selection++;
+                        this.lvlButtons[this.selection].selected = true;
+                    } 
+                    this.keys.right = 0;
+                }
+                if (this.keys.left) {
+                    if (this.selection > 0) {
+                        this.lvlButtons[this.selection].selected = false;
+                        this.selection--;
+                        this.lvlButtons[this.selection].selected = true;
+                    }
+                    this.keys.left = 0;
+                }
+                if(this.keys.jump) {
+                    this.keys.jump = 0;
+                    switch(this.selection) {
+                        case 0: // tutorial
+                            this.game.changeLevel(0);
+                            this.reset();
+                            audio.playMusic("music-ingame", 0.7);
+                            this.state = STATES.IN_GAME;
+                            break;
+                        case 1: // start speed run
+                            this.game.changeLevel(1);
+                            this.reset();
+                            audio.playMusic("music-ingame", 0.7);
+                            this.state = STATES.IN_GAME;
+                            break;
+                        case 2: // start adventure
+                            this.game.changeLevel(2);
+                            this.reset();
+                            audio.playMusic("music-ingame", 0.7);
+                            this.state = STATES.IN_GAME;
+                            break;
+                    }
+                }
+                break;
+                
             case STATES.IN_GAME:
                 if (this.keys.pause) {
                     this.pause();
@@ -159,38 +220,66 @@ export class GUI {
                         this.changeLevel(this.game.level.completed.next);
                         return;
                     }
-
                     if (this.game.level.player.dead) {
                         this.state = STATES.GAME_OVER;
                         audio.playSound("death", "player", 0.4, false);
+                        audio.ambiance.pause();
                         return true;
                     }
-
                     this.game.update(dt, this.keys);
                 }
                 break;
             case STATES.MENU:
                 this.smokeTitle.update(dt); 
-                if(this.keys.jump){
+                this.buttons.forEach(b => b.update(dt));
+                if (this.keys.right) {
+                    if (this.selection < Object.keys(this.buttons).length-1) {
+                        this.buttons[this.selection].selected = false;
+                        this.selection++;
+                        this.buttons[this.selection].selected = true;
+                    } 
+                    this.keys.right = 0;
+                }
+                if (this.keys.left) {
+                    if (this.selection > 0) {
+                        this.buttons[this.selection].selected = false;
+                        this.selection--;
+                        this.buttons[this.selection].selected = true;
+                    }
+                    this.keys.left = 0;
+                }
+                if(this.keys.jump) {
                     this.keys.jump = 0;
-                    this.reset();
-                    audio.playMusic("music-ingame", 0.7);
-                    this.state = STATES.IN_GAME;
+                    switch(this.selection) {
+                        case 0: // play
+                            this.state = STATES.LEVEL_SELECTION;
+                            this.selection = 0;
+                            this.lvlButtons[0].selected = true;
+                            break;
+                        case 1: // controls
+                            this.state = STATES.CONTROLS;
+                            break;
+                        case 2: // credits 
+                            this.state = STATES.CREDITS;
+                            break;
+                    }
                 }
                 break;
             case STATES.CONTROLS:
                 this.smokeTitle.update(dt); 
-                if(this.keys.jump){
+                if(this.keys.jump || this.keys.pause) {
                     this.state = STATES.MENU;
                     this.keys.jump = 0;
+                    this.keys.pause = 0;
                     return;
                 }
                 break;
             case STATES.CREDITS:
                 this.smokeTitle.update(dt); 
-                if(this.keys.jump){
+                if(this.keys.jump || this.keys.pause){
                     this.state = STATES.MENU;
                     this.keys.jump = 0;
+                    this.keys.pause = 0;
                     return;
                 }
                 break;
@@ -208,6 +297,7 @@ export class GUI {
                 }
                 else if (this.keys.pause) {
                     this.goBackToMenu();
+                    this.state = STATES.LEVEL_SELECTION;
                     audio.playMusic("title-track", 0.7);
                 }
                 break;
@@ -227,6 +317,7 @@ export class GUI {
     }
 
     click(x, y){
+        /*
         if(this.state === STATES.MENU && this.buttons.CONTROLS.isAt(x, y)){
             this.state = STATES.CONTROLS;
         }
@@ -235,13 +326,16 @@ export class GUI {
             this.state = STATES.CREDITS;
         }
 
+        /*
         if(this.state === STATES.MENU && this.buttons.TUTORIAL.isAt(x, y)){
             this.startTutorial();
         }
 
+        /*
         if((this.state === STATES.CREDITS || this.state === STATES.CONTROLS) && this.homeButton.isAt(x, y)){
             this.state = STATES.MENU;
         }
+            */
     }
 
     pressKey(code) {
@@ -365,7 +459,8 @@ export class GUI {
                 this.renderCreditsScreen();
                 break;
             case STATES.LEVEL_SELECTION:
-                throw new Error("Not Implemented yet");
+                this.renderLevelSelectionScreen();
+                break;
             case STATES.LOADING:
                 this.renderLoadingScreen();
                 return;
@@ -437,12 +532,30 @@ export class GUI {
 
         this.ctx.font = '16px pixel-sans';
         this.ctx.textAlign = "center";
-        this.ctx.fillText("Press SPACE to start", WIDTH / 2, HEIGHT / 2 );
+        this.ctx.fillText("Select option", WIDTH / 2, HEIGHT / 2 +10);
 
-        for(const button in this.buttons){
-            this.buttons[button].render(this.ctx);
-        }
+        this.buttons.forEach(b => b.render(this.ctx));
     }
+
+    renderLevelSelectionScreen(){
+        this.ctx.drawImage(
+            data["menu-background"],
+            0, 0, 32 * 3, 32 * 2,
+            WIDTH / 2 - 160, HEIGHT / 2 - 100,
+            320, 200
+        );
+
+        this.ctx.font = '400 28px pixel-sans';
+        this.ctx.textAlign = "center";
+        this.ctx.fillText("Level Selection", WIDTH / 2, HEIGHT / 2 - 30);
+
+        this.ctx.font = '16px pixel-sans';
+        this.ctx.textAlign = "center";
+        this.ctx.fillText("Press SPACE to start", WIDTH / 2, HEIGHT / 2 +10);
+
+        this.lvlButtons.forEach(b => b.render(this.ctx));
+    }
+
 
     renderControlsScreen(){
         this.ctx.drawImage(
@@ -485,8 +598,8 @@ export class GUI {
         this.ctx.fillText("ESC", WIDTH / 2 - 70, HEIGHT / 2 + 140);
         this.ctx.fillText("Pause", WIDTH / 2 + 40, HEIGHT / 2 + 140);
     
-        this.homeButton.render(this.ctx);
-    }
+        //this.homeButton.render(this.ctx);
+    } 
 
     renderCreditsScreen(){
        this.ctx.drawImage(
@@ -548,10 +661,11 @@ export class GUI {
         this.ctx.textAlign = "center";
         this.ctx.fillText("Thanks GGJ Besançon!", WIDTH / 2, HEIGHT - 35);
         
-        this.homeButton.render(this.ctx);
+        //this.homeButton.render(this.ctx);
     }
 }
 
+const SELECTION_SPEED = 0.2;
 class Button {
     constructor(text, x, y, width, height, padding){
         this.text = text;
@@ -560,7 +674,18 @@ class Button {
         this.padding = padding;
         this.width = width;
         this.height = height;
+        this.selected = false;
+        this.underline = 0;
     }
+
+    update(dt) {
+        if (this.selected && this.underline < this.width / 3) {
+            this.underline += SELECTION_SPEED * dt;
+        }
+        else if (!this.selected && this.underline > 0) {
+            this.underline -= SELECTION_SPEED * dt;
+        }
+    }   
 
     isAt(x, y){
         return x >= this.x && x <= this.x + this.width + this.padding && y >=  this.y && y <= this.y + this.height + this.padding / 16;
@@ -574,6 +699,9 @@ class Button {
 
         ctx.drawImage(data["menu-button-rock"], this.x, this.y, this.width + this.padding, this.height + this.padding / 16);
         ctx.fillText(this.text, this.x + 92, this.y + 45);
+        if (this.underline > 0) {
+            ctx.fillRect(this.x + 92 - this.underline / 2, this.y + 52, this.underline, 4);
+        } 
     }
 }
 

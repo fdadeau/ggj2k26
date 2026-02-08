@@ -10,7 +10,7 @@ import { data } from "./preload.js";
 
 import { audio } from "./audio.js";
 
-import { Smoke } from "./smoke.js";
+import { Smoke2 } from "./smoke.js";
 
 import { Camera } from "./camera.js";
 
@@ -43,9 +43,9 @@ export class Level {
         // Player         
         this.player = new Player(LEVELS[n].player.startPosition.x * SIZE, (MAX-LEVELS[n].player.startPosition.y-1) * SIZE);
         // Enemies 
-        this.enemies = lvl.enemies.map(e => new Enemy(e.x, e.y, e.w, e.h));
+        this.enemies = lvl.enemies.map(e => new Enemy(e.x, e.y, e.w, e.h, SIZE/2));
         // Smoke
-        this.smoke = new Smoke(this.camera);
+        this.smoke = new Smoke2(this.camera);
     }
 
 
@@ -99,10 +99,12 @@ export class Level {
 
         // background with scrolling
         const X1 = Math.floor(srcX / 10) % WIDTH, Y1 = HEIGHT/10;
-        const X2 = Math.floor(srcX / 5) % WIDTH;
+        let X2 = Math.floor(srcX / 5) % WIDTH;
+        if (X2 < -2*WIDTH) { X2 += 2*WIDTH; }
         ctx.drawImage(data["background"], 0, 0, WIDTH, HEIGHT, -X1, Y1, WIDTH, HEIGHT);
         ctx.drawImage(data["background"], 0, 0, WIDTH, HEIGHT, -X1+WIDTH, Y1, WIDTH, HEIGHT);
         ctx.drawImage(data["trees"], 0, 0, WIDTH*2, HEIGHT, -X2, 0, WIDTH*2, HEIGHT);
+        ctx.drawImage(data["trees"], 0, 0, WIDTH*2, HEIGHT, -X2*2*WIDTH, 0, WIDTH*2, HEIGHT);
 
         ctx.drawImage(this.background, srcX, srcY, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT);
        
@@ -147,14 +149,7 @@ export class Level {
         return this.whichTile(x-w/2, y-h) || this.whichTile(x+w/2, y-h) || this.whichTile(x-w/2,y) || this.whichTile(x+w/2,y);
     }
     whichTile(x, y) {
-        /*
-        if (x < 0 || x >= this.world.width) {
-            return 0;       // TODO : should return 0 to remove borders from 
-        }
-            */
-
         let l = Math.floor(y / this.size), c = Math.floor(x / this.size);
-
         return (this.map[l] && this.map[l][c]) ? this.map[l][c] : 0;
     }
 

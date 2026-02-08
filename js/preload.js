@@ -66,6 +66,7 @@ const data = {
     "fx-ground": "./assets/sounds/fx-ground.mp3",
     "death": "./assets/sounds/wilhelm.mp3",
     "victory": "./assets/sounds/victory.mp3",
+    "fx-pause": "./assets/sounds/fx-pause.mp3",
 
     //briques
     "bloc1": "./assets/sprites/blocks/dirt/1.png", 
@@ -85,7 +86,14 @@ const data = {
     "portal": "./assets/sprites/blocks/portal.png",
 
     // smoke
-    "smoke-particles":"./assets/sprites/smoke/pixilart-sprite-60.png",
+    "smoke-particles0":"./assets/sprites/smoke/pixilart-sprite.png",
+    "smoke-particles1":"./assets/sprites/smoke/pixilart-sprite-85.png",
+    "smoke-particles2":"./assets/sprites/smoke/pixilart-sprite-75.png",
+    "smoke-particles3":"./assets/sprites/smoke/pixilart-sprite-60.png",
+    "smoke-particles4":"./assets/sprites/smoke/pixilart-sprite-50.png",
+    "smoke-particles5":"./assets/sprites/smoke/pixilart-sprite-40.png",
+    "smoke-particles6":"./assets/sprites/smoke/pixilart-sprite-30.png",
+    // bricks
     "block-broken1": "./assets/sprites/blocks/breakable/brick_cracked.png",
     "block-broken2": "./assets/sprites/blocks/breakable/brick.png",
 

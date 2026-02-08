@@ -106,7 +106,6 @@ export class Player {
         this.lastX = this.x;
         this.lastY = this.y;
 
-
         // if player is dead --> no more moves are possible.
         if (this.dead) {
             return;
