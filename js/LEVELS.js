@@ -448,29 +448,39 @@ export const LEVELS = {
         ]
     },
     1:{
-        "player":{
-            "startPosition":{"x":6,"y":1},
-            "mask1": "NONE",
-            "mask2": "NONE",
+      "player":{
+            "startPosition":{"x":4,"y":3},
+            "mask1": "NINJA",
+            "mask2": "BIRD",
         },
         "camera":{
-            "startPosition":{"x":5,"y":5},
+            "startPosition":{"x":4,"y":3},
             "path":[
                 {
-                    "x": 13,
-                    "y": 5,
-                    "speed": 0.5
+                    "x": 11,
+                    "y": 3,
+                    "speed": 0.3
+                },
+                {
+                    "x": 11,
+                    "y": 21,
+                    "speed": 0.25
+                },
+                {
+                    "x": 15,
+                    "y": 21,
+                    "speed": 0.25
                 },
                 {
                     "x": 20,
-                    "y": 10,
-                    "speed": 0.3
+                    "y": 9,
+                    "speed": 0.25
                 },
             ]
         },
         "stuff":[
             {
-                "kind":"Permanent", //starting ground
+                "kind":"Permanent",
                 "x":0,
                 "y":0,
                 "startLiving":0,
@@ -479,23 +489,16 @@ export const LEVELS = {
                 "height":1
             },
             {
-                "kind":"Mask",
-                "type":"ninja",
-                "x":4,
-                "y":3,
-                "startLiving":0,
-            },
-            {
-                "kind":"Permanent", // first wall
+                "kind":"Permanent",
                 "x":5,
-                "y":2,
+                "y":3,
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width": 1,
-                "height": 16
+                "height": 20
             },
             {
-                "kind":"Permanent", // Second wall / Big block
+                "kind":"Permanent",
                 "x":15,
                 "y":0,
                 "startLiving":0,
@@ -504,40 +507,85 @@ export const LEVELS = {
                 "height": 7 
             },
             {
-                "kind":"Permanent", // first platform
+                "kind":"Permanent",
                 "x":4,
-                "y":2,
+                "y":3,
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width": 10,
                 "height": 1
             },
             {
-                "kind":"Permanent", // Second platform
+                "kind":"Permanent",
                 "x":7,
-                "y":4,
+                "y":6,
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width": 8,
                 "height": 1
             },
             {
-                "kind":"Permanent", // Third platform / 2nd Big block on the top
+                "kind":"Permanent",
                 "x":6,
-                "y":6,
+                "y":9,
                 "startLiving":0,
                 "stopLiving":undefined,
                 "width": 8,
-                "height": 20
-            }
+                "height": 1
+            },
+            {
+                "kind":"Permanent",
+                "x":7,
+                "y":12,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 8,
+                "height": 1
+            },
+            {
+                "kind":"Permanent",
+                "x":6,
+                "y":15,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 8,
+                "height": 1
+            },
+            {
+                "kind":"Permanent",
+                "x":7,
+                "y":18,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 8,
+                "height": 1
+            },
+            {
+                "kind":"Permanent",
+                "x":15,
+                "y":7,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 1,
+                "height": 12
+            },
+            {
+                "kind":"Permanent",
+                "x":16,
+                "y": 13,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 3,
+                "height": 1
+            },
         ],
         "endings":[
             {
                 "area":{
                     "x": 23,
-                    "y":9,
+                    "y": 10,
                     "width":2,
-                    "height":2
+                    "height":1
                 },
                 "nextLevel": 1
             }
