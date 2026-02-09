@@ -36,10 +36,26 @@ export class Camera {
     }
 
     playerOutOfBounds(player) {
-        return (this.speed > 0 && player.x < this.x - WIDTH/2 - player.width)
-            || (this.speed < 0 && player.x > this.x + WIDTH/2 + player.width)
-            || (this.speed > 0 && player.y > this.y + HEIGHT / 2 + player.height * 1.5)
-            || (this.speed < 0 && player.y < this.y - HEIGHT / 2 - player.height / 2);
-    }
+        const horizontalGrace = player.width * 2;
+        const verticalGrace = player.height * 2;
 
+        const camLeft = this.x - WIDTH / 2;
+        const camRight = this.x + WIDTH / 2;
+        const camTop = this.y - HEIGHT / 2;
+        const camBottom = this.y + HEIGHT / 2;
+
+        if (this.speed > 0 && player.x < (camLeft - horizontalGrace)) {
+            return true;
+        }
+
+        if (this.speed < 0 && player.x > (camRight + horizontalGrace)) {
+            return true;
+        }
+
+        if (player.y > (camBottom + verticalGrace) || player.y < (camTop - verticalGrace)) {
+            return true;
+        }
+
+        return false;
+    }
 }

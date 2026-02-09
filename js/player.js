@@ -23,7 +23,7 @@ const PLAYER_H = FRAME_HEIGHT * PLAYER_SCALE;
 /** Draw hitbox */
 const DEBUG = false;
 
-const MASK = { NONE: "normal", BIRD: "bird", WRESTLER: "wrestler", NINJA: "ninja"};
+export const MASK = { NONE: "normal", BIRD: "bird", WRESTLER: "wrestler", NINJA: "ninja"};
 
 const DEFAULT_ANIM_DELAY = 200;
 
@@ -65,7 +65,7 @@ const JUMP_L_ANIMATION = {
 
 export class Player {
 
-    constructor(x, y) {
+    constructor(x, y, mask1, mask2) {
         this.x = this.lastX = x;
         this.y = this.lastY = y;
         this.width = PLAYER_W;
@@ -78,8 +78,8 @@ export class Player {
         this.lastDir = 1;
         this.dash = null;
         this.knock = null;
-        this.mask = MASK.NINJA;
-        this.mask2 = MASK.WRESTLER;
+        this.mask = mask1;
+        this.mask2 = mask2;
         this.jumpCount = 0;
         this.currentAnimation = { frame: 0, currentDelay: STILL_R_ANIMATION.delay, animation: STILL_R_ANIMATION };
         this.isJumping = false;
@@ -134,7 +134,7 @@ export class Player {
         // dash (ninja)
         if (keys.action && this.mask == MASK.NINJA && !this.dash) {
             keys.action = 0;
-            audio.playSound("fx-ninja", "player", 1);
+            audio.playSound("fx-ninja", "player", 0.4);
             this.dash = { delay: DASH_DELAY, save: 0*this.speedX };
             this.speedX = this.lastDir * MAX_SPEED * 3;
         }
@@ -158,7 +158,7 @@ export class Player {
                 this.jumpCount++;
                 this.isJumping = true;
                 if (this.jumpCount == 2) {
-                    audio.playSound("fx-bird", "player", 1);
+                    audio.playSound("fx-bird", "player", 0.25);
                 }
                 else {
                     audio.playSound("fx-jump", "player", 1);
@@ -374,7 +374,6 @@ export class Player {
             PLAYER_H
         );
 
-        let scale = 1;
         // debug info (pressed keys)
         if (DEBUG) {
             ctx.textAlign = "left";
