@@ -21,7 +21,7 @@ const PLAYER_W = FRAME_WIDTH * PLAYER_SCALE;
 const PLAYER_H = FRAME_HEIGHT * PLAYER_SCALE;
 
 /** Draw hitbox */
-const DEBUG = false;
+const DEBUG = 0;
 
 const MASK = { NONE: "normal", BIRD: "bird", WRESTLER: "wrestler", NINJA: "ninja"};
 
@@ -381,7 +381,7 @@ export class Player {
             ctx.font = "12px arial";
             ctx.fillText(`x=${this.x.toFixed(2)},y=${this.y.toFixed(2)},dead=${this.dead},jc=${this.jumpCount}`, 10, 60);
             ctx.strokeStyle = "#F00";
-            ctx.strokeRect(x - PLAYER_W/2, y-PLAYER_H, PLAYER_W, PLAYER_H);
+            ctx.strokeRect(this.x - PLAYER_W/2 - srcX, this.y-PLAYER_H - srcY, PLAYER_W, PLAYER_H);
         }
     }
 
