@@ -15,7 +15,10 @@ export class Camera {
     }
 
     update(dt) {
-        if (this.cameraPath.length == 0) return;
+        if (this.cameraPath.length == 0) {
+            this.cameraDirection = { x: 0, y: 0 };
+            return;
+        }
         const target = this.cameraPath[0];
         this.speed = target.speed;
         this.cameraDirection = { 
@@ -36,10 +39,17 @@ export class Camera {
     }
 
     playerOutOfBounds(player) {
-        return (this.speed > 0 && player.x < this.x - WIDTH/2 - player.width)
-            || (this.speed < 0 && player.x > this.x + WIDTH/2 + player.width)
-            || (this.speed > 0 && player.y > this.y + HEIGHT / 2 + player.height * 1.5)
-            || (this.speed < 0 && player.y < this.y - HEIGHT / 2 - player.height / 2);
+        if (this.cameraDirection.x >= 0 && player.x + player.width/2 < this.x - WIDTH / 2) {
+            return true;
+        }
+        if (this.cameraDirection.x <= 0 && player.x - player.width/2 > this.x + WIDTH / 2) {
+            return true;
+        }
+        if (this.cameraDirection.y <= 0  && player.y - player.height > this.y + HEIGHT / 2) {
+            return true;
+        }
+        return (this.cameraDirection.y > 0 && player.y < this.y - HEIGHT / 2);
+
     }
 
 }

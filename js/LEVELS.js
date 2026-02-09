@@ -1,5 +1,5 @@
 export const LEVELS = {
-    0: {
+    1: {
         "player":{
             // "startPosition":{"x":112,"y":3},
             "startPosition":{"x":3,"y":3},
@@ -548,6 +548,110 @@ export const LEVELS = {
                 },
                 "nextLevel": 1
             }
+        ]
+    },
+    2: {
+        player: {
+            startPosition: { x: 3, y: 3 }
+        },
+        camera: {
+            startPosition : { x: 4, y: 5 },
+            path: [
+                { x: 17, y: 5, speed: 0.4 },
+                { x: 17, y: 13, speed: 0.3 },
+                { x: 28, y: 13, speed: 0.4 },
+                { x: 29, y: 13, speed: 0.2 },
+                { x: 29, y: 32, speed: 0.3 },
+                { x: 35, y: 32, speed: 0.5 },
+                { x: 47, y: 26, speed: 0.5 },
+                { x: 47, y: 14, speed: 0.3 },
+                { x: 5, y: 14, speed: 0.9 },
+                { x: 5, y: 27, speed: 0.3 },
+                { x: 8, y: 27, speed: 0.6 },
+                { x: 8, y: 24, speed: 0.6 },
+                { x: 18, y: 24, speed: 0.6 },
+                { x: 18, y: 4, speed: 0.6 },
+                { x: 30, y: 4, speed: 0.6 },
+            ]
+        },
+        stuff: [
+            { kind: "Permanent", x: 0, y: 1, width: 5, height: 1 },
+            { kind: "Permanent", x: 7, y: 3, width: 4, height: 1 },
+            { kind: "Permanent", x: 11, y: 0, width: 3, height: 6 },
+            { kind: "Permanent", x: 8, y: 7, width: 1, height: 1 },
+            { kind: "Permanent", x: 16, y: 5, width: 4, height: 1 },
+            { kind: "Permanent", x: 19, y: 8, width: 1, height: 1 },
+            { kind: "Permanent", x: 20, y: 3, width: 2, height: 9 },
+            { kind: "Permanent", x: 21, y: 0, width: 13, height: 1 },
+            { kind: "Permanent", x: 29, y: 3, width: 2, height: 3 },
+            { kind: "Permanent", x: 6, y: 11, width: 10, height: 2 },
+            { kind: "Permanent", x: 6, y: 15, width: 10, height: 3 },
+            { kind: "Permanent", x: 14, y: 10, width: 3, height: 1 },
+            //{ kind: "Permanent", x: 16, y: 12, width: 1, height: 1 },
+            { kind: "Permanent", x: 21, y: 11, width: 13, height: 1 },
+            { kind: "Permanent", x: 21, y: 3, width: 8, height: 1 },
+
+            { kind: "Permanent", x: 1, y: 13, width: 2, height: 1 },
+
+            // zigzag
+            { kind: "Permanent", x: 23, y: 17, width: 9, height: 1 },
+            { kind: "Permanent", x: 26, y: 20, width: 8, height: 1 },
+            { kind: "Permanent", x: 24, y: 23, width: 8, height: 1 },
+            { kind: "Permanent", x: 26, y: 26, width: 8, height: 1 },
+            { kind: "Permanent", x: 24, y: 29, width: 8, height: 1 },
+
+            // horns
+            { kind: "Permanent", x: 6, y: 18, width: 3, height: 6 },
+            { kind: "Permanent", x: 13, y: 18, width: 3, height: 6 },
+
+            { kind: "Permanent", x: 22, y: 7, width: 3, height: 1 },
+            { kind: "Permanent", x: 34, y: 0, width: 2, height: 30 },
+            { kind: "Permanent", x: 36, y: 0, width: 22, height: 12 },
+            { kind: "Permanent", x: 16, y: 15, width: 3, height: 1 },
+            { kind: "Permanent", x: 18, y: 18, width: 2, height: 6 },
+            { kind: "Permanent", x: 20, y: 18, width: 4, height: 17 },
+            { kind: "Permanent", x: 17, y: 18, width: 1, height: 2 },
+
+
+            // downstairs 
+            { kind: "Permanent", x: 38, y: 16, width: 2, height: 13 },
+            { kind: "Permanent", x: 36, y: 14, width: 2, height: 8 },
+            { kind: "Permanent", x: 40, y: 21, width: 2, height: 1 },
+            { kind: "Permanent", x: 42, y: 21, width: 2, height: 7 },
+            { kind: "Permanent", x: 44, y: 21, width: 1, height: 1 },
+            { kind: "Permanent", x: 46, y: 14, width: 2, height: 2 },
+            { kind: "Permanent", x: 46, y: 18, width: 2, height: 9 },
+            { kind: "Permanent", x: 50, y: 14, width: 2, height: 12 },
+            { kind: "Permanent", x: 54, y: 14, width: 2, height: 11 },
+            { kind: "Permanent", x: 38, y: 14, width: 10, height: 2 },
+            { kind: "Permanent", x: 49, y: 14, width: 7, height: 2 },
+            { kind: "Permanent", x: 41, y: 18, width: 9, height: 1 },
+            // far left 
+            { kind: "Permanent", x: 0, y: 16, width: 1, height: 1 },
+            { kind: "Permanent", x: 5, y: 18, width: 2, height: 1 },
+            { kind: "Permanent", x: 1, y: 21, width: 1, height: 1 },
+
+            // final
+            { kind: "Permanent", x: 14, y: 0, width: 2, height: 1 },
+
+            //
+            { kind: "Mask", blur: "rgba(0, 255, 255, 0.9)", type:"bird", x: 8, y: 8 },
+            { kind: "Mask", blur: "rgba(0, 255, 255, 0.9)", type:"ninja", x: 14, y: 13 },
+            { kind: "Mask", blur: "rgba(0, 255, 255, 0.9)", type:"wrestler", x: 21, y: 12 },
+            // Breakable 
+            //{ kind: "Breakable", x: 15, y: 13, width: 1, height: 2 },
+            { kind: "Breakable", x: 16, y: 16, width: 2, height: 2 },
+            { kind: "Breakable", x: 29, y: 24, width: 1, height: 2 },
+            { kind: "Breakable", x: 33, y: 12, width: 3, height: 2 },   // shouldn
+            // Enemies
+           // { kind: "Enemy", x: 12, y: 13, width: 1, height: 2 },
+           // { kind: "Enemy", x: 26, y: 21, width: 1, height: 2 },
+           // { kind: "Enemy", x: 27, y: 24, width: 1, height: 2 },
+            { kind: "Enemy", x: 9, y: 18, width: 4, height: 2 },
+        ],
+
+        endings: [
+            { area: { x: 23, y: 5, width: 2, height: 1 }, nextLevel: "1" }
         ]
     }
 }

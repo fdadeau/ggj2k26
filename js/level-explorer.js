@@ -58,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function() {
         for (let l=0; l < H; l += size) {
             for (let c=0; c < W; c += size) {
                 ctx.strokeRect(c, H-l-size, size, size);
-                ctx.fillText(`${Math.floor(l/size)},${Math.floor(c/size)}`, c + size/2, (H-l) - size/2);
+                ctx.fillText(`${Math.floor(c/size)},${Math.floor(l/size)}`, c + size/2, (H-l) - size/2);
             }
         }
         L.masks.forEach(m => m.render(ctx, 0, 0));
@@ -70,9 +70,9 @@ document.addEventListener("DOMContentLoaded", function() {
         L.exits.forEach(e => e.render(ctx, 0, 0));
 
         ctx.strokeStyle = "red";
-        ctx.moveTo(L.camera.x-size/2, L.camera.y + size/2);
+        ctx.moveTo(L.camera.x+size/2, L.camera.y - size/2);
         L.camera.cameraPath.forEach(p => {
-            ctx.lineTo(p.x-size/2, p.y-size/2);
+            ctx.lineTo(p.x+size/2, p.y-size/2);
             ctx.stroke();
         });
         return L.background;

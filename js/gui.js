@@ -118,6 +118,9 @@ export class GUI {
         this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, pause: 0 };
         this.previousButtons = new Set();
         this.game.reset();
+        this.selection = 0;
+        this.lvlButtons.forEach((b,i) => b.selected = i==0)
+        this.buttons.forEach((b,i) => b.selected = i==0)
         this.state = STATES.MENU;
     }
 
@@ -254,7 +257,7 @@ export class GUI {
                         case 0: // play
                             this.state = STATES.LEVEL_SELECTION;
                             this.selection = 0;
-                            this.lvlButtons[0].selected = true;
+                            this.lvlButtons.forEach((b,i) => b.selected = i == 0);
                             break;
                         case 1: // controls
                             this.state = STATES.CONTROLS;
