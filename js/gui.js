@@ -355,7 +355,8 @@ export class GUI {
             case "Space":
                 this.keys.jump = 1;
                 break;
-            case "Tab": 
+            case "Backspace": 
+            case "Tab":
                 this.keys.pause = 1;
                 break;
 
@@ -379,7 +380,8 @@ export class GUI {
             case "Space":
                 this.keys.jump = 0;
                 break;
-            case "Tab": 
+            case "Tab":
+            case "Backspace": 
                 this.keys.pause = 0;
                 break;
         }
@@ -492,7 +494,7 @@ export class GUI {
         this.ctx.font = '16px pixel-sans';
         this.ctx.textAlign = "center";
         this.ctx.fillText("Press SPACE to resume", WIDTH / 2, HEIGHT / 2 - 10);
-        this.ctx.fillText("Press TAB to return to main menu", WIDTH / 2, HEIGHT / 2 + 20);
+        this.ctx.fillText("Press TAB to go back to main menu", WIDTH / 2, HEIGHT / 2 + 20);
           if (this.state !== STATES.LOADING && this.state !== STATES.IN_GAME) {
             // smoke title
             this.smokeTitle.render(this.ctx);
@@ -507,7 +509,7 @@ export class GUI {
         this.ctx.font = '16px pixel-sans';
         this.ctx.textAlign = "center";
         this.ctx.fillText("Press SPACE to restart", WIDTH / 2, HEIGHT / 2 - 10);
-        this.ctx.fillText("Press TAB to return to main menu", WIDTH / 2, HEIGHT / 2 + 20);
+        this.ctx.fillText("Press TAB to go to the main menu", WIDTH / 2, HEIGHT / 2 + 20);
     }
 
     renderLevelCompleteScreen(){
@@ -593,12 +595,14 @@ export class GUI {
 
 
         this.ctx.drawImage(data["key-icon"], WIDTH / 2 - 105, HEIGHT / 2 + 85, 70, 30);
-        this.ctx.fillText("SPACE", WIDTH / 2 - 70, HEIGHT / 2 + 105);
+        this.ctx.fillText("Space", WIDTH / 2 - 70, HEIGHT / 2 + 105);
         this.ctx.fillText("Jump", WIDTH / 2 + 40, HEIGHT / 2 + 105);
 
         this.ctx.drawImage(data["key-icon"], WIDTH / 2 - 95, HEIGHT / 2 + 120, 50, 30);
-        this.ctx.fillText("TAB", WIDTH / 2 - 70, HEIGHT / 2 + 140);
-        this.ctx.fillText("Pause", WIDTH / 2 + 40, HEIGHT / 2 + 140);    
+        this.ctx.fillText("Tab", WIDTH / 2 - 70, HEIGHT / 2 + 140);
+        this.ctx.fillText("Pause", WIDTH / 2 + 40, HEIGHT / 2 + 140);
+    
+        //this.homeButton.render(this.ctx);
     } 
 
     renderCreditsScreen(){

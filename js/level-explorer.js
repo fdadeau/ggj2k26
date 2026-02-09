@@ -67,6 +67,7 @@ document.addEventListener("DOMContentLoaded", function() {
             for (let i=0; i < 100; i++) { e.update(); }
             e.render(ctx, 0, 0);
         });
+        L.exits.forEach(e => e.render(ctx, 0, 0));
 
         ctx.strokeStyle = "red";
         ctx.moveTo(L.camera.x-size/2, L.camera.y + size/2);
