@@ -4,7 +4,7 @@
 
 import { LEVELS } from "./LEVELS.js"; 
 
-import { Player } from "./player.js";
+import { MASK, Player } from "./player.js";
 
 import { data } from "./preload.js";
 
@@ -41,7 +41,7 @@ export class Level {
         const camPath = LEVELS[n].camera.path.map(({x,y,speed}) => { return {x: x*SIZE, y: (MAX-y)*SIZE, speed}; });
         this.camera = new Camera(camStart, camPath);
         // Player         
-        this.player = new Player(LEVELS[n].player.startPosition.x * SIZE, (MAX-LEVELS[n].player.startPosition.y-1) * SIZE);
+        this.player = new Player(LEVELS[n].player.startPosition.x * SIZE, (MAX-LEVELS[n].player.startPosition.y-1) * SIZE, MASK[LEVELS[n].player.mask1], MASK[LEVELS[n].player.mask2]);
         // Enemies 
         this.enemies = lvl.enemies.map(e => new Enemy(e.x, e.y, e.w, e.h, SIZE/2));
         // Smoke
@@ -60,6 +60,7 @@ export class Level {
         // Check end of level        
         const exit = this.exits.filter(e => e.intersects(this.player));
         if (exit.length > 0) {
+            audio.playSound("victory","level",0.7);
             this.completed = { next: exit[0].nextLevel };
             return exit[0].nextLevel;
         }

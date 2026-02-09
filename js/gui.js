@@ -69,7 +69,7 @@ export class GUI {
         }
         this.state = STATES.PAUSE;
         audio.ambiance.pause();
-        audio.playSound("fx-pause","player",0.7);
+        audio.playSound("fx-pause","player",0.4);
         this.keys.pause = 0;
     }
 
@@ -225,7 +225,7 @@ export class GUI {
                     }
                     if (this.game.level.player.dead) {
                         this.state = STATES.GAME_OVER;
-                        audio.playSound("death", "player", 0.4, false);
+                        audio.playSound("death", "player", 0.15, false);
                         audio.ambiance.pause();
                         return true;
                     }

@@ -51,5 +51,20 @@ export class Camera {
         return (this.cameraDirection.y > 0 && player.y < this.y - HEIGHT / 2);
 
     }
+    /*
 
+        if (this.speed > 0 && player.x < (camLeft - horizontalGrace)) {
+            return true;
+        }
+
+        if (this.speed < 0 && player.x > (camRight + horizontalGrace)) {
+            return true;
+        }
+
+        if (player.y > (camBottom + verticalGrace) || player.y < (camTop - verticalGrace)) {
+            return true;
+        }
+
+        return false;
+    }*/
 }

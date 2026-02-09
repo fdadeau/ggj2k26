@@ -3,7 +3,7 @@ import { data } from "./preload.js";
 
 import { audio } from "./audio.js";
 
-const DEBUG = 0;
+const DEBUG = false;
 
 /**
  * Abstract class describing entities (things that appear on the screen)
