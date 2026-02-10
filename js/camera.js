@@ -30,11 +30,12 @@ export class Camera {
             x: cameraDirection.x / Math.sqrt(cameraDirection.x*cameraDirection.x + cameraDirection.y*cameraDirection.y),
             y: cameraDirection.y / Math.sqrt(cameraDirection.x*cameraDirection.x + cameraDirection.y*cameraDirection.y)
         };
-        //alert(JSON.stringify(target)+JSON.stringify(cameraDirection)+JSON.stringify(normalCameraDirection));
         this.x += this.normalCameraDirection.x * CAMERA_SPEED * this.speed * dt;
         this.y += this.normalCameraDirection.y * CAMERA_SPEED * this.speed * dt;
         if (Math.abs(this.x - target.x) < EPSILON && Math.abs(this.y - target.y) < EPSILON) {
             this.cameraPath.shift();
+            this.x = target.x;
+            this.y = target.y;
         }
     }
 
@@ -52,19 +53,15 @@ export class Camera {
 
     }
     /*
-
         if (this.speed > 0 && player.x < (camLeft - horizontalGrace)) {
             return true;
         }
-
         if (this.speed < 0 && player.x > (camRight + horizontalGrace)) {
             return true;
         }
-
         if (player.y > (camBottom + verticalGrace) || player.y < (camTop - verticalGrace)) {
             return true;
         }
-
         return false;
     }*/
 }

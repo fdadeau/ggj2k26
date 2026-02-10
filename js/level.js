@@ -99,13 +99,12 @@ export class Level {
         let srcY = this.camera.y - HEIGHT / 2;
 
         // background with scrolling
-        const X1 = Math.floor(srcX / 10) % WIDTH, Y1 = HEIGHT/10;
-        let X2 = Math.floor(srcX / 5) % (2*WIDTH);
-        if (X2 < -2*WIDTH) { X2 += 2*WIDTH; }
+        const X1 = Math.floor(srcX / 12) % WIDTH, Y1 = HEIGHT/10;
+        const X2 = Math.floor(srcX / 6) % (2*WIDTH);
         ctx.drawImage(data["background"], 0, 0, WIDTH, HEIGHT, -X1 - 50, Y1, WIDTH, HEIGHT);
         ctx.drawImage(data["background"], 0, 0, WIDTH, HEIGHT, -X1+WIDTH - 50, Y1, WIDTH, HEIGHT);
         ctx.drawImage(data["trees"], 0, 0, WIDTH*2, HEIGHT, -X2, 0, WIDTH*2, HEIGHT);
-        ctx.drawImage(data["trees"], 0, 0, WIDTH*2, HEIGHT, -X2*2*WIDTH, 0, WIDTH*2, HEIGHT);
+        ctx.drawImage(data["trees"], 0, 0, WIDTH*2, HEIGHT, -X2+2*WIDTH, 0, WIDTH*2, HEIGHT);
 
         ctx.drawImage(this.background, srcX, srcY, WIDTH, HEIGHT, 0, 0, WIDTH, HEIGHT);
        
