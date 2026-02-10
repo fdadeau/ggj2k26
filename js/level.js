@@ -100,10 +100,10 @@ export class Level {
 
         // background with scrolling
         const X1 = Math.floor(srcX / 10) % WIDTH, Y1 = HEIGHT/10;
-        let X2 = Math.floor(srcX / 5) % WIDTH;
+        let X2 = Math.floor(srcX / 5) % (2*WIDTH);
         if (X2 < -2*WIDTH) { X2 += 2*WIDTH; }
-        ctx.drawImage(data["background"], 0, 0, WIDTH, HEIGHT, -X1, Y1, WIDTH, HEIGHT);
-        ctx.drawImage(data["background"], 0, 0, WIDTH, HEIGHT, -X1+WIDTH, Y1, WIDTH, HEIGHT);
+        ctx.drawImage(data["background"], 0, 0, WIDTH, HEIGHT, -X1 - 50, Y1, WIDTH, HEIGHT);
+        ctx.drawImage(data["background"], 0, 0, WIDTH, HEIGHT, -X1+WIDTH - 50, Y1, WIDTH, HEIGHT);
         ctx.drawImage(data["trees"], 0, 0, WIDTH*2, HEIGHT, -X2, 0, WIDTH*2, HEIGHT);
         ctx.drawImage(data["trees"], 0, 0, WIDTH*2, HEIGHT, -X2*2*WIDTH, 0, WIDTH*2, HEIGHT);
 

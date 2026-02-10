@@ -101,7 +101,6 @@ export class Player {
     }
 
 
-
     update(dt, keys, level) {
         this.lastX = this.x;
         this.lastY = this.y;

@@ -612,8 +612,7 @@ export const LEVELS = {
                 { x: 51, y: 27, speed: 0.5 },
                 { x: 51, y: 14, speed: 0.3 },
                 { x: 5, y: 14, speed: 0.9 },
-                { x: 5, y: 27, speed: 0.3 },
-                { x: 8, y: 27, speed: 0.6 },
+                { x: 5, y: 24, speed: 0.3 },
                 { x: 8, y: 24, speed: 0.6 },
                 { x: 18, y: 24, speed: 0.6 },
                 { x: 18, y: 4, speed: 0.6 },
@@ -627,7 +626,7 @@ export const LEVELS = {
             { kind: "Permanent", x: 8, y: 7, width: 1, height: 1 },
             { kind: "Permanent", x: 16, y: 5, width: 4, height: 1 },
             { kind: "Permanent", x: 19, y: 8, width: 1, height: 1 },
-            { kind: "Permanent", x: 20, y: 3, width: 2, height: 9 },
+            { kind: "Permanent", x: 20, y: 3, width: 4, height: 9 },
             { kind: "Permanent", x: 21, y: 0, width: 13, height: 1 },
             { kind: "Permanent", x: 29, y: 3, width: 2, height: 3 },
             { kind: "Permanent", x: 6, y: 11, width: 10, height: 2 },
@@ -649,8 +648,9 @@ export const LEVELS = {
             // horns
             { kind: "Permanent", x: 6, y: 18, width: 3, height: 6 },
             { kind: "Permanent", x: 13, y: 18, width: 3, height: 6 },
+            { kind: "Permanent", x: 9, y: 23, width: 1, height: 1 },
+            { kind: "Permanent", x: 12, y: 23, width: 1, height: 1 },
 
-            { kind: "Permanent", x: 22, y: 7, width: 3, height: 1 },
             { kind: "Permanent", x: 34, y: 0, width: 2, height: 30 },
             { kind: "Permanent", x: 36, y: 0, width: 22, height: 12 },
             { kind: "Permanent", x: 16, y: 15, width: 3, height: 1 },
@@ -668,7 +668,7 @@ export const LEVELS = {
             { kind: "Permanent", x: 46, y: 14, width: 2, height: 2 },
             { kind: "Permanent", x: 46, y: 18, width: 2, height: 9 },
             { kind: "Permanent", x: 50, y: 14, width: 2, height: 12 },
-            { kind: "Permanent", x: 54, y: 14, width: 2, height: 11 },
+            { kind: "Permanent", x: 54, y: 12, width: 2, height: 13 },
             { kind: "Permanent", x: 38, y: 14, width: 10, height: 2 },
             { kind: "Permanent", x: 49, y: 14, width: 7, height: 2 },
             { kind: "Permanent", x: 48, y: 18, width: 2, height: 1 },
@@ -678,31 +678,37 @@ export const LEVELS = {
             { kind: "Permanent", x: 1, y: 21, width: 1, height: 1 },
 
             // final
+            { kind: "Permanent", x: 24, y: 7, width: 3, height: 1 },
             { kind: "Permanent", x: 14, y: 0, width: 2, height: 1 },
             { kind: "Permanent", x: 33, y: 1, width: 1, height: 1 },
 
             //
             { kind: "Mask", blur: "rgba(0, 255, 255, 0.9)", type:"bird", x: 8, y: 8 },
-            { kind: "Mask", blur: "rgba(0, 255, 255, 0.9)", type:"ninja", x: 14, y: 13 },
+            { kind: "Mask", blur: "rgba(0, 255, 255, 0.9)", type:"ninja", x: 1, y: 22 },
             { kind: "Mask", blur: "rgba(0, 255, 255, 0.9)", type:"wrestler", x: 21, y: 12 },
-            { kind: "Mask", blur: "rgba(0, 255, 255, 0.9)", type:"ninja", x: 49, y: 16 },
+            { kind: "Mask", blur: "rgba(0, 255, 255, 0.9)", type:"wrestler", x: 24, y: 1 },
+            { kind: "Mask", blur: "rgba(0, 255, 255, 0.9)", type:"ninja", x: 53, y: 12 },
             { kind: "Mask", blur: "rgba(0, 255, 255, 0.9)", type:"bird", x: 19, y: 34 }, // unreachable
             // Breakable 
             //{ kind: "Breakable", x: 15, y: 13, width: 1, height: 2 },
             { kind: "Breakable", x: 16, y: 16, width: 2, height: 2 },
             { kind: "Breakable", x: 29, y: 24, width: 1, height: 2 },
             { kind: "Breakable", x: 29, y: 21, width: 1, height: 2 },
+            { kind: "Breakable", x: 26, y: 1, width: 1, height: 2 },
             { kind: "Breakable", x: 33, y: 12, width: 3, height: 2 },   // shouldn
             // Enemies
            // { kind: "Enemy", x: 12, y: 13, width: 1, height: 2 },
            // { kind: "Enemy", x: 26, y: 21, width: 1, height: 2 },
            // { kind: "Enemy", x: 27, y: 24, width: 1, height: 2 },
             { kind: "Enemy", x: 9, y: 18, width: 4, height: 2 },
+            { kind: "Enemy", x: 8, y: 24, width: 1, height: 3 },
+            { kind: "Enemy", x: 13, y: 24, width: 1, height: 3 },
+            { kind: "Enemy", x: 21, y: 1, width: 1, height: 2 },
         ],
 
         endings: [
             //{ area: { x: 5, y: 5, width: 2, height: 1 }, nextLevel: 666 },
-            { area: { x: 23, y: 5, width: 2, height: 1 }, nextLevel: 666 }
+            { area: { x: 25, y: 9, width: 2, height: 1 }, nextLevel: 666 }
         ]
     },
     2: {
