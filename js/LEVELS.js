@@ -600,12 +600,12 @@ export const LEVELS = {
         player: {
             startPosition: { x: 3, y: 3 },
             mask1: "NONE",
-            mask2: "NONE"
+            mask2: "NINJA"
         },
         camera: {
             startPosition : { x: 4, y: 5 },
             path: [
-                { x: 17, y: 5, speed: 0.4 },
+                { x: 17, y: 5, speed: 0.3 },
                 { x: 17, y: 13, speed: 0.3 },
                 { x: 28, y: 13, speed: 0.4 },
                 { x: 29, y: 13, speed: 0.2 },
@@ -703,7 +703,8 @@ export const LEVELS = {
            // { kind: "Enemy", x: 12, y: 13, width: 1, height: 2 },
            // { kind: "Enemy", x: 26, y: 21, width: 1, height: 2 },
            // { kind: "Enemy", x: 27, y: 24, width: 1, height: 2 },
-            { kind: "Enemy", x: 9, y: 18, width: 4, height: 2 },
+           { kind: "Enemy", x: 8, y: 4, width: 1, height: 2 }, 
+           { kind: "Enemy", x: 9, y: 18, width: 4, height: 2 },
             { kind: "Enemy", x: 8, y: 24, width: 1, height: 3 },
             { kind: "Enemy", x: 13, y: 24, width: 1, height: 3 },
             { kind: "Enemy", x: 21, y: 1, width: 1, height: 2 },
