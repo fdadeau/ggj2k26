@@ -36,12 +36,12 @@ document.addEventListener("DOMContentLoaded", function(_e) {
 
     /** Events capture **/
     document.addEventListener("keydown", function(evt) {
-        evt.preventDefault();
+        //evt.preventDefault();
         gui.pressKey(evt.code);
     });
 
     document.addEventListener("keyup", function(evt) {
-        evt.preventDefault();
+        //evt.preventDefault();
         gui.releaseKey(evt.code);
     });
 

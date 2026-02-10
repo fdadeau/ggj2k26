@@ -608,8 +608,8 @@ export const LEVELS = {
                 { x: 29, y: 13, speed: 0.2 },
                 { x: 29, y: 32, speed: 0.3 },
                 { x: 35, y: 32, speed: 0.5 },
-                { x: 47, y: 26, speed: 0.5 },
-                { x: 47, y: 14, speed: 0.3 },
+                { x: 51, y: 27, speed: 0.5 },
+                { x: 51, y: 14, speed: 0.3 },
                 { x: 5, y: 14, speed: 0.9 },
                 { x: 5, y: 27, speed: 0.3 },
                 { x: 8, y: 27, speed: 0.6 },
@@ -696,6 +696,7 @@ export const LEVELS = {
         ],
 
         endings: [
+            { area: { x: 5, y: 5, width: 2, height: 1 }, nextLevel: 666 },
             { area: { x: 23, y: 5, width: 2, height: 1 }, nextLevel: "1" }
         ]
     },

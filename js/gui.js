@@ -3,6 +3,7 @@ import { getGamepadFromNavigator } from "./gamepad.js";
 import { HEIGHT, WIDTH } from "./level.js";
 import { data } from "./preload.js"; 
 import { audio } from "./audio.js";
+import { LEVELS } from "./LEVELS.js";
 import { SmokeTitle } from "./smoke.js";
 
 export const STATES = {
@@ -47,6 +48,7 @@ export class GUI {
         ]
 
         this.loadingMessage = "";
+        this.endingCredits = { start: 0, img: generateEndingCredits() };
 
         this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, pause: 0 };
         this.previousButtons = new Set();
@@ -125,10 +127,19 @@ export class GUI {
     }
 
     changeLevel(levelId){
-        this.state = STATES.COMPLETED;
-        this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, pause: 0 };
-        this.previousButtons = new Set();
-        this.game.changeLevel(levelId);
+        if (LEVELS[levelId]) {
+            this.state = STATES.COMPLETED;
+            this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, pause: 0 };
+            this.previousButtons = new Set();
+            this.game.changeLevel(levelId);
+        }
+        else {
+            this.state = STATES.GAME_END;
+            audio.playMusic("title-track", 0.7, 0);
+            this.endingCredits.start = Date.now();
+            this.endingCredits.easteregg = false;
+            this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, pause: 0 };
+        }
     }
 
     startTutorial(){
@@ -314,6 +325,14 @@ export class GUI {
                     this.goBackToMenu();
                 }
                 break;
+            case STATES.GAME_END: 
+                if (this.keys.jump || this.keys.pause) {
+                    this.keys.jump = 0;
+                    this.keys.pause = 0;
+                    audio.playMusic("title-track", 0.7, 0);
+                    this.goBackToMenu();
+                }
+                break;
             default:
                 throw new Error(`Unhandled game state, got ${this.state}`);
         }
@@ -470,6 +489,9 @@ export class GUI {
                 break;
             case STATES.LOADING:
                 this.renderLoadingScreen();
+                return;
+            case STATES.GAME_END:
+                this.renderGameEnd();
                 return;
             default:
                 throw new Error(`Unhandled game state, got ${this.state}`);
@@ -670,6 +692,26 @@ export class GUI {
         
         //this.homeButton.render(this.ctx);
     }
+
+    renderGameEnd() {
+        const SPEED = 0.02;
+        let deltaT = Date.now() - this.endingCredits.start;
+        if (deltaT > 62000 && !this.endingCredits.easteregg) {
+            this.endingCredits.img = generateKaraoke();
+            this.endingCredits.start = Date.now() - 5000;
+            this.endingCredits.easteregg = true;
+            deltaT = 5000;
+        }
+        this.ctx.drawImage(data["menu-background"], 0, 0, 32 * 3, 32 * 2, WIDTH / 2 - 160, HEIGHT / 2 - 100, 320, 200);
+        this.ctx.font = '400 32px pixel-sans';
+        this.ctx.textAlign = "center";
+        deltaT = (deltaT < 5000) ? 0 : deltaT -= 5000;
+        const Y = SPEED * deltaT;
+        this.ctx.drawImage(this.endingCredits.img, 0, Y, 300, 130, WIDTH / 2 - 150, HEIGHT / 2 - 80, 300, 130);
+        //this.ctx.fillText("Press SPACE to continue", WIDTH / 2, HEIGHT / 2);
+    }
+
+
 }
 
 const SELECTION_SPEED = 0.2;
@@ -720,4 +762,91 @@ class HomeButton extends Button{
     render(ctx){
         ctx.drawImage(data["home-icon"], this.x, this.y, this.width, this.height);
     }
+}
+
+
+function generateEndingCredits() {
+    const texts = [
+        "- Programming -",
+        "Fred Dadeau",
+        "Tayeb Hakkar",
+        "Anna Gallone",
+        "Dorine Tabary",
+        "Robin Grappe", "", 
+        "- Graphics -", 
+        "Marie-Almina Gindre", "",
+        "- Sounds -", 
+        "universal-soundbank.com",
+        "sound-fishing.net", "",
+        "- Music -", 
+        "suno.ai", "", "", "", "",
+        "If you like the song,", 
+        "wait a little for a surprise", "", "", "", "",
+        "Otherwise, you can just", 
+        "press SPACE or TAB to restart.",
+        "", "", "",
+        "3...", "","","", "",
+        "2...", "","","", "",
+        "1..."
+    ];
+
+    const size = 18;
+
+    const img = new OffscreenCanvas(300, texts.length * (18 + 4) + 200);
+    const ctx = img.getContext("2d");
+    
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    
+    ctx.font = '400 32px pixel-sans';
+    ctx.fillText("CONGRATULATIONS", 150, 50);    
+    ctx.fillText("You escaped!", 150, 110);    
+
+    ctx.font = size + 'px pixel-sans';
+    texts.forEach((t,i) => {
+        ctx.fillText(t, 150, 200 + i * (size+4));
+    });
+
+    return img;
+}
+
+// EASTER EGG KARAOKE TIME
+function generateKaraoke() {
+    const texts = [
+        "",
+        "Et si la brume vient t'enlacer", "", "",
+        "Seras-tu prêt à tout lâcher ?", "", "",
+        "Une dernière glissade,", "", "",
+        "Une dernière cascade,", "", "",
+        "Chaque masque sur ton visage,", "", 
+        "Réécrit ton couraaaaaaaaaage", "", "", "",
+        "Limask, cours sous la fumée,", "", "",
+        "Pas le temps de tanguer,", "", "",
+        "Change de peau pour",
+        "survivre plus fort", "", "",
+        "Trois masques pour traverser", "", "",
+        "Un seul coeur entêté", "", "",
+        "Limask, va t'arracher au décor", "", "",
+        "",
+        "",
+        "Limask, va t'arracher au décor !",
+    ];
+
+    const size = 18;
+
+    const img = new OffscreenCanvas(300, texts.length * (18 + 4) + 240);
+    const ctx = img.getContext("2d");
+    
+    ctx.fillStyle = "white";
+    ctx.textAlign = "center";
+    
+    ctx.font = '400 32px pixel-sans';
+    ctx.fillText("KARAOKE TIME!", 150, 120);    
+
+    ctx.font = size + 'px pixel-sans';
+    texts.forEach((t,i) => {
+        ctx.fillText(t, 150, 170 + i * (size+4));
+    });
+
+    return img;
 }
