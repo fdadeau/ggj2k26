@@ -53,7 +53,8 @@ const data = {
 
     // musics
     "music-ingame": "./assets/sounds/musiquedefond.mp3",
-    "title-track": "./assets/sounds/title-track2.mp3",
+    "title-track": "./assets/sounds/title-track.mp3",
+    "ending-track": "./assets/sounds/title-track2.mp3",
 
     // Sounds
     "fx-bird": "./assets/sounds/fx-bird.mp3",

@@ -607,7 +607,8 @@ export const LEVELS = {
                 { x: 28, y: 13, speed: 0.4 },
                 { x: 29, y: 13, speed: 0.2 },
                 { x: 29, y: 32, speed: 0.3 },
-                { x: 35, y: 32, speed: 0.5 },
+                { x: 25, y: 32, speed: 0.3 },
+                { x: 35, y: 32, speed: 0.7 },
                 { x: 51, y: 27, speed: 0.5 },
                 { x: 51, y: 14, speed: 0.3 },
                 { x: 5, y: 14, speed: 0.9 },
@@ -654,23 +655,23 @@ export const LEVELS = {
             { kind: "Permanent", x: 36, y: 0, width: 22, height: 12 },
             { kind: "Permanent", x: 16, y: 15, width: 3, height: 1 },
             { kind: "Permanent", x: 18, y: 18, width: 2, height: 6 },
-            { kind: "Permanent", x: 20, y: 18, width: 4, height: 17 },
+            { kind: "Permanent", x: 20, y: 18, width: 4, height: 12 },
             { kind: "Permanent", x: 17, y: 18, width: 1, height: 2 },
 
+            { kind: "Permanent", x: 23, y: 31, width: 2, height: 1 },
+            { kind: "Permanent", x: 19, y: 33, width: 2, height: 1 },
 
             // downstairs 
             { kind: "Permanent", x: 38, y: 16, width: 2, height: 13 },
-            { kind: "Permanent", x: 36, y: 14, width: 2, height: 8 },
-            { kind: "Permanent", x: 40, y: 21, width: 2, height: 1 },
-            { kind: "Permanent", x: 42, y: 21, width: 2, height: 7 },
-            { kind: "Permanent", x: 44, y: 21, width: 1, height: 1 },
+            { kind: "Permanent", x: 36, y: 14, width: 2, height: 2 },
+            { kind: "Permanent", x: 42, y: 16, width: 2, height: 12 },
             { kind: "Permanent", x: 46, y: 14, width: 2, height: 2 },
             { kind: "Permanent", x: 46, y: 18, width: 2, height: 9 },
             { kind: "Permanent", x: 50, y: 14, width: 2, height: 12 },
             { kind: "Permanent", x: 54, y: 14, width: 2, height: 11 },
             { kind: "Permanent", x: 38, y: 14, width: 10, height: 2 },
             { kind: "Permanent", x: 49, y: 14, width: 7, height: 2 },
-            { kind: "Permanent", x: 41, y: 18, width: 9, height: 1 },
+            { kind: "Permanent", x: 48, y: 18, width: 2, height: 1 },
             // far left 
             { kind: "Permanent", x: 0, y: 16, width: 1, height: 1 },
             { kind: "Permanent", x: 5, y: 18, width: 2, height: 1 },
@@ -678,15 +679,19 @@ export const LEVELS = {
 
             // final
             { kind: "Permanent", x: 14, y: 0, width: 2, height: 1 },
+            { kind: "Permanent", x: 33, y: 1, width: 1, height: 1 },
 
             //
             { kind: "Mask", blur: "rgba(0, 255, 255, 0.9)", type:"bird", x: 8, y: 8 },
             { kind: "Mask", blur: "rgba(0, 255, 255, 0.9)", type:"ninja", x: 14, y: 13 },
             { kind: "Mask", blur: "rgba(0, 255, 255, 0.9)", type:"wrestler", x: 21, y: 12 },
+            { kind: "Mask", blur: "rgba(0, 255, 255, 0.9)", type:"ninja", x: 49, y: 16 },
+            { kind: "Mask", blur: "rgba(0, 255, 255, 0.9)", type:"bird", x: 19, y: 34 }, // unreachable
             // Breakable 
             //{ kind: "Breakable", x: 15, y: 13, width: 1, height: 2 },
             { kind: "Breakable", x: 16, y: 16, width: 2, height: 2 },
             { kind: "Breakable", x: 29, y: 24, width: 1, height: 2 },
+            { kind: "Breakable", x: 29, y: 21, width: 1, height: 2 },
             { kind: "Breakable", x: 33, y: 12, width: 3, height: 2 },   // shouldn
             // Enemies
            // { kind: "Enemy", x: 12, y: 13, width: 1, height: 2 },
@@ -696,8 +701,8 @@ export const LEVELS = {
         ],
 
         endings: [
-            { area: { x: 5, y: 5, width: 2, height: 1 }, nextLevel: 666 },
-            { area: { x: 23, y: 5, width: 2, height: 1 }, nextLevel: "1" }
+            //{ area: { x: 5, y: 5, width: 2, height: 1 }, nextLevel: 666 },
+            { area: { x: 23, y: 5, width: 2, height: 1 }, nextLevel: 666 }
         ]
     },
     2: {

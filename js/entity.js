@@ -59,7 +59,7 @@ export class Mask extends Entity {
 
     render(ctx, srcX, srcY) {
         if (this.active) {
-            ctx.shadowColor = this.blur ?? "rgba(255, 255, 255, 0.9)";
+            ctx.shadowColor = this.blur ?? "rgba(0, 255, 255, 0.9)";
             ctx.drawImage(data[`mask-${this.kind}`], this.x - srcX, this.y - srcY, this.width, this.height);
             DEBUG && super.render(ctx, srcX, srcY);
         }
@@ -202,7 +202,7 @@ export class Breakable extends Entity {
 
     hit(x,y,map) {
         if (this.life == 0) return;
-        if (x >= this.x && x <= this.x * this.width && y >= this.y && y <= this.y * this.height) {
+        if (x >= this.x && x <= this.x + this.width && y >= this.y && y <= this.y + this.height) {
             this.life--;
             audio.playSound(this.life == 0 ? "fx-collapse" : "fx-wrestler", "block", 1);
             if (this.life == 0) {

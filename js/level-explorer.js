@@ -26,6 +26,9 @@ document.addEventListener("DOMContentLoaded", function() {
         SELECT.style.right = "10px";
         SELECT.addEventListener("change", update);
         document.body.appendChild(SELECT);
+        if (document.location.search.length > 0) {
+            SELECT.value = document.location.search.substring(1); 
+        }
         update();
     }
 

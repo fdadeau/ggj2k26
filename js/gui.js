@@ -135,7 +135,7 @@ export class GUI {
         }
         else {
             this.state = STATES.GAME_END;
-            audio.playMusic("title-track", 0.7, 0);
+            audio.playMusic("ending-track", 0.7, 0);
             this.endingCredits.start = Date.now();
             this.endingCredits.easteregg = false;
             this.keys = { left: 0, right: 0, jump: 0, swap: 0, action: 0, pause: 0 };
