@@ -721,7 +721,7 @@ export const LEVELS = {
                 "x": 12,
                 "y": 2
             },
-            "mask1": "NONE",
+            "mask1": "BIRD",
             "mask2": "NONE",
         },
         "texts" : [
@@ -749,7 +749,7 @@ export const LEVELS = {
             },
             "path":[
                 {
-                    "x": 25,
+                    "x": 2,
                     "y": 5,
                     "speed": 0.6
                 },
@@ -1904,7 +1904,6 @@ export const LEVELS = {
                     "width":2,
                     "height":1
                 },
-                "nextLevel": 1
             }
         ]
     }
