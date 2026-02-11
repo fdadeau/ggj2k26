@@ -1760,7 +1760,151 @@ export const LEVELS = {
                     "width": 2,
                     "height": 1
                 },
-                "nextLevel": 0
+                "nextLevel": 3
+            }
+        ]
+    },
+    3:{
+      "player":{
+            "startPosition":{"x":4,"y":3},
+            "mask1": "NINJA",
+            "mask2": "BIRD",
+        },
+        "camera":{
+            "startPosition":{"x":4,"y":3},
+            "path":[
+                {
+                    "x": 11,
+                    "y": 3,
+                    "speed": 0.3
+                },
+                {
+                    "x": 11,
+                    "y": 21,
+                    "speed": 0.25
+                },
+                {
+                    "x": 15,
+                    "y": 21,
+                    "speed": 0.25
+                },
+                {
+                    "x": 20,
+                    "y": 9,
+                    "speed": 0.25
+                },
+            ]
+        },
+        "stuff":[
+            {
+                "kind":"Permanent",
+                "x":0,
+                "y":0,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 15,
+                "height":1
+            },
+            {
+                "kind":"Permanent",
+                "x":5,
+                "y":3,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 1,
+                "height": 20
+            },
+            {
+                "kind":"Permanent",
+                "x":15,
+                "y":0,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 10,
+                "height": 7 
+            },
+            {
+                "kind":"Permanent",
+                "x":4,
+                "y":3,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 10,
+                "height": 1
+            },
+            {
+                "kind":"Permanent",
+                "x":7,
+                "y":6,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 8,
+                "height": 1
+            },
+            {
+                "kind":"Permanent",
+                "x":6,
+                "y":9,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 8,
+                "height": 1
+            },
+            {
+                "kind":"Permanent",
+                "x":7,
+                "y":12,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 8,
+                "height": 1
+            },
+            {
+                "kind":"Permanent",
+                "x":6,
+                "y":15,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 8,
+                "height": 1
+            },
+            {
+                "kind":"Permanent",
+                "x":7,
+                "y":18,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 8,
+                "height": 1
+            },
+            {
+                "kind":"Permanent",
+                "x":15,
+                "y":7,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 1,
+                "height": 12
+            },
+            {
+                "kind":"Permanent",
+                "x":16,
+                "y": 13,
+                "startLiving":0,
+                "stopLiving":undefined,
+                "width": 3,
+                "height": 1
+            },
+        ],
+        "endings":[
+            {
+                "area":{
+                    "x": 23,
+                    "y": 10,
+                    "width":2,
+                    "height":1
+                },
+                "nextLevel": 1
             }
         ]
     }
