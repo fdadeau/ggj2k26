@@ -418,7 +418,7 @@ export class GUI {
         const jumpPressed = currentButtons.has("JUMP") && !this.previousButtons.has("JUMP");
         const jumpHeld = currentButtons.has("JUMP");
         const swapPressed = currentButtons.has("MASK_SWITCH") && !this.previousButtons.has("MASK_SWITCH");
-        const specialPressed = currentButtons.has("SPECIAL") && !this.previousButtons.has("MASK_SWITCH");
+        const specialPressed = currentButtons.has("SPECIAL") && !this.previousButtons.has("SPECIAL");
         
         this.keys.swap = swapPressed ? 1 : 0;
         this.keys.gamepadJump = jumpHeld ? 1 : 0;
@@ -426,6 +426,25 @@ export class GUI {
         this.keys.action = specialPressed ? 1 : 0;
 
         this.previousButtons = currentButtons;
+
+        if(this.state !== STATES.IN_GAME){
+            if((swapPressed || specialPressed) && [STATES.GAME_END, STATES.GAME_OVER, STATES.PAUSE].includes(this.state)){
+                this.keys.pause = 1;
+            }
+
+            if(jumpPressed){
+                this.keys.jump = 1;
+                return;
+            }
+            if(swapPressed){
+                this.keys.right = 1;
+                return;
+            }
+            if(specialPressed){
+                this.keys.left = 1;
+                return;
+            }
+        }
 
 		if(axisMoved){
 			if(axisMoved.direction === "LEFT"){
