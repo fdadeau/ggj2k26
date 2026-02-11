@@ -781,7 +781,7 @@ export const LEVELS = {
                 {
                     "x": 73,
                     "y": 21,
-                    "speed": 0.2
+                    "speed": 0.225
                 },
                 {
                     "x": 116,
@@ -816,7 +816,7 @@ export const LEVELS = {
                 {
                     "x": 196,
                     "y": 13,
-                    "speed": 0.4
+                    "speed": 0.55
                 },
                 {
                     "x": 200,
@@ -1548,6 +1548,15 @@ export const LEVELS = {
                 "kind":"Permanent",
                 "x": 206,
                 "y": 40,
+                "startLiving": 0,
+                "stopLiving": undefined,
+                "width": 3,
+                "height": 1
+            },
+            {
+                "kind":"Permanent",
+                "x": 212,
+                "y": 43,
                 "startLiving": 0,
                 "stopLiving": undefined,
                 "width": 3,
